@@ -283,7 +283,8 @@ class SubFinder(object):
                     continue
 
                 if content:
-                    sub_file = join(save_dir, movie_file + '.vi.srt')
+                    sub_file = '%s.%s.srt' % (movie_file, lang)
+                    sub_file = join(save_dir, sub_file)
                     open(sub_file, 'w').write(content)
                     self.logger.debug('Success')
 
