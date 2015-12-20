@@ -17,8 +17,9 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Subtitle Finder')
-    parser.add_argument('-d', dest='movie_dir', help='Movie directory')
-    parser.add_argument('-l', dest='lang', help='Languages. Multiple languages separated by comma (,). E.g.: en,vi')
+    parser.add_argument('-d', dest='movie_dir', required=True, help='Movie directory')
+    parser.add_argument('-l', dest='lang', required=True,
+                        help='Languages. Multiple languages separated by comma (,). E.g.: en,vi')
 
     args = parser.parse_args()
 
