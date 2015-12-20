@@ -13,7 +13,7 @@ setup(
         install_requires=['lxml', 'Distance==0.1.3', 'clint'],
         entry_points={
             'console_scripts': [
-                'subfind = pysub.cli:main',
+                'subfind = subfind.cli:main',
             ],
         },
         classifiers=[
