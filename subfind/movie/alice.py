@@ -3,6 +3,34 @@ import distance
 from subfind.movie import MovieScoring
 
 
+def cmp_to_key(mycmp):
+    'Convert a cmp= function into a key= function'
+
+    class K(object):
+        def __init__(self, obj, *args):
+            self.obj = obj
+
+        def __lt__(self, other):
+            return mycmp(self.obj, other.obj) < 0
+
+        def __gt__(self, other):
+            return mycmp(self.obj, other.obj) > 0
+
+        def __eq__(self, other):
+            return mycmp(self.obj, other.obj) == 0
+
+        def __le__(self, other):
+            return mycmp(self.obj, other.obj) <= 0
+
+        def __ge__(self, other):
+            return mycmp(self.obj, other.obj) >= 0
+
+        def __ne__(self, other):
+            return mycmp(self.obj, other.obj) != 0
+
+    return K
+
+
 class MovieScoringAlice(MovieScoring):
     def sort(self, params, movies):
         query = params['movie_title_search_query']
@@ -25,4 +53,4 @@ class MovieScoringAlice(MovieScoring):
 
             return 0
 
-        movies.sort(cmp=movie_cmp)
+        movies.sort(key=cmp_to_key(movie_cmp))
