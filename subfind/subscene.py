@@ -8,36 +8,16 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from urlparse import urljoin
 
-import distance
 import requests
 
-from pysub.cmd import run_cmd
-from pysub.exception import MovieNotFound, SubtitleNotFound, SubtitleFileBroken
-from pysub.lang import get_full_lang
-from pysub.parser import Parser
-from pysub.tokenizer import tokenizer
+from subfind.cmd import run_cmd
+from subfind.exception import MovieNotFound, SubtitleNotFound, SubtitleFileBroken
+from subfind.lang import get_full_lang
+from subfind.movie.alice import MovieScoringAlice
+from subfind.parser import Parser
+from subfind.tokenizer import tokenizer
 
 SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
-
-subsence_lang_name_lookup = {
-    'vi': 'vietnamese'
-}
-
-
-def movie_cmp(a, b):
-    if a['d'] < b['d']:
-        # smaller distances is better
-        return -1
-    elif a['d'] > b['d']:
-        return 1
-
-    if a['year'] > b['year']:
-        # larger year is better
-        return -1
-    elif a['year'] < b['year']:
-        return 1
-
-    return 0
 
 
 class SubFinder(object):
@@ -49,7 +29,7 @@ class SubFinder(object):
 
         self.movie_extensions = ['mp4', 'mkv']
         self.movie_file_pattern = re.compile('^(.+)\.\w+$')
-        self.not_title_tokens = set(['x264', '1080p', '1080', 'hdrip'])
+        self.not_title_tokens = {'x264', '1080p', '1080', 'hdrip'}
         self.year_pattern = re.compile('^(19\d{2}|201\d)$')
         self.movie_title_year_pattern = re.compile('^(.*)(\s+\((\d+)\))$')
 
@@ -59,17 +39,13 @@ class SubFinder(object):
         self.session = requests.Session()
 
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.movie_scoring = MovieScoringAlice()
 
     def _search_movies(self, params):
         query = params['movie_title_search_query']
         base_url = (SUBSCENE_SEARCH_URL % urllib.urlencode({'q': query}))
 
-        # print params
-
-        # print base_url
-
         r = self.session.get(base_url)
-        # print r.content
 
         if not r.ok:
             return []
@@ -81,8 +57,6 @@ class SubFinder(object):
         processed_urls = set()
         for node in nodes:
             url = node.get('href')
-            # print url
-            # continue
             if url.startswith('/subtitles/release?'):
                 continue
 
@@ -100,21 +74,14 @@ class SubFinder(object):
                 if m.group(2):
                     movie_year = int(m.group(3).strip())
 
-                    if params.get('year') and movie_year != params.get('year'):
-                        # Ignore invalid year movie
-                        continue
-
             movies.append({
                 'title': movie_title,
                 'year': movie_year,
-                'd': distance.levenshtein(query, movie_title.lower()),
                 'url': movie_url
             })
 
-        movies.sort(cmp=movie_cmp)
+        self.movie_scoring.sort(params, movies)
 
-        # pprint(movies)
-        # raise SystemExit
         if movies:
             return movies[0]
 
@@ -132,14 +99,8 @@ class SubFinder(object):
             return None
 
         sub_download_url = urljoin(sub_page_url, m.group(1))
-        # print sub_download_url
 
-        # subprocess.call()
-
-        # tmp_folder = 'tmp'
-        # if not exists(tmp_folder):
-        #     os.makedirs(tmp_folder)
-        tmp_folder = mkdtemp(prefix='pysub-')
+        tmp_folder = mkdtemp(prefix='subfind-')
         try:
             tmp_file = abspath(join(tmp_folder, 'tmp.zip'))
 
@@ -209,8 +170,6 @@ class SubFinder(object):
             subtitle_name = node.find('span[2]').text.strip()
 
             tmp1 = set(tokenizer(subtitle_name))
-            # print 'sub match', tmp1
-            # d = distance.levenshtein(subtitle_match_str, tmp1)
             d = len(subtitle_match_tokens.intersection(tmp1)) * 100 - len(tmp1)
 
             subtitles.append({
@@ -220,11 +179,6 @@ class SubFinder(object):
             })
 
         subtitles.sort(key=lambda sub: -sub['d'])
-
-        # pprint(subtitles)
-
-        # if subtitles:
-        #     return subtitles[0]
 
         return subtitles
 
@@ -316,7 +270,7 @@ class SubFinder(object):
 
                         movie_file = m.group(1)
 
-                        # Detect if the sub existsed
+                        # Detect if the sub exists
                         missed_langs = []
                         for lang in self.languages:
                             sub_file = join(root_dir, '%s.%s.srt' % (movie_file, lang))

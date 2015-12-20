@@ -1,8 +1,9 @@
 import logging
 
-from pysub.exception import MovieNotFound, SubtitleNotFound
-from pysub.subscene import SubFinder
 from clint.textui import puts, indent, colored
+
+from subfind.exception import MovieNotFound, SubtitleNotFound
+from subfind.subscene import SubFinder
 
 
 def error_msg(text):
@@ -20,18 +21,19 @@ def main():
     parser.add_argument('-d', dest='movie_dir', required=True, help='Movie directory')
     parser.add_argument('-l', dest='lang', required=True,
                         help='Languages. Multiple languages separated by comma (,). E.g.: en,vi')
+    parser.add_argument('-f', dest='force', action='store_true', help='Force to override the existed subtitles')
+    parser.add_argument('-v', dest='verbose', action='store_true', help='Verbose')
 
     args = parser.parse_args()
 
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.WARNING)
+
     languages = args.lang.split(',')
 
-    # print args
-    # raise SystemExit
-
-    sub_finder = SubFinder(languages=languages)
-
-    # sub_finder._download_movie_subtitle('Inside.Out.2015.1080p.BluRay.x264.YIFY', '/data2/movies/Inside Out (2015) [1080p]/')
-    # return
+    sub_finder = SubFinder(languages=languages, force=args.force)
 
     for item in sub_finder.scan(args.movie_dir):
         if isinstance(item, MovieNotFound):
@@ -47,5 +49,4 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.WARNING)
     main()
