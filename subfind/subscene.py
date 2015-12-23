@@ -15,6 +15,7 @@ from subfind.exception import MovieNotFound, SubtitleNotFound, SubtitleFileBroke
 from subfind.lang import get_full_lang
 from subfind.movie.alice import MovieScoringAlice
 from subfind.parser import Parser
+from subfind.subtitle.alice import SubtitleScoringAlice
 from subfind.tokenizer import tokenizer
 
 SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
@@ -40,6 +41,7 @@ class SubFinder(object):
 
         self.logger = logging.getLogger(self.__class__.__name__)
         self.movie_scoring = MovieScoringAlice()
+        self.subtitle_scoring = SubtitleScoringAlice()
 
     def _search_movies(self, params):
         query = params['movie_title_search_query']
@@ -161,7 +163,7 @@ class SubFinder(object):
         # pprint(nodes)
 
         # subtitle_match_str = ' '.join(sorted(params['movie_file_tokens']))
-        subtitle_match_tokens = set(params['movie_file_tokens'])
+        # subtitle_match_tokens = set(params['movie_file_tokens'])
         # print 'subtitle_match_str', subtitle_match_str
 
         subtitles = []
@@ -169,16 +171,18 @@ class SubFinder(object):
             subtitle_url = node.get('href')
             subtitle_name = node.find('span[2]').text.strip()
 
-            tmp1 = set(tokenizer(subtitle_name))
-            d = len(subtitle_match_tokens.intersection(tmp1)) * 100 - len(tmp1)
+            # tmp1 = set(tokenizer(subtitle_name))
+            # d = len(subtitle_match_tokens.intersection(tmp1)) * 100 - len(tmp1)
 
             subtitles.append({
                 'url': urljoin(movie_url, subtitle_url),
                 'name': subtitle_name,
-                'd': d
+                # 'd': d
             })
 
-        subtitles.sort(key=lambda sub: -sub['d'])
+        self.subtitle_scoring.sort(movie, params, subtitles)
+
+        # subtitles.sort(key=lambda sub: -sub['d'])
 
         return subtitles
 
