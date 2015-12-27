@@ -105,12 +105,12 @@ class SubsceneProvider(BaseProvider):
     def get_sub_file(self, sub_page_url):
         r = self.session.get(sub_page_url)
         if not r.ok:
-            print r.content
+            # print r.content
             return None
 
         m = re.search('href=\"(/subtitle/download[^\'"]+)"', r.content)
         if not m:
-            print 'Could not find download url'
+            # print 'Could not find download url'
             return None
 
         sub_download_url = urljoin(sub_page_url, m.group(1))
