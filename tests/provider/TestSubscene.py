@@ -31,7 +31,7 @@ class SubsceneTestCase(unittest.TestCase):
 
         # pprint(subtitles)
 
-        self.assertIsNotNone(subtitles)
+        self.assertTrue(subtitles is not None)
         self.assertTrue(isinstance(subtitles, list))
         self.assertTrue(len(subtitles) > 0)
 
