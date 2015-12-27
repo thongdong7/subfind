@@ -1,3 +1,4 @@
+import logging
 import re
 import urllib
 from os import listdir
@@ -12,7 +13,7 @@ from subfind.cmd import run_cmd
 from subfind.exception import SubtitleFileBroken
 from subfind.parser import Parser
 from subfind.provider import BaseProvider
-from subfind.provider.subscene.lang import get_full_lang
+from subfind.provider.subscene.language import get_full_lang
 
 SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
 
@@ -22,6 +23,8 @@ class SubsceneProvider(BaseProvider):
         self.session = requests.Session()
 
         self.movie_title_year_pattern = re.compile('^(.*)(\s+\((\d+)\))$')
+
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def search_movie(self, params):
         query = params['movie_title_search_query']
