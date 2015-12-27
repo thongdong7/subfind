@@ -1,11 +1,9 @@
 import logging
 import re
-import urllib
 from os import listdir
 from os.path import join, abspath
 from shutil import rmtree
 from tempfile import mkdtemp
-from urlparse import urljoin
 
 import requests
 
@@ -14,6 +12,7 @@ from subfind.exception import SubtitleFileBroken
 from subfind.parser import Parser
 from subfind.provider import BaseProvider
 from subfind.provider.subscene.language import get_full_lang
+from six.moves.urllib.parse import urlencode, urljoin
 
 SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
 
@@ -28,7 +27,7 @@ class SubsceneProvider(BaseProvider):
 
     def search_movie(self, params):
         query = params['movie_title_search_query']
-        base_url = (SUBSCENE_SEARCH_URL % urllib.urlencode({'q': query}))
+        base_url = (SUBSCENE_SEARCH_URL % urlencode({'q': query}))
 
         r = self.session.get(base_url)
 
