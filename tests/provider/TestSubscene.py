@@ -18,7 +18,7 @@ class SubsceneTestCase(unittest.TestCase):
 
         # pprint(movies)
 
-        self.assertIsNotNone(movies)
+        self.assertTrue(movies is not None)
         self.assertTrue(isinstance(movies, list))
         self.assertTrue(len(movies) > 0)
 
@@ -38,7 +38,7 @@ class SubsceneTestCase(unittest.TestCase):
     def test_get_sub_file(self):
         content = self.provider.get_sub_file('http://subscene.com/subtitles/the-divergent-series-insurgent/vietnamese/1151452')
 
-        self.assertIsNotNone(content)
+        self.assertTrue(content is not None)
 
 if __name__ == '__main__':
     unittest.main()
