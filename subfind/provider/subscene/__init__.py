@@ -12,7 +12,6 @@ from subfind.cmd import run_cmd
 from subfind.exception import SubtitleFileBroken
 from subfind.parser import Parser
 from subfind.provider import BaseProvider
-from subfind.provider.subscene import SubsceneProvider
 from subfind.provider.subscene.lang import get_full_lang
 
 SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
