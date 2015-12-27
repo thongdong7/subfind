@@ -124,7 +124,7 @@ class SubsceneProvider(BaseProvider):
             response = requests.get(sub_download_url, stream=True)
             if not response.ok:
                 # Something went wrong
-                print 'could not download sub file'
+                # print 'could not download sub file'
                 return None
 
             with open(tmp_file, 'wb') as handle:
