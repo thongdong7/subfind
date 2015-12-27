@@ -3,6 +3,7 @@ import re
 from os import listdir
 from os.path import join, abspath
 from shutil import rmtree
+from subfind.utils import get_file_content
 from tempfile import mkdtemp
 
 import requests
@@ -107,7 +108,7 @@ class SubsceneProvider(BaseProvider):
             # print r.content
             return None
 
-        m = re.search('href=\"(/subtitle/download[^\'"]+)"', r.content)
+        m = re.search('href=\"(/subtitle/download[^\'"]+)"', r.text)
         if not m:
             # print 'Could not find download url'
             return None
@@ -144,7 +145,8 @@ class SubsceneProvider(BaseProvider):
                 num_items += 1
                 for sub_extension in sub_extensions:
                     if item.endswith('.%s' % sub_extension):
-                        return open(join(tmp_folder, item)).read()
+                        sub_file = join(tmp_folder, item)
+                        return get_file_content(sub_file)
 
             # print tmp_folder
             if num_items == 0:
