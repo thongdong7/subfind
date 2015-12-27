@@ -36,9 +36,11 @@ class SubsceneTestCase(unittest.TestCase):
         self.assertTrue(len(subtitles) > 0)
 
     def test_get_sub_file(self):
-        content = self.provider.get_sub_file('http://subscene.com/subtitles/the-divergent-series-insurgent/vietnamese/1151452')
+        content = self.provider.get_sub_file(
+            'http://subscene.com/subtitles/the-divergent-series-insurgent/vietnamese/1151452')
 
         self.assertTrue(content is not None)
+
 
 if __name__ == '__main__':
     unittest.main()
