@@ -18,6 +18,8 @@ setup(
             'six',
             'subfind-provider~=1.0',
             'subfind-provider-subscene~=1.0',
+            # For python 2.6
+            'importlib',
         ],
         entry_points={
             'console_scripts': [
@@ -25,8 +27,9 @@ setup(
             ],
         },
         classifiers=[
-            "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+            "Development Status :: 5 - Production/Stable",
             "Environment :: Console",
+            "License :: OSI Approved :: Python Software Foundation License",
             "Programming Language :: Python",
             "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
