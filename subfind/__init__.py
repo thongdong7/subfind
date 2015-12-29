@@ -21,7 +21,7 @@ class SubFinder(object):
 
         self.movie_extensions = ['mp4', 'mkv']
         self.movie_file_pattern = re.compile('^(.+)\.\w+$')
-        self.not_title_tokens = {'x264', '1080p', '1080', 'hdrip'}
+        self.not_title_tokens = set(['x264', '1080p', '1080', 'hdrip'])
         self.year_pattern = re.compile('^(19\d{2}|201\d)$')
         self.movie_title_year_pattern = re.compile('^(.*)(\s+\((\d+)\))$')
 
