@@ -2,7 +2,7 @@ import logging
 
 from clint.textui import puts, indent, colored
 
-from subfind.exception import MovieNotFound, SubtitleNotFound
+from subfind_provider.exception import MovieNotFound, SubtitleNotFound
 from subfind import SubFinder
 
 
