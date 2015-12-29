@@ -16,5 +16,4 @@ install:
 script:
   - nosetests
   # Test cli
-  - subfind
   - subfind -h
