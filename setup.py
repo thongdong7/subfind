@@ -10,7 +10,15 @@ setup(
         author_email='thongdong7@gmail.com',
         url='https://github.com/thongdong7/subfind',
         packages=find_packages(exclude=["build", "dist", "tests*"]),
-        install_requires=['lxml', 'Distance==0.1.3', 'clint', 'requests', 'six'],
+        install_requires=[
+            'lxml',
+            'Distance==0.1.3',
+            'clint',
+            'requests',
+            'six',
+            'subfind-provider',
+            'subfind-provider-subscene',
+        ],
         entry_points={
             'console_scripts': [
                 'subfind = subfind.cli:main',
