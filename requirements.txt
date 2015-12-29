@@ -3,3 +3,5 @@ lxml
 Distance==0.1.3
 clint
 requests
+subfind-provider
+subfind-provider-subscene
