@@ -13,7 +13,7 @@ SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
 
 
 class SubFinder(object):
-    def __init__(self, languages, force=False):
+    def __init__(self, languages, provider, force=False):
         self.force = force
         self.languages = languages
 
@@ -32,10 +32,9 @@ class SubFinder(object):
         self.movie_scoring = MovieScoringAlice()
         self.subtitle_scoring = SubtitleScoringAlice()
 
-        provider_name = 'subscene'
-        module_name = 'subfind_provider_%s' % provider_name
+        module_name = 'subfind_provider_%s' % provider
         module = importlib.import_module(module_name)
-        class_name = '%sProvider' % provider_name.capitalize()
+        class_name = '%sProvider' % provider.capitalize()
         clazz = getattr(module, class_name)
         self.data_provider = clazz()
 

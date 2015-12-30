@@ -18,6 +18,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Subtitle Finder')
+    parser.add_argument('-p', dest='provider', default='subscene', help='Subtitle provider. Default: subscene')
     parser.add_argument('-d', dest='movie_dir', required=True, help='Movie directory')
     parser.add_argument('-l', dest='lang', required=True,
                         help='Languages. Multiple languages separated by comma (,). E.g.: en,vi')
@@ -33,7 +34,7 @@ def main():
 
     languages = args.lang.split(',')
 
-    sub_finder = SubFinder(languages=languages, force=args.force)
+    sub_finder = SubFinder(languages=languages, provider=args.provider, force=args.force)
 
     for item in sub_finder.scan(args.movie_dir):
         if isinstance(item, MovieNotFound):
