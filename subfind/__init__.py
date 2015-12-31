@@ -9,8 +9,6 @@ from subfind.movie.alice import MovieScoringAlice
 from subfind.subtitle.alice import SubtitleScoringAlice
 from subfind.tokenizer import tokenizer
 
-SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
-
 
 class SubFinder(object):
     def __init__(self, languages, provider, force=False):
