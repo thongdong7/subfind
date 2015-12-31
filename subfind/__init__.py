@@ -54,18 +54,14 @@ class SubFinder(object):
 
         self.subtitle_scoring.sort(movie, params, subtitles)
 
-        # subtitles.sort(key=lambda sub: -sub['d'])
-
         return subtitles
 
     def _download_movie_subtitle(self, movie_file, save_dir):
         self.logger.debug('Find subtitle for: %s' % movie_file)
-        # print 'movie file', movie_file
         params = {
             'movie_file': movie_file
         }
         tokens = tokenizer(movie_file)
-        # print 'tokens', tokens
 
         params['movie_file_tokens'] = tokens
 
@@ -87,10 +83,7 @@ class SubFinder(object):
         movie_search_query = ' '.join(movie_title_tokens)
         params['movie_title_search_query'] = movie_search_query
 
-        # print movie_search_query
-
         movie = self._search_movies(params)
-        # print movie
 
         if not movie:
             raise MovieNotFound(file_name=movie_file, message='Not found movie')
