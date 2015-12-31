@@ -11,10 +11,8 @@ setup(
         url='https://github.com/thongdong7/subfind',
         packages=find_packages(exclude=["build", "dist", "tests*"]),
         install_requires=[
-            'lxml',
             'Distance==0.1.3',
             'clint',
-            'requests',
             'six',
             'subfind-provider~=1.0',
             'subfind-provider-subscene~=1.0',
