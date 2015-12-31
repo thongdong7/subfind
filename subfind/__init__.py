@@ -4,10 +4,10 @@ import os
 import re
 from os.path import join, exists, getsize
 
-from subfind_provider.exception import MovieNotFound, SubtitleNotFound, SubtitleFileBroken
 from subfind.movie.alice import MovieScoringAlice
 from subfind.subtitle.alice import SubtitleScoringAlice
 from subfind.tokenizer import tokenizer
+from subfind_provider.exception import MovieNotFound, SubtitleNotFound, SubtitleFileBroken
 
 
 class SubFinder(object):
