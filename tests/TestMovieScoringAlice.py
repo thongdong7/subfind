@@ -13,7 +13,7 @@ class MovieScoringAliceTestCase(unittest.TestCase):
         testcases = [
             # Wrong year, but the title is good
             (
-                {'movie_title_search_query': 'kingsman the secret service', 'year': 2014},
+                {'title_query': 'kingsman the secret service', 'year': 2014},
                 [
                     {'title': 'Kingsman: The Secret Service', 'year': 2015},
                     {'title': "Secrets Of Her Majesty's Secret Service", 'year': 2014},
@@ -25,7 +25,7 @@ class MovieScoringAliceTestCase(unittest.TestCase):
             ),
             # The correct year and title should has higher score
             (
-                {'movie_title_search_query': 'inside out', 'year': 2015},
+                {'title_query': 'inside out', 'year': 2015},
                 [
                     {'title': 'Inside Out', 'year': 2011},
                     {'title': 'Inside Out', 'year': 2015},
