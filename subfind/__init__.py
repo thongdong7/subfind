@@ -5,6 +5,7 @@ import re
 from os.path import join, exists, getsize
 
 from subfind_provider.exception import MovieNotFound, SubtitleNotFound
+from subfind_provider.utils import write_file_content
 
 
 class SubFind(object):
@@ -62,7 +63,7 @@ class SubFind(object):
                 for lang, content in self.scenario.execute(release_name, self.languages):
                     sub_file = '%s.%s.srt' % (release_name, lang)
                     sub_file = join(save_dir, sub_file)
-                    open(sub_file, 'w').write(content.encode('utf-8'))
+                    write_file_content(sub_file, content)
 
                 yield {'release_name': release_name}
             except (MovieNotFound, SubtitleNotFound) as e:
