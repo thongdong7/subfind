@@ -14,7 +14,7 @@ before_install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install importlib; fi
 
 install:
-  - "pip install --no-cache-dir subfind-provider-subscene~=2.0.dev"
+  - "pip install --no-cache-dir subfind-provider-subscene>=2.0"
 # command to run tests
 script:
   - nosetests
