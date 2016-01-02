@@ -1,13 +1,9 @@
-import logging
-
 import importlib
+import logging
 import os
 import re
 from os.path import join, exists, getsize
-from subfind.movie.alice import MovieScoringAlice
-from subfind.release.alice import ReleaseScoringAlice
-from subfind.subtitle.alice import SubtitleScoringAlice
-from subfind.tokenizer import tokenizer
+
 from subfind_provider.exception import MovieNotFound, SubtitleNotFound
 
 
@@ -20,15 +16,11 @@ class SubFind(object):
 
         self.movie_extensions = ['mp4', 'mkv']
         self.movie_file_pattern = re.compile('^(.+)\.\w+$')
-        self.not_title_tokens = set(['x264', '1080p', '1080', 'hdrip'])
-        self.year_pattern = re.compile('^(19\d{2}|201\d)$')
-        self.movie_title_year_pattern = re.compile('^(.*)(\s+\((\d+)\))$')
 
         # Ignore movie file which size < min_movie_size
         self.min_movie_size = min_movie_size
 
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.release_scoring = ReleaseScoringAlice()
 
         module_name = 'subfind_provider_%s' % provider
         module = importlib.import_module(module_name)
