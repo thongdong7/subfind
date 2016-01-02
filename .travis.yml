@@ -22,4 +22,5 @@ install:
 script:
   - nosetests
   # Test cli
+  - export PYTHONPATH=`pwd`
   - python subfind/cli.py -h
