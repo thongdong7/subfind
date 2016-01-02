@@ -11,8 +11,9 @@ python:
 # command to install dependencies
 install:
   - "pip install -r requirements.txt"
-  - "pip install git+git://github.com/thongdong7/subfind-provider.git@2.0-dev"
-  - "pip install git+git://github.com/thongdong7/subfind-provider-subscene.git@2.0-dev"
+  - "git clone git://github.com/thongdong7/subfind-provider.git --branch=2.0-dev"
+  - "git clone git://github.com/thongdong7/subfind-provider-subscene.git --branch=2.0-dev"
+   - "export PYTHON_PATH=`pwd`:`pwd`/subfind-provider:`pwd`/subfind-provider-subscene"
 #  - python setup.py install
 # command to run tests
 script:
