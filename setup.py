@@ -13,7 +13,6 @@ setup(
         install_requires=[
             'clint',
             'six',
-            'subfind-provider~=2.0.dev',
             'subfind-provider-subscene~=2.0.dev',
             # For python 2.6
             'importlib',

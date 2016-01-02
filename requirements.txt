@@ -1,5 +1,1 @@
-six
-lxml
-Distance==0.1.3
-clint
-requests
+subfind-provider-subscene~=2.0.dev

@@ -16,7 +16,7 @@ class SubFindTestCase(unittest.TestCase):
         self.data_dir = abspath(join(dirname(__file__), 'data'))
 
         testcases = [
-            ('m1', ['vi'], 'Everest.2015.HC.1080p.HDRiP.x264.ShAaNiG.vi.srt', 106842),
+            ('m1', ['vi'], 'Everest.2015.HC.1080p.HDRiP.x264.ShAaNiG.vi.srt', 114130),
             ('m2', ['en'], 'Survivor.2014.1080p.BluRay.H264.AAC-RARBG.en.srt', 77028),
         ]
 
