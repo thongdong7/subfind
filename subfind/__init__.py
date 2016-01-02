@@ -62,7 +62,7 @@ class SubFind(object):
                 for lang, content in self.scenario.execute(release_name, self.languages):
                     sub_file = '%s.%s.srt' % (release_name, lang)
                     sub_file = join(save_dir, sub_file)
-                    open(sub_file, 'w').write(content)
+                    open(sub_file, 'w').write(content.encode('utf-8'))
 
                 yield {'release_name': release_name}
             except (MovieNotFound, SubtitleNotFound) as e:
