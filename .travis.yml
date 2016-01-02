@@ -10,10 +10,12 @@ python:
   - "nightly" # currently points to 3.6-dev
 # command to install dependencies
 install:
-#  - "pip install -r requirements.txt"
-  - python setup.py install
+  - "pip install -r requirements.txt"
+  - "pip install git+git://github.com/thongdong7/subfind-provider.git@2.0-dev"
+  - "pip install git+git://github.com/thongdong7/subfind-provider-subscene.git@2.0-dev"
+#  - python setup.py install
 # command to run tests
 script:
   - nosetests
   # Test cli
-  - subfind -h
+#  - subfind -h
