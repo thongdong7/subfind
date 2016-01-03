@@ -2,14 +2,76 @@ import importlib
 import logging
 import os
 import re
+from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
 
-from subfind_provider.exception import MovieNotFound, SubtitleNotFound
-from subfind_provider.utils import write_file_content
+from .exception import MovieNotFound, SubtitleNotFound
+from .movie_parser import parse_release_name
+from .release.alice import ReleaseScoringAlice
+from .scenario import ScenarioManager
+from .utils import write_file_content
+
+
+class BaseProvider(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def search_movie(self, params):
+        """
+        Find all movies match with `params.movie_title_search_query`.
+        This is not 100% percent match. A scoring will find the best match movie
+
+        :param params:
+        :type params:
+        :return:
+        :rtype:
+        """
+        pass
+
+    @abstractmethod
+    def get_movie_subs(self, movie, params, lang):
+        """
+        Get subtitles for movie
+
+        :param movie:
+        :type movie:
+        :param params:
+        :type params:
+        :param lang:
+        :type lang:
+        :return:
+        :rtype:
+        """
+
+    @abstractmethod
+    def get_sub_file(self, sub_page_url):
+        """
+        Get subtitle content of `sub_page_url`
+
+        :param sub_page_url:
+        :type sub_page_url:
+        :return:
+        :rtype: str
+        """
+        pass
+
+    @abstractmethod
+    def get_releases(self, release_name, langs):
+        """
+        Find all releases
+
+        :param release_name:
+        :type release_name:
+        :param langs:
+        :type langs:
+        :return: A dictionary which key is lang, value is `release_info`
+        :rtype:
+        """
+        return {}
 
 
 class SubFind(object):
-    def __init__(self, languages, provider, force=False, min_movie_size=None):
+    def __init__(self, languages, provider_names, force=False, min_movie_size=None):
         self.force = force
         self.languages = languages
 
@@ -45,12 +107,16 @@ class SubFind(object):
 
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        module_name = 'subfind_provider_%s' % provider
-        module = importlib.import_module(module_name)
-        class_name = '%sFactory' % provider.capitalize()
-        clazz = getattr(module, class_name)
-        data_provider = clazz()
-        self.scenario = data_provider.get_scenario()
+        scenario_map = {}
+        for provider_name in provider_names:
+            module_name = 'subfind_provider_%s' % provider_name
+            module = importlib.import_module(module_name)
+            class_name = '%sFactory' % provider_name.capitalize()
+            clazz = getattr(module, class_name)
+            data_provider = clazz()
+            scenario_map[provider_name] = data_provider.get_scenario()
+
+        self.scenario = ScenarioManager(ReleaseScoringAlice(), scenario_map)
 
     def scan(self, movie_dir):
         reqs = []
