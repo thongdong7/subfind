@@ -6,8 +6,7 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
-  - "3.5-dev" # 3.5 development branch
-  - "nightly" # currently points to 3.6-dev
+  - "pypy"
 # command to install dependencies
 before_install:
   - pip install lxml Distance==0.1.3
