@@ -16,6 +16,7 @@ class SubFind(object):
         assert isinstance(languages, list)
 
         self.movie_extensions = ['mp4', 'mkv']
+        self.subtitle_extensions = ['srt', 'ssa']
         self.movie_file_pattern = re.compile('^(.+)\.\w+$')
 
         # Ignore movie file which size < min_movie_size
@@ -49,22 +50,31 @@ class SubFind(object):
                         release_name = m.group(1)
 
                         # Detect if the sub exists
-                        missed_langs = []
-                        for lang in self.languages:
-                            sub_file = join(root_dir, '%s.%s.srt' % (release_name, lang))
-                            if not exists(sub_file):
-                                missed_langs.append(lang)
+                        if not self.force:
+                            missed_langs = []
+                            for lang in self.languages:
+                                found = False
+                                for subtitle_extension in self.subtitle_extensions:
+                                    sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
+                                    if exists(sub_file):
+                                        found = True
+                                        break
+
+                                if not found:
+                                    missed_langs.append(lang)
 
                         if self.force or missed_langs:
                             reqs.append((release_name, save_dir))
 
         for release_name, save_dir in reqs:
             try:
-                for lang, content in self.scenario.execute(release_name, self.languages):
-                    sub_file = '%s.%s.srt' % (release_name, lang)
+                subtitle_paths = []
+                for subtitle in self.scenario.execute(release_name, self.languages):
+                    sub_file = '%s.%s.%s' % (release_name, subtitle.lang, subtitle.extension)
                     sub_file = join(save_dir, sub_file)
-                    write_file_content(sub_file, content)
+                    subtitle_paths.append(sub_file)
+                    write_file_content(sub_file, subtitle.content)
 
-                yield {'release_name': release_name}
+                yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
             except (MovieNotFound, SubtitleNotFound) as e:
                 yield e
