@@ -11,17 +11,9 @@ setup(
         url='https://github.com/thongdong7/subfind',
         packages=find_packages(exclude=["build", "dist", "tests*"]),
         install_requires=[
-            'clint',
-            'six',
-            'subfind-provider-subscene>=2.0',
-            # For python 2.6
-            'importlib',
+            'lxml',
+            'Distance==0.1.3',
         ],
-        entry_points={
-            'console_scripts': [
-                'subfind = subfind.cli:main',
-            ],
-        },
         classifiers=[
             "Development Status :: 5 - Production/Stable",
             "Environment :: Console",
