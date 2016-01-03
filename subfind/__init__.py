@@ -16,7 +16,28 @@ class SubFind(object):
         assert isinstance(languages, list)
 
         self.movie_extensions = ['mp4', 'mkv']
-        self.subtitle_extensions = ['srt', 'ssa']
+
+        # Credit to https://github.com/callmehiphop/subtitle-extensions/blob/master/subtitle-extensions.json
+        self.subtitle_extensions = [
+            ".aqt",
+            ".gsub",
+            ".jss",
+            ".sub",
+            ".ttxt",
+            ".pjs",
+            ".psb",
+            ".rt",
+            ".smi",
+            ".slt",
+            ".ssf",
+            ".srt",
+            ".ssa",
+            ".ass",
+            ".usf",
+            ".idx",
+            ".vtt"
+        ]
+
         self.movie_file_pattern = re.compile('^(.+)\.\w+$')
 
         # Ignore movie file which size < min_movie_size
