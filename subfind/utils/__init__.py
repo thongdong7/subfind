@@ -37,10 +37,13 @@ def get_file_content(path):
 
 def write_file_content(path, content):
     if sys.version_info >= (3, 0):
-        open(path, 'w').write(content)
+        try:
+            open(path, 'wb').write(content)
+        except:
+            open(path, 'wb').write(content.encode('utf-8'))
     else:
         try:
-            open(path, 'w').write(content.encode('utf-8'))
+            open(path, 'wb').write(content.encode('utf-8'))
         except:
-            open(path, 'w').write(content)
+            open(path, 'wb').write(content)
 
