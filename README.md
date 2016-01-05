@@ -7,11 +7,12 @@ Crawl subtitle base on file name in the movie folder.
 Supported provider:
 
 * Subscene
+* Opensubtitles
 
 
 # Install
 
-    $ pip install subfind
+    $ pip install subfind-cli
 
 # Usage
 
