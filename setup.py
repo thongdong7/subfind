@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='subfind',
-        version='2.0.0.0',
+        version='2.0.1.0',
         description='Subtitle crawler written in Python',
         author='Thong Dong',
         author_email='thongdong7@gmail.com',
