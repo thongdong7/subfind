@@ -47,6 +47,8 @@ class Scenario1(BaseScenario):
 
         for lang in releases_by_lang:
             releases = releases_by_lang[lang]
+            if not releases:
+                continue
 
             self.release_scoring.sort(release_name, releases)
 
@@ -80,6 +82,8 @@ class ScenarioManager(object):
 
         for lang in releases_by_lang:
             releases = releases_by_lang[lang]
+            if not releases:
+                continue
             # pprint(releases)
 
             self.release_scoring.sort(release_name, releases)
