@@ -1,10 +1,10 @@
-import importlib
 import logging
+
+import importlib
 import os
 import re
 from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
-
 from .exception import MovieNotFound, SubtitleNotFound
 from .movie_parser import parse_release_name
 from .release.alice import ReleaseScoringAlice
@@ -53,23 +53,23 @@ class SubFind(object):
 
         # Credit to https://github.com/callmehiphop/subtitle-extensions/blob/master/subtitle-extensions.json
         self.subtitle_extensions = [
-            ".aqt",
-            ".gsub",
-            ".jss",
-            ".sub",
-            ".ttxt",
-            ".pjs",
-            ".psb",
-            ".rt",
-            ".smi",
-            ".slt",
-            ".ssf",
-            ".srt",
-            ".ssa",
-            ".ass",
-            ".usf",
-            ".idx",
-            ".vtt"
+            "aqt",
+            "gsub",
+            "jss",
+            "sub",
+            "ttxt",
+            "pjs",
+            "psb",
+            "rt",
+            "smi",
+            "slt",
+            "ssf",
+            "srt",
+            "ssa",
+            "ass",
+            "usf",
+            "idx",
+            "vtt"
         ]
 
         self.movie_file_pattern = re.compile('^(.+)\.\w+$')
