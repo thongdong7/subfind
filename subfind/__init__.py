@@ -5,7 +5,7 @@ import os
 import re
 from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
-from .exception import MovieNotFound, SubtitleNotFound
+from .exception import MovieNotFound, SubtitleNotFound, ReleaseMissedLangError
 from .movie_parser import parse_release_name
 from .release.alice import ReleaseScoringAlice
 from .scenario import ScenarioManager
@@ -45,9 +45,12 @@ class BaseProvider(object):
 class SubFind(object):
     def __init__(self, languages, provider_names, force=False, min_movie_size=None):
         self.force = force
-        self.languages = languages
+        assert isinstance(languages, list) or isinstance(languages, set)
 
-        assert isinstance(languages, list)
+        if isinstance(languages, list):
+            self.languages = set(languages)
+        else:
+            self.languages = languages
 
         self.movie_extensions = ['mp4', 'mkv']
 
@@ -128,12 +131,20 @@ class SubFind(object):
         for release_name, save_dir in reqs:
             try:
                 subtitle_paths = []
+                found_langs = set()
                 for subtitle in self.scenario.execute(release_name, self.languages):
+                    found_langs.add(subtitle.lang)
+
                     sub_file = '%s.%s.%s' % (release_name, subtitle.lang, subtitle.extension)
                     sub_file = join(save_dir, sub_file)
                     subtitle_paths.append(sub_file)
                     write_file_content(sub_file, subtitle.content)
 
-                yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
+                missed_release_langs = self.languages.difference(found_langs)
+                if missed_release_langs:
+                    yield ReleaseMissedLangError(release_name=release_name, missed_langs=missed_langs,
+                                                 found_langs=found_langs)
+                else:
+                    yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
             except (MovieNotFound, SubtitleNotFound) as e:
                 yield e

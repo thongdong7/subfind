@@ -20,6 +20,14 @@ class SubtitleFileBroken(Exception):
         self.url = url
 
 
+class ReleaseMissedLangError(Exception):
+    def __init__(self, release_name, missed_langs, found_langs, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.found_langs = found_langs
+        self.release_name = release_name
+        self.missed_langs = missed_langs
+
+
 class HTTPConnectionError(Exception):
     def __repr__(self, url, return_code, body, *args, **kwargs):
         self.url = url
