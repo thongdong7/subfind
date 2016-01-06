@@ -14,6 +14,10 @@ def all_encodings():
 
 encodings = all_encodings()
 
+# Try to parse with utf-8 first
+encodings.remove('utf_8')
+encodings = ['utf_8'] + list(encodings)
+
 
 def get_file_content(path):
     if sys.version_info >= (3, 0):
@@ -24,4 +28,22 @@ def get_file_content(path):
             except Exception:
                 pass
     else:
-        return open(path).read()
+        content = open(path).read()
+        try:
+            return content.decode('utf-8')
+        except:
+            return content
+
+
+def write_file_content(path, content):
+    if sys.version_info >= (3, 0):
+        try:
+            open(path, 'wb').write(content)
+        except:
+            open(path, 'wb').write(content.encode('utf-8'))
+    else:
+        try:
+            open(path, 'wb').write(content.encode('utf-8'))
+        except:
+            open(path, 'wb').write(content)
+

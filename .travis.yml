@@ -2,18 +2,17 @@ language: python
 python:
   - "2.6"
   - "2.7"
-  - "3.2"
+#  - "3.2"
   - "3.3"
   - "3.4"
   - "3.5"
-  - "3.5-dev" # 3.5 development branch
-  - "nightly" # currently points to 3.6-dev
+  # Could not run on pypy due to lxml
+#  - "pypy"
 # command to install dependencies
-install:
-#  - "pip install -r requirements.txt"
-  - python setup.py install
+before_install:
+  - pip install lxml Distance==0.1.3
+  - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install importlib; fi
+
 # command to run tests
 script:
   - nosetests
-  # Test cli
-  - subfind -h

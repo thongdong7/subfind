@@ -1,139 +1,97 @@
-import importlib
 import logging
+
+import importlib
 import os
 import re
+from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
-
-from subfind_provider.exception import MovieNotFound, SubtitleNotFound, SubtitleFileBroken
-from subfind.movie.alice import MovieScoringAlice
-from subfind.subtitle.alice import SubtitleScoringAlice
-from subfind.tokenizer import tokenizer
-
-SUBSCENE_SEARCH_URL = "http://subscene.com/subtitles/title?%s"
+from .exception import MovieNotFound, SubtitleNotFound, ReleaseMissedLangError
+from .movie_parser import parse_release_name
+from .release.alice import ReleaseScoringAlice
+from .scenario import ScenarioManager
+from .utils import write_file_content
 
 
-class SubFinder(object):
-    def __init__(self, languages, force=False):
+class BaseProvider(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def get_sub_file(self, sub_page_url):
+        """
+        Get subtitle content of `sub_page_url`
+
+        :param sub_page_url:
+        :type sub_page_url:
+        :return:
+        :rtype: str
+        """
+        pass
+
+    @abstractmethod
+    def get_releases(self, release_name, langs):
+        """
+        Find all releases
+
+        :param release_name:
+        :type release_name:
+        :param langs:
+        :type langs:
+        :return: A dictionary which key is lang, value is `release_info`
+        :rtype:
+        """
+        return {}
+
+
+class SubFind(object):
+    def __init__(self, languages, provider_names, force=False, min_movie_size=None):
         self.force = force
-        self.languages = languages
+        assert isinstance(languages, list) or isinstance(languages, set)
 
-        assert isinstance(languages, list)
+        if isinstance(languages, list):
+            self.languages = set(languages)
+        else:
+            self.languages = languages
 
         self.movie_extensions = ['mp4', 'mkv']
-        self.movie_file_pattern = re.compile('^(.+)\.\w+$')
-        self.not_title_tokens = set(['x264', '1080p', '1080', 'hdrip'])
-        self.year_pattern = re.compile('^(19\d{2}|201\d)$')
-        self.movie_title_year_pattern = re.compile('^(.*)(\s+\((\d+)\))$')
 
-        # Ignore movie file which size < 500MB
-        self.min_movie_size = 500 * 1000 * 1000
+        # Credit to https://github.com/callmehiphop/subtitle-extensions/blob/master/subtitle-extensions.json
+        self.subtitle_extensions = [
+            "aqt",
+            "gsub",
+            "jss",
+            "sub",
+            "ttxt",
+            "pjs",
+            "psb",
+            "rt",
+            "smi",
+            "slt",
+            "ssf",
+            "srt",
+            "ssa",
+            "ass",
+            "usf",
+            "idx",
+            "vtt"
+        ]
+
+        self.movie_file_pattern = re.compile('^(.+)\.\w+$')
+
+        # Ignore movie file which size < min_movie_size
+        self.min_movie_size = min_movie_size
 
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.movie_scoring = MovieScoringAlice()
-        self.subtitle_scoring = SubtitleScoringAlice()
 
-        provider_name = 'subscene'
-        module_name = 'subfind_provider_%s' % provider_name
-        module = importlib.import_module(module_name)
-        class_name = '%sProvider' % provider_name.capitalize()
-        clazz = getattr(module, class_name)
-        self.data_provider = clazz()
+        scenario_map = {}
+        for provider_name in provider_names:
+            module_name = 'subfind_provider_%s' % provider_name
+            module = importlib.import_module(module_name)
+            class_name = '%sFactory' % provider_name.capitalize()
+            clazz = getattr(module, class_name)
+            data_provider = clazz()
+            scenario_map[provider_name] = data_provider.get_scenario()
 
-    def _search_movies(self, params):
-        movies = self.data_provider.search_movie(params)
-
-        self.movie_scoring.sort(params, movies)
-
-        if movies:
-            return movies[0]
-
-        return None
-
-    def _get_sub_file(self, sub_page_url):
-        return self.data_provider.get_sub_file(sub_page_url)
-
-    def _get_movie_subs(self, movie, params, lang):
-        subtitles = self.data_provider.get_movie_subs(movie, params, lang)
-
-        self.subtitle_scoring.sort(movie, params, subtitles)
-
-        # subtitles.sort(key=lambda sub: -sub['d'])
-
-        return subtitles
-
-    def _download_movie_subtitle(self, movie_file, save_dir):
-        self.logger.debug('Find subtitle for: %s' % movie_file)
-        # print 'movie file', movie_file
-        params = {
-            'movie_file': movie_file
-        }
-        tokens = tokenizer(movie_file)
-        # print 'tokens', tokens
-
-        params['movie_file_tokens'] = tokens
-
-        movie_title_tokens = []
-        for token in tokens:
-            if token in self.not_title_tokens:
-                break
-
-            if self.year_pattern.match(token):
-                params['year'] = int(token)
-                break
-
-            movie_title_tokens.append(token)
-
-        if not movie_title_tokens:
-            self.logger.debug('Not found movie title tokens to search')
-            raise MovieNotFound(file_name=movie_file, message='Not found movie title tokens to search')
-
-        movie_search_query = ' '.join(movie_title_tokens)
-        params['movie_title_search_query'] = movie_search_query
-
-        # print movie_search_query
-
-        movie = self._search_movies(params)
-        # print movie
-
-        if not movie:
-            raise MovieNotFound(file_name=movie_file, message='Not found movie')
-
-        not_found_langs = []
-        for lang in self.languages:
-            self.logger.debug('Find lang: %s' % lang)
-            subtitles = self._get_movie_subs(movie, params, lang)
-            if not subtitles:
-                self.logger.debug('Not found subtitle')
-                not_found_langs.append((lang, 'Not found subtitle'))
-                continue
-
-            found_sub = False
-            for subtitle in subtitles:
-                try:
-                    content = self._get_sub_file(subtitle['url'])
-                except SubtitleFileBroken:
-                    self.logger.warning('Broken sub: %s' % subtitle['url'])
-                    continue
-
-                if content:
-                    sub_file = '%s.%s.srt' % (movie_file, lang)
-                    sub_file = join(save_dir, sub_file)
-                    open(sub_file, 'w').write(content)
-                    self.logger.debug('Success')
-
-                    found_sub = True
-                    break
-                else:
-                    self.logger.debug('Could not get subtitle content')
-                    continue
-
-            if not found_sub:
-                not_found_langs.append((lang, 'Not found valid subtitle'))
-
-        if not_found_langs:
-            raise SubtitleNotFound(movie=movie, params=params, detail=not_found_langs)
-
-        return params
+        self.scenario = ScenarioManager(ReleaseScoringAlice(), scenario_map)
 
     def scan(self, movie_dir):
         reqs = []
@@ -141,27 +99,52 @@ class SubFinder(object):
             # print root_dir, child_folders, file_names
             for file_name in file_names:
                 for ext in self.movie_extensions:
-                    if file_name.endswith('.%s' % ext) and getsize(join(root_dir, file_name)) >= self.min_movie_size:
+                    if file_name.endswith('.%s' % ext):
+                        if self.min_movie_size and getsize(join(root_dir, file_name)) < self.min_movie_size:
+                            # Ignore small movie file
+                            continue
+
                         save_dir = root_dir
                         m = self.movie_file_pattern.search(file_name)
                         if not m:
                             continue
 
-                        movie_file = m.group(1)
+                        release_name = m.group(1)
 
                         # Detect if the sub exists
-                        missed_langs = []
-                        for lang in self.languages:
-                            sub_file = join(root_dir, '%s.%s.srt' % (movie_file, lang))
-                            if not exists(sub_file):
-                                missed_langs.append(lang)
+                        if not self.force:
+                            missed_langs = []
+                            for lang in self.languages:
+                                found = False
+                                for subtitle_extension in self.subtitle_extensions:
+                                    sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
+                                    if exists(sub_file):
+                                        found = True
+                                        break
+
+                                if not found:
+                                    missed_langs.append(lang)
 
                         if self.force or missed_langs:
-                            reqs.append((movie_file, save_dir))
+                            reqs.append((release_name, save_dir))
 
-        for movie_file, save_dir in reqs:
+        for release_name, save_dir in reqs:
             try:
-                ret = self._download_movie_subtitle(movie_file, save_dir)
-                yield ret
+                subtitle_paths = []
+                found_langs = set()
+                for subtitle in self.scenario.execute(release_name, self.languages):
+                    found_langs.add(subtitle.lang)
+
+                    sub_file = '%s.%s.%s' % (release_name, subtitle.lang, subtitle.extension)
+                    sub_file = join(save_dir, sub_file)
+                    subtitle_paths.append(sub_file)
+                    write_file_content(sub_file, subtitle.content)
+
+                missed_release_langs = self.languages.difference(found_langs)
+                if missed_release_langs:
+                    yield ReleaseMissedLangError(release_name=release_name, missed_langs=missed_langs,
+                                                 found_langs=found_langs)
+                else:
+                    yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
             except (MovieNotFound, SubtitleNotFound) as e:
                 yield e

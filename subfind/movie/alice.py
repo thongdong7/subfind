@@ -33,7 +33,7 @@ def cmp_to_key(mycmp):
 
 class MovieScoringAlice(MovieScoring):
     def sort(self, params, movies):
-        query = params['movie_title_search_query']
+        query = params['title_query']
 
         for movie in movies:
             movie['d'] = distance.levenshtein(query, movie['title'].lower()),
