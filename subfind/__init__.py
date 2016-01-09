@@ -175,7 +175,10 @@ class SubFind(object):
                 # else:
                 #     yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
 
-                self.event_manager.notify(EVENT_RELEASE_COMPLETED, release_name)
+                self.event_manager.notify(EVENT_RELEASE_COMPLETED, {
+                    'release_name': release_name,
+                    'subtitle_paths': subtitle_paths,
+                })
             except MovieNotFound as e:
                 self.event_manager.notify(EVENT_RELEASE_MOVIE_NOT_FOUND, e)
             except SubtitleNotFound as e:
