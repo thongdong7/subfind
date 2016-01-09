@@ -16,8 +16,30 @@ Supported provider:
 
 # Usage
 
-    $ subfind -d <movie_folder> -l <languages>
+    $ subfind scan -d <movie_folder> -l <languages>
 
 Example:
     
-    $ subfind -d /movie/folder -l vi,en
+    $ subfind scan -d /movie/folder -l vi,en
+
+Detail:
+
+```
+$ subfind scan -h
+```
+
+```
+Usage: cli.py scan [OPTIONS]
+
+  Scan movie directory
+
+Options:
+  -d, --movie-dir TEXT      Movie directory  [required]
+  -l, --lang TEXT           Languages. Multiple languages separated by comma
+                            (,). E.g.: en,vi  [required]
+  -p, --providers TEXT      Subtitle provider. Default: opensubtitles,subscene
+  -f, --force               Force to override the existed subtitles
+  -v, --verbose             Verbose
+  --min-movie-size INTEGER  Min movie size. Default: 500MB
+  --help                    Show this message and exit.
+```
