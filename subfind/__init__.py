@@ -11,6 +11,13 @@ from .release.alice import ReleaseScoringAlice
 from .scenario import ScenarioManager
 from .utils import write_file_content
 
+EVENT_SCAN_RELEASE = 'SCAN_RELEASE'
+EVENT_RELEASE_FOUND_LANG = 'RELEASE_FOUND_LANG'
+EVENT_RELEASE_MISSED_LANG = 'RELEASE_MISSED_LANG'
+EVENT_RELEASE_COMPLETED = 'RELEASE_COMPLETED'
+EVENT_RELEASE_MOVIE_NOT_FOUND = 'RELEASE_MOVIE_NOT_FOUND'
+EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
+
 
 class BaseProvider(object):
     __metaclass__ = ABCMeta
@@ -43,7 +50,23 @@ class BaseProvider(object):
 
 
 class SubFind(object):
-    def __init__(self, languages, provider_names, force=False, min_movie_size=None):
+    def __init__(self, event_manager, languages, provider_names, force=False, min_movie_size=None):
+        """
+
+        :param event_manager:
+        :type event_manager: subfind.event.EventManager
+        :param languages:
+        :type languages:
+        :param provider_names:
+        :type provider_names:
+        :param force:
+        :type force:
+        :param min_movie_size:
+        :type min_movie_size:
+        :return:
+        :rtype:
+        """
+        self.event_manager = event_manager
         self.force = force
         assert isinstance(languages, list) or isinstance(languages, set)
 
@@ -132,6 +155,8 @@ class SubFind(object):
             try:
                 subtitle_paths = []
                 found_langs = set()
+                self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name,))
+
                 for subtitle in self.scenario.execute(release_name, self.languages):
                     found_langs.add(subtitle.lang)
 
@@ -140,11 +165,18 @@ class SubFind(object):
                     subtitle_paths.append(sub_file)
                     write_file_content(sub_file, subtitle.content)
 
+                    self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, subtitle))
+
                 missed_release_langs = self.languages.difference(found_langs)
                 if missed_release_langs:
-                    yield ReleaseMissedLangError(release_name=release_name, missed_langs=missed_langs,
-                                                 found_langs=found_langs)
-                else:
-                    yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
-            except (MovieNotFound, SubtitleNotFound) as e:
-                yield e
+                    self.event_manager.notify(EVENT_RELEASE_MISSED_LANG, (release_name, missed_release_langs))
+                    # yield ReleaseMissedLangError(release_name=release_name, missed_langs=missed_langs,
+                    #                              found_langs=found_langs)
+                # else:
+                #     yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
+
+                self.event_manager.notify(EVENT_RELEASE_COMPLETED, release_name)
+            except MovieNotFound as e:
+                self.event_manager.notify(EVENT_RELEASE_MOVIE_NOT_FOUND, e)
+            except SubtitleNotFound as e:
+                self.event_manager.notify(EVENT_RELEASE_SUBTITLE_NOT_FOUND, e)
