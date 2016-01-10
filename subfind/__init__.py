@@ -106,42 +106,42 @@ class SubFind(object):
 
         self.scenario = ScenarioManager(ReleaseScoringAlice(), scenario_map)
 
-    def scan(self, movie_dir):
+    def scan(self, movie_dirs):
         reqs = []
-        for root_dir, child_folders, file_names in os.walk(movie_dir):
-            # print root_dir, child_folders, file_names
-            for file_name in file_names:
-                for ext in self.movie_extensions:
-                    if file_name.endswith('.%s' % ext):
-                        if self.min_movie_size and getsize(join(root_dir, file_name)) < self.min_movie_size:
-                            # Ignore small movie file
-                            continue
+        for movie_dir in movie_dirs:
+            for root_dir, child_folders, file_names in os.walk(movie_dir):
+                for file_name in file_names:
+                    for ext in self.movie_extensions:
+                        if file_name.endswith('.%s' % ext):
+                            if self.min_movie_size and getsize(join(root_dir, file_name)) < self.min_movie_size:
+                                # Ignore small movie file
+                                continue
 
-                        save_dir = root_dir
-                        m = self.movie_file_pattern.search(file_name)
-                        if not m:
-                            continue
+                            save_dir = root_dir
+                            m = self.movie_file_pattern.search(file_name)
+                            if not m:
+                                continue
 
-                        release_name = m.group(1)
+                            release_name = m.group(1)
 
-                        # Detect if the sub exists
-                        if not self.force:
-                            missed_langs = []
-                            for lang in self.languages:
-                                found = False
-                                for subtitle_extension in subtitle_extensions:
-                                    sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
-                                    if exists(sub_file):
-                                        found = True
-                                        break
+                            # Detect if the sub exists
+                            if not self.force:
+                                missed_langs = []
+                                for lang in self.languages:
+                                    found = False
+                                    for subtitle_extension in subtitle_extensions:
+                                        sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
+                                        if exists(sub_file):
+                                            found = True
+                                            break
 
-                                if not found:
-                                    missed_langs.append(lang)
+                                    if not found:
+                                        missed_langs.append(lang)
 
-                        if self.force:
-                            reqs.append((release_name, save_dir, self.languages))
-                        elif missed_langs:
-                            reqs.append((release_name, save_dir, missed_langs))
+                            if self.force:
+                                reqs.append((release_name, save_dir, self.languages))
+                            elif missed_langs:
+                                reqs.append((release_name, save_dir, missed_langs))
 
         for release_name, save_dir, search_langs in reqs:
             try:
