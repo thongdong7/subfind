@@ -1,3 +1,4 @@
+# Credit to https://github.com/callmehiphop/subtitle-extensions/blob/master/subtitle-extensions.json
 subtitle_extensions = [
     "aqt",
     "gsub",

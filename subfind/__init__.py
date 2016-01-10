@@ -5,6 +5,7 @@ import os
 import re
 from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
+from subfind.utils.subtitle import subtitle_extensions
 from .exception import MovieNotFound, SubtitleNotFound, ReleaseMissedLangError
 from .movie_parser import parse_release_name
 from .release.alice import ReleaseScoringAlice
@@ -13,7 +14,6 @@ from .utils import write_file_content
 
 EVENT_SCAN_RELEASE = 'SCAN_RELEASE'
 EVENT_RELEASE_FOUND_LANG = 'RELEASE_FOUND_LANG'
-EVENT_RELEASE_MISSED_LANG = 'RELEASE_MISSED_LANG'
 EVENT_RELEASE_COMPLETED = 'RELEASE_COMPLETED'
 EVENT_RELEASE_MOVIE_NOT_FOUND = 'RELEASE_MOVIE_NOT_FOUND'
 EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
@@ -77,27 +77,6 @@ class SubFind(object):
 
         self.movie_extensions = ['mp4', 'mkv']
 
-        # Credit to https://github.com/callmehiphop/subtitle-extensions/blob/master/subtitle-extensions.json
-        self.subtitle_extensions = [
-            "aqt",
-            "gsub",
-            "jss",
-            "sub",
-            "ttxt",
-            "pjs",
-            "psb",
-            "rt",
-            "smi",
-            "slt",
-            "ssf",
-            "srt",
-            "ssa",
-            "ass",
-            "usf",
-            "idx",
-            "vtt"
-        ]
-
         self.movie_file_pattern = re.compile('^(.+)\.\w+$')
 
         # Ignore movie file which size < min_movie_size
@@ -139,7 +118,7 @@ class SubFind(object):
                             missed_langs = []
                             for lang in self.languages:
                                 found = False
-                                for subtitle_extension in self.subtitle_extensions:
+                                for subtitle_extension in subtitle_extensions:
                                     sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
                                     if exists(sub_file):
                                         found = True
@@ -148,16 +127,18 @@ class SubFind(object):
                                 if not found:
                                     missed_langs.append(lang)
 
-                        if self.force or missed_langs:
-                            reqs.append((release_name, save_dir))
+                        if self.force:
+                            reqs.append((release_name, save_dir, self.languages))
+                        elif missed_langs:
+                            reqs.append((release_name, save_dir, missed_langs))
 
-        for release_name, save_dir in reqs:
+        for release_name, save_dir, search_langs in reqs:
             try:
                 subtitle_paths = []
                 found_langs = set()
-                self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name,))
+                self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name, search_langs))
 
-                for subtitle in self.scenario.execute(release_name, self.languages):
+                for subtitle in self.scenario.execute(release_name, search_langs):
                     found_langs.add(subtitle.lang)
 
                     sub_file = '%s.%s.%s' % (release_name, subtitle.lang, subtitle.extension)
@@ -166,14 +147,6 @@ class SubFind(object):
                     write_file_content(sub_file, subtitle.content)
 
                     self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, subtitle))
-
-                missed_release_langs = self.languages.difference(found_langs)
-                if missed_release_langs:
-                    self.event_manager.notify(EVENT_RELEASE_MISSED_LANG, (release_name, missed_release_langs))
-                    # yield ReleaseMissedLangError(release_name=release_name, missed_langs=missed_langs,
-                    #                              found_langs=found_langs)
-                # else:
-                #     yield {'release_name': release_name, 'subtitle_paths': subtitle_paths}
 
                 self.event_manager.notify(EVENT_RELEASE_COMPLETED, {
                     'release_name': release_name,
