@@ -3,8 +3,10 @@ import logging
 import importlib
 import os
 import re
+import shutil
 from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
+from subfind.model import Subtitle
 from subfind.utils.subtitle import subtitle_extensions
 from .exception import MovieNotFound, SubtitleNotFound, ReleaseMissedLangError
 from .movie_parser import parse_release_name
@@ -23,12 +25,15 @@ class BaseProvider(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def get_sub_file(self, sub_page_url):
+    def download_sub(self, release, target_folder):
         """
-        Get subtitle content of `sub_page_url`
+        Download subtitle of `release` and save to target folder. Name of subtitle will base on the release name,
+         language and subtitle file format.
 
-        :param sub_page_url:
-        :type sub_page_url:
+        :param release:
+        :type release:
+        :param target_folder:
+        :type target_folder:
         :return:
         :rtype: str
         """
@@ -47,6 +52,12 @@ class BaseProvider(object):
         :rtype:
         """
         return {}
+
+    def _save_sub(self, release, sub_file, target_folder, sub_extension):
+        desc_sub_file = join(target_folder, '%s.%s.%s' % (release['name'], release['lang'], sub_extension))
+
+        shutil.copyfile(sub_file, desc_sub_file)
+        return Subtitle(path=desc_sub_file, lang=release['lang'], extension=sub_extension)
 
 
 class SubFind(object):
@@ -138,13 +149,10 @@ class SubFind(object):
                 found_langs = set()
                 self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name, search_langs))
 
-                for subtitle in self.scenario.execute(release_name, search_langs):
+                for subtitle in self.scenario.execute(release_name, search_langs, save_dir):
                     found_langs.add(subtitle.lang)
 
-                    sub_file = '%s.%s.%s' % (release_name, subtitle.lang, subtitle.extension)
-                    sub_file = join(save_dir, sub_file)
-                    subtitle_paths.append(sub_file)
-                    write_file_content(sub_file, subtitle.content)
+                    subtitle_paths.append(subtitle.path)
 
                     self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, subtitle))
 
