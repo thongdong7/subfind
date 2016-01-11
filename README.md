@@ -1,5 +1,6 @@
 # subfind
 
+[![PyPI version](https://badge.fury.io/py/subfind.svg)](https://badge.fury.io/py/subfind)
 [![Build Status](https://travis-ci.org/thongdong7/subfind.svg?branch=master)](https://travis-ci.org/thongdong7/subfind)
 
 Crawl subtitle base on file name in the movie folder.
