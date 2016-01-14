@@ -26,9 +26,10 @@ class ReleaseMatchingTestCase(unittest.TestCase):
                 self.assertTrue(False, msg="Expect ReleaseNotMatchError exception will be raised")
             except ReleaseNotMatchError as e:
                 self.assertEqual(error_code, e.code)
-            except Exception as e:
-                self.assertTrue(False,
-                                msg="Only expected ReleaseNotMatchError exception. Receive '%s'" % e.__class__.__name__)
+            # except Exception as e1:
+            #     raise e1
+            #     self.assertTrue(False,
+            #                     msg="Only expected ReleaseNotMatchError exception. Receive '%s'" % e.__class__.__name__)
 
     def test_02(self):
         match_testcases = [
