@@ -42,6 +42,8 @@ def parse_release_name(release_name):
     if not movie_title_tokens:
         raise MovieNotFound(release_name=release_name, message='Not found movie title tokens to search')
 
+    ret['title_tokens'] = movie_title_tokens
+
     movie_search_query = ' '.join(movie_title_tokens)
     ret['title_query'] = movie_search_query
 
