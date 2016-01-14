@@ -30,6 +30,33 @@ class ReleaseMatchingTestCase(unittest.TestCase):
                 self.assertTrue(False,
                                 msg="Only expected ReleaseNotMatchError exception. Receive '%s'" % e.__class__.__name__)
 
+    def test_02(self):
+        match_testcases = [
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.of.Thrones.S01E01.Winter.Is.Coming.720p.BluRay.DTS.x264-HDC'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.Of.Thrones.S01E01.Winter.Is.Coming.HDTV.XviD-FEVER.HI'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.Of.Thrones.S01E01.Winter.Is.Coming.HDTV.XviD-FEVER'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.Of.Thrones.S01E01.Winter.Is.Coming.720p.HDTV.x264-CTU.HI'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.Of.Thrones.S01E01.Winter.Is.Coming.720p.HDTV.x264-CTU'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.Of.Thrones.S01E01.Winter.Is.Coming.720p.HDTV.x264-CTU'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.of.Thrones.S01E01.Winter.Is.Coming.1080i.HDTV.DD5.1.MPEG2-CtrlHD'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game.Of.Thrones.S01E01.Winter.Is.Coming.HDTV.XviD-FEVER'),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'Game Of Thrones S01E01 Winter Is Coming'),
+        ]
+
+        for release_name1, release_name2 in match_testcases:
+            release1 = parse_release_name(release_name1)
+            release2 = parse_release_name(release_name2)
+            try:
+                check_match_release_info(release1, release2)
+            except Exception as e:
+                print(release_name1)
+                print(release_name2)
+                # self.assertTrue(False,
+                #                 msg="Don't expect to have exception. Receive '{0}'".format(
+                #                     e.__class__.__name__,
+                #                 ))
+                raise e
+
 
 if __name__ == '__main__':
     unittest.main()
