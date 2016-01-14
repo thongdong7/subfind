@@ -28,6 +28,16 @@ class ReleaseMissedLangError(Exception):
         self.missed_langs = missed_langs
 
 
+RELEASE_NOT_MATCH_ERROR__SEASONEPS = 100
+RELEASE_NOT_MATCH_ERROR__TITLE = 101
+
+
+class ReleaseNotMatchError(Exception):
+    def __init__(self, code, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.code = code
+
+
 class HTTPConnectionError(Exception):
     def __repr__(self, url, return_code, body, *args, **kwargs):
         self.url = url
