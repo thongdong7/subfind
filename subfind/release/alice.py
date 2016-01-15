@@ -39,11 +39,8 @@ class ReleaseScoringAlice(ReleaseScoring):
             release_info = parse_release_name(release['name'])
             release.update(release_info)
 
-            # d =
-            # print(release)
-            # raise SystemExit
-
-            release['d'] = len(release_tokens.intersection(release['release_tokens'])) * 100 - len(release['release_tokens'])
+            # Jaccard Index - https://en.wikipedia.org/wiki/Jaccard_index
+            release['d'] = len(release_tokens.intersection(release['release_tokens'])) / len(release_tokens.union(release['release_tokens']))
 
         def movie_cmp(a, b):
             if a['title_query'] != b['title_query']:
@@ -53,10 +50,10 @@ class ReleaseScoringAlice(ReleaseScoring):
                 elif b['title_query'] == raw_release_info['title_query']:
                     return 1
 
-            if a['d'] < b['d']:
-                # smaller distances is better
+            if a['d'] > b['d']:
+                # larger distances is better
                 return -1
-            elif a['d'] > b['d']:
+            elif a['d'] < b['d']:
                 return 1
 
             if 'year' in a and 'year' in b:
