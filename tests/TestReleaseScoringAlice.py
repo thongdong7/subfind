@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from subfind.release.alice import ReleaseScoringAlice
 
 __author__ = 'hiepsimu'
@@ -25,6 +27,28 @@ class ReleaseScoringAliceTestCase(unittest.TestCase):
         scoring.sort(input_release_name, found_releases)
 
         self.assertEqual('Survivor.2015.1080p.BluRay.H264.AAC-RARBG', found_releases[0]['name'])
+
+    def test_02(self):
+        """
+        Test 100% match
+
+        :return:
+        :rtype:
+        """
+        scoring = ReleaseScoringAlice()
+        input_release_name = '400.Days.2015.1080p.BluRay.H264.AAC-RARBG'
+
+        found_releases = [
+            {'name': '400.Days.2015.1080p.BluRay.H264.AAC-RARBG'},
+            {'name': '400.Days.2015.720p.BluRay.H264.AAC-RARBG'},
+            {'name': '400.Days.2015.BRRip.XviD.AC3-RARBG'},
+            {'name': '400.Days.2015.1080p.BluRay.H264.AAC-RARBG'},
+            {'name': '400.Days.2015.720p.BluRay.x264.[YTS.AG]'},
+        ]
+        scoring.sort(input_release_name, found_releases)
+        # pprint(found_releases)
+
+        self.assertEqual('400.Days.2015.1080p.BluRay.H264.AAC-RARBG', found_releases[0]['name'])
 
 if __name__ == '__main__':
     unittest.main()
