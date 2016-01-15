@@ -14,8 +14,8 @@ class BaseScenario(object):
     def get_releases(self, release_name, langs):
         return self.provider.get_releases(release_name, langs)
 
-    def download_subtitle(self, release, target_folder):
-        return self.provider.download_sub(release, target_folder)
+    def download_subtitle(self, release, target_folder, release_name):
+        return self.provider.download_sub(release, target_folder, release_name)
 
 
 
@@ -94,7 +94,7 @@ class ScenarioManager(object):
             release = releases[0]
             provider_name = release['provider']
 
-            subtitle = self.scenario_map[provider_name].download_subtitle(release, target_folder)
+            subtitle = self.scenario_map[provider_name].download_subtitle(release, target_folder, release_name)
             if subtitle:
                 yield subtitle
 

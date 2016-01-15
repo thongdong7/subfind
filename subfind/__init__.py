@@ -7,7 +7,7 @@ import shutil
 from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
 from subfind.model import Subtitle
-from subfind.utils.subtitle import subtitle_extensions
+from subfind.utils.subtitle import subtitle_extensions, remove_subtitle
 from .exception import MovieNotFound, SubtitleNotFound, ReleaseMissedLangError
 from .movie_parser import parse_release_name
 from .release.alice import ReleaseScoringAlice
@@ -25,7 +25,7 @@ class BaseProvider(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def download_sub(self, release, target_folder):
+    def download_sub(self, release, target_folder, release_name):
         """
         Download subtitle of `release` and save to target folder. Name of subtitle will base on the release name,
          language and subtitle file format.
@@ -34,6 +34,8 @@ class BaseProvider(object):
         :type release:
         :param target_folder:
         :type target_folder:
+        :param release_name:
+        :type release_name:
         :return:
         :rtype: str
         """
@@ -53,15 +55,15 @@ class BaseProvider(object):
         """
         return {}
 
-    def _save_sub(self, release, sub_file, target_folder, sub_extension):
-        desc_sub_file = join(target_folder, '%s.%s.%s' % (release['name'], release['lang'], sub_extension))
+    def _save_sub(self, release, sub_file, target_folder, release_name, sub_extension):
+        desc_sub_file = join(target_folder, '%s.%s.%s' % (release_name, release['lang'], sub_extension))
 
         shutil.copyfile(sub_file, desc_sub_file)
         return Subtitle(path=desc_sub_file, lang=release['lang'], extension=sub_extension)
 
 
 class SubFind(object):
-    def __init__(self, event_manager, languages, provider_names, force=False, min_movie_size=None):
+    def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None):
         """
 
         :param event_manager:
@@ -72,11 +74,14 @@ class SubFind(object):
         :type provider_names:
         :param force:
         :type force:
+        :param remove:
+        :type remove:
         :param min_movie_size:
         :type min_movie_size:
         :return:
         :rtype:
         """
+        self.remove = remove
         self.event_manager = event_manager
         self.force = force
         assert isinstance(languages, list) or isinstance(languages, set)
@@ -155,6 +160,12 @@ class SubFind(object):
                     subtitle_paths.append(subtitle.path)
 
                     self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, subtitle))
+
+                if self.force and self.remove:
+                    # Remove subtitle of missed lang
+                    not_found_langs = set(search_langs).difference(found_langs)
+                    for lang in not_found_langs:
+                        remove_subtitle(save_dir, release_name, lang)
 
                 self.event_manager.notify(EVENT_RELEASE_COMPLETED, {
                     'release_name': release_name,
