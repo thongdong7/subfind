@@ -22,10 +22,20 @@ class SubtitleFileBroken(Exception):
 
 class ReleaseMissedLangError(Exception):
     def __init__(self, release_name, missed_langs, found_langs, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(ReleaseMissedLangError, self).__init__(*args, **kwargs)
         self.found_langs = found_langs
         self.release_name = release_name
         self.missed_langs = missed_langs
+
+
+RELEASE_NOT_MATCH_ERROR__SEASONEPS = 100
+RELEASE_NOT_MATCH_ERROR__TITLE = 101
+
+
+class ReleaseNotMatchError(Exception):
+    def __init__(self, code, *args, **kwargs):
+        super(ReleaseNotMatchError, self).__init__(*args, **kwargs)
+        self.code = code
 
 
 class HTTPConnectionError(Exception):

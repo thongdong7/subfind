@@ -1,5 +1,5 @@
 class Subtitle(object):
-    def __init__(self, lang, content, extension='srt'):
+    def __init__(self, path, lang, extension='srt'):
+        self.path = path
         self.lang = lang
-        self.content = content
         self.extension = extension

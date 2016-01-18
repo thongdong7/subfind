@@ -5,7 +5,7 @@ from subfind.tokenizer import tokenizer
 
 movie_extensions = ['mp4', 'mkv']
 movie_file_pattern = re.compile('^(.+)\.\w+$')
-not_title_tokens = set(['x264', '1080p', '1080', 'hdrip'])
+not_title_tokens = set(['x264', '1080p', '1080', '1080i', '720p', 'hdrip', 'hdtv'])
 year_pattern = re.compile('^(19\d{2}|201\d)$')
 movie_title_year_pattern = re.compile('^(.*)(\s+\((\d+)\))$')
 season_ep_token_pattern = re.compile('^S\d+E\d+$', re.IGNORECASE)
@@ -41,6 +41,8 @@ def parse_release_name(release_name):
 
     if not movie_title_tokens:
         raise MovieNotFound(release_name=release_name, message='Not found movie title tokens to search')
+
+    ret['title_tokens'] = movie_title_tokens
 
     movie_search_query = ' '.join(movie_title_tokens)
     ret['title_query'] = movie_search_query

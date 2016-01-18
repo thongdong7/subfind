@@ -14,8 +14,8 @@ class BaseScenario(object):
     def get_releases(self, release_name, langs):
         return self.provider.get_releases(release_name, langs)
 
-    def download_subtitle(self, release):
-        return self.provider.get_sub_file(release)
+    def download_subtitle(self, release, target_folder, release_name):
+        return self.provider.download_sub(release, target_folder, release_name)
 
 
 
@@ -42,7 +42,7 @@ class Scenario1(BaseScenario):
 
         self.release_scoring = release_scoring
 
-    def execute(self, release_name, langs):
+    def execute(self, release_name, langs, target_folder):
         releases_by_lang = self.provider.get_releases(release_name, langs)
 
         for lang in releases_by_lang:
@@ -54,8 +54,8 @@ class Scenario1(BaseScenario):
 
             release = releases[0]
 
-            subtitle = self.provider.get_sub_file(release)
-            if subtitle and subtitle.content:
+            subtitle = self.provider.download_sub(release, target_folder)
+            if subtitle:
                 yield subtitle
 
 
@@ -64,7 +64,7 @@ class ScenarioManager(object):
         self.scenario_map = scenario_map
         self.release_scoring = release_scoring
 
-    def execute(self, release_name, langs):
+    def execute(self, release_name, langs, target_folder):
         releases_by_lang = {}
         for provider_name in self.scenario_map:
             scenario = self.scenario_map[provider_name]
@@ -94,8 +94,8 @@ class ScenarioManager(object):
             release = releases[0]
             provider_name = release['provider']
 
-            subtitle = self.scenario_map[provider_name].download_subtitle(release)
-            if subtitle and subtitle.content:
+            subtitle = self.scenario_map[provider_name].download_subtitle(release, target_folder, release_name)
+            if subtitle:
                 yield subtitle
 
 
@@ -113,5 +113,5 @@ class Scenario2(BaseScenario):
         self.release_scoring = release_scoring
         self.provider = provider
 
-    def execute(self, release_name, langs):
+    def execute(self, release_name, langs, target_folder):
         raise NotImplemented

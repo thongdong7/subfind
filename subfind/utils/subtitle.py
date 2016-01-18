@@ -1,5 +1,9 @@
 # Credit to https://github.com/callmehiphop/subtitle-extensions/blob/master/subtitle-extensions.json
-subtitle_extensions = [
+import os
+
+from os.path import join, exists
+
+subtitle_extensions = set([
     "aqt",
     "gsub",
     "jss",
@@ -17,7 +21,7 @@ subtitle_extensions = [
     "usf",
     "idx",
     "vtt"
-]
+])
 
 
 def get_subtitle_ext(path):
@@ -29,3 +33,10 @@ def get_subtitle_ext(path):
             return ext
 
     return None
+
+
+def remove_subtitle(path, release_name, lang):
+    for ext in subtitle_extensions:
+        sub_file = join(path, '%s.%s.%s' % (release_name, lang, ext))
+        if exists(sub_file):
+            os.unlink(sub_file)
