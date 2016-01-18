@@ -73,9 +73,7 @@ subfind scan-config
 
 Example `subfind.yml`:
 
-```
-#!yaml
-
+```yaml
 src: [/my/movie/folder, /my/tv-shows/folder]
 lang: [vi,en]
 # Force to override the existed subtitle. Default is false
