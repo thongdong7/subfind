@@ -35,7 +35,7 @@ subfind scan -d /movie/folder -l vi -l en
 For more detail
 
 ```
-$ subfind scan -h
+subfind scan -h
 ```
 
 ```
