@@ -75,6 +75,7 @@ Example `subfind.yml`:
 
 ```
 #!yaml
+
 src: [/my/movie/folder, /my/tv-shows/folder]
 lang: [vi,en]
 # Force to override the existed subtitle. Default is false
