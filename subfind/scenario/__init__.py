@@ -86,7 +86,8 @@ class ScenarioManager(object):
 
                         releases_by_lang[lang].append(release)
             except Exception as e:
-                self.logger.exception(e)
+                self.logger.warning(str(e))
+                continue
 
         for lang in releases_by_lang:
             releases = releases_by_lang[lang]
