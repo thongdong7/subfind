@@ -82,3 +82,9 @@ lang: [vi,en]
 #remove: false
 #providers: [opensubtitles, subscene]
 ```
+
+# Development
+
+```
+python setup.py bdist_wheel --universal upload
+```
