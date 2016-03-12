@@ -1,4 +1,7 @@
+import logging
+
 from abc import ABCMeta, abstractmethod
+from subfind.exception import SubtitleFileBroken
 
 
 class BaseScenario(object):
@@ -64,21 +67,26 @@ class ScenarioManager(object):
         self.scenario_map = scenario_map
         self.release_scoring = release_scoring
 
+        self.logger = logging.getLogger(self.__class__.__name__)
+
     def execute(self, release_name, langs, target_folder):
         releases_by_lang = {}
         for provider_name in self.scenario_map:
             scenario = self.scenario_map[provider_name]
 
-            tmp_releases_by_lang = scenario.get_releases(release_name, langs)
-            for lang in tmp_releases_by_lang:
-                if lang not in releases_by_lang:
-                    releases_by_lang[lang] = []
+            try:
+                tmp_releases_by_lang = scenario.get_releases(release_name, langs)
+                for lang in tmp_releases_by_lang:
+                    if lang not in releases_by_lang:
+                        releases_by_lang[lang] = []
 
-                for release in tmp_releases_by_lang[lang]:
-                    # Add provider name to this release so we could use get load the subtitle
-                    release['provider'] = provider_name
+                    for release in tmp_releases_by_lang[lang]:
+                        # Add provider name to this release so we could use get load the subtitle
+                        release['provider'] = provider_name
 
-                    releases_by_lang[lang].append(release)
+                        releases_by_lang[lang].append(release)
+            except Exception as e:
+                self.logger.exception(e)
 
         for lang in releases_by_lang:
             releases = releases_by_lang[lang]
@@ -91,12 +99,16 @@ class ScenarioManager(object):
             # pprint(releases)
             # raise SystemExit
 
-            release = releases[0]
-            provider_name = release['provider']
+            for release in releases:
+                provider_name = release['provider']
 
-            subtitle = self.scenario_map[provider_name].download_subtitle(release, target_folder, release_name)
-            if subtitle:
-                yield subtitle
+                try:
+                    subtitle = self.scenario_map[provider_name].download_subtitle(release, target_folder, release_name)
+                    if subtitle:
+                        yield subtitle
+                        break
+                except SubtitleFileBroken:
+                    continue
 
 
 class Scenario2(BaseScenario):
