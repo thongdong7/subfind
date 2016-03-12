@@ -50,5 +50,25 @@ class ReleaseScoringAliceTestCase(unittest.TestCase):
 
         self.assertEqual('400.Days.2015.1080p.BluRay.H264.AAC-RARBG', found_releases[0]['name'])
 
+    def test_03(self):
+        """
+        Test release team match
+
+        :return:
+        :rtype:
+        """
+        scoring = ReleaseScoringAlice()
+        input_release_name = 'Lost.in.the.Sun.2015.1080p.BluRay.x264.AAC-ETRG'
+
+        found_releases = [
+            {'name': 'Lost.in.the.Sun.2015.WEB-DL.XviD.MP3-RARBG'},
+            {'name': 'Lost.in.the.Sun.2015.WEB-DL.x264-RARBG.mp4'},
+            {'name': 'Lost.in.the.Sun.2015.HDRip.XviD-ETRG'},
+        ]
+        scoring.sort(input_release_name, found_releases)
+        # pprint(found_releases)
+
+        self.assertEqual('Lost.in.the.Sun.2015.HDRip.XviD-ETRG', found_releases[0]['name'])
+
 if __name__ == '__main__':
     unittest.main()

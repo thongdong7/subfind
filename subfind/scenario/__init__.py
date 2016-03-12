@@ -54,7 +54,7 @@ class Scenario1(BaseScenario):
 
             release = releases[0]
 
-            subtitle = self.provider.download_sub(release, target_folder)
+            subtitle = self.provider.download_sub(release, target_folder, release_name)
             if subtitle:
                 yield subtitle
 

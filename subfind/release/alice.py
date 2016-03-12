@@ -40,7 +40,7 @@ class ReleaseScoringAlice(ReleaseScoring):
             release.update(release_info)
 
             # Jaccard Index - https://en.wikipedia.org/wiki/Jaccard_index
-            release['d'] = len(release_tokens.intersection(release['release_tokens'])) / len(release_tokens.union(release['release_tokens']))
+            release['d'] = float(len(release_tokens.intersection(release['release_tokens']))) / len(release_tokens.union(release['release_tokens']))
 
         def movie_cmp(a, b):
             if a['title_query'] != b['title_query']:
