@@ -1,6 +1,5 @@
-import distance
-
 from subfind.movie import MovieScoring
+from subfind.tokenizer import tokenizer
 
 
 def cmp_to_key(mycmp):
@@ -33,10 +32,14 @@ def cmp_to_key(mycmp):
 
 class MovieScoringAlice(MovieScoring):
     def sort(self, params, movies):
-        query = params['title_query']
+        query_tokens = set(params['title_tokens'])
 
         for movie in movies:
-            movie['d'] = distance.levenshtein(query, movie['title'].lower()),
+            # movie['d'] = distance.levenshtein(query, movie['title'].lower()),
+            # Switch to jaccard index because it's more accuracy.
+            # Failed case of distance.levenshtein() is 'men in black ii' vs 'men in black iii'
+            movie_title_tokens = set(tokenizer(movie['title']))
+            movie['d'] = 1 - float(len(query_tokens.intersection(movie_title_tokens))) / len(query_tokens.union(movie_title_tokens))
 
         def movie_cmp(a, b):
             if a['d'] < b['d']:
