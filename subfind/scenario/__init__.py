@@ -17,9 +17,8 @@ class BaseScenario(object):
     def get_releases(self, release_name, langs):
         return self.provider.get_releases(release_name, langs)
 
-    def download_subtitle(self, release, target_folder, release_name):
-        return self.provider.download_sub(release, target_folder, release_name)
-
+    def get_sub(self, release):
+        return self.provider.get_sub(release)
 
 
 class BaseScenarioFactory(object):
@@ -45,7 +44,7 @@ class Scenario1(BaseScenario):
 
         self.release_scoring = release_scoring
 
-    def execute(self, release_name, langs, target_folder):
+    def execute(self, release_name, langs):
         releases_by_lang = self.provider.get_releases(release_name, langs)
 
         for lang in releases_by_lang:
@@ -57,7 +56,7 @@ class Scenario1(BaseScenario):
 
             release = releases[0]
 
-            subtitle = self.provider.download_sub(release, target_folder, release_name)
+            subtitle = self.provider.get_sub(release)
             if subtitle:
                 yield subtitle
 
@@ -69,7 +68,7 @@ class ScenarioManager(object):
 
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def execute(self, release_name, langs, target_folder):
+    def execute(self, release_name, langs, max_sub=1):
         releases_by_lang = {}
         for provider_name in self.scenario_map:
             scenario = self.scenario_map[provider_name]
@@ -89,27 +88,37 @@ class ScenarioManager(object):
                 self.logger.warning(str(e))
                 continue
 
+        ret = {}
         for lang in releases_by_lang:
-            releases = releases_by_lang[lang]
-            if not releases:
+            subtitle_releases = releases_by_lang[lang]
+            if not subtitle_releases:
                 continue
             # pprint(releases)
 
-            self.release_scoring.sort(release_name, releases)
+            self.release_scoring.sort(release_name, subtitle_releases)
             # print('after scoring')
             # pprint(releases)
             # raise SystemExit
+            # print(subtitle_releases)
 
-            for release in releases:
-                provider_name = release['provider']
+            found_subtitles = []
+            for sub_release in subtitle_releases:
+                provider_name = sub_release['provider']
 
                 try:
-                    subtitle = self.scenario_map[provider_name].download_subtitle(release, target_folder, release_name)
+                    subtitle = self.scenario_map[provider_name].get_sub(sub_release)
                     if subtitle:
-                        yield subtitle
-                        break
+                        found_subtitles.append(subtitle)
+
+                        if max_sub > 0:
+                            if len(found_subtitles) >= max_sub:
+                                break
                 except SubtitleFileBroken:
                     continue
+
+            ret[lang] = found_subtitles
+
+        return ret
 
 
 class Scenario2(BaseScenario):

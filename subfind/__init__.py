@@ -7,6 +7,7 @@ import shutil
 from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
 from subfind.model import Subtitle
+from subfind.processor import SingleSubtitleProcessor, MultipleSubtitleProcessor
 from subfind.utils.subtitle import subtitle_extensions, remove_subtitle
 from .exception import MovieNotFound, SubtitleNotFound, ReleaseMissedLangError
 from .movie_parser import parse_release_name
@@ -55,6 +56,18 @@ class BaseProvider(object):
         """
         return {}
 
+    @abstractmethod
+    def get_sub(self, sub_release):
+        """
+        Get subtitle
+
+        :param sub_release:
+        :type sub_release:
+        :return:
+        :rtype: subfind.model.Subtitle
+        """
+        pass
+
     def _save_sub(self, release, sub_file, target_folder, release_name, sub_extension):
         desc_sub_file = join(target_folder, '%s.%s.%s' % (release_name, release['lang'], sub_extension))
 
@@ -63,7 +76,7 @@ class BaseProvider(object):
 
 
 class SubFind(object):
-    def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None):
+    def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None, max_sub=1):
         """
 
         :param event_manager:
@@ -81,6 +94,7 @@ class SubFind(object):
         :return:
         :rtype:
         """
+        self.max_sub = max_sub
         self.remove = remove
         self.event_manager = event_manager
         self.force = force
@@ -110,6 +124,8 @@ class SubFind(object):
             scenario_map[provider_name] = data_provider.get_scenario()
 
         self.scenario = ScenarioManager(ReleaseScoringAlice(), scenario_map)
+
+        self.subtitle_processor = MultipleSubtitleProcessor()
 
     def scan(self, movie_dirs):
         reqs = []
@@ -151,21 +167,37 @@ class SubFind(object):
         for release_name, save_dir, search_langs in reqs:
             try:
                 subtitle_paths = []
-                found_langs = set()
+                # found_langs = set()
                 self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name, search_langs))
 
-                for subtitle in self.scenario.execute(release_name, search_langs, save_dir):
-                    found_langs.add(subtitle.lang)
+                # print(self.scenario, self.max_sub)
+                found_subs_by_lang = self.scenario.execute(release_name, search_langs, max_sub=self.max_sub)
+                params = {
+                    'release_name': release_name,
+                    'save_dir': save_dir,
+                    'force': self.force,
+                    'remove': self.remove,
+                }
+                for lang in found_subs_by_lang:
+                    params['lang'] = lang
+                    params['subtitles'] = found_subs_by_lang[lang]
+                    self.subtitle_processor.process(**params)
 
-                    subtitle_paths.append(subtitle.path)
+                    if params['subtitles']:
+                        self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, lang))
 
-                    self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, subtitle))
+                # for subtitle in self.scenario.execute(release_name, search_langs, save_dir):
+                #     found_langs.add(subtitle.lang)
+                #
+                #     subtitle_paths.append(subtitle.path)
+                #
+                #     self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, subtitle))
 
-                if self.force and self.remove:
-                    # Remove subtitle of missed lang
-                    not_found_langs = set(search_langs).difference(found_langs)
-                    for lang in not_found_langs:
-                        remove_subtitle(save_dir, release_name, lang)
+                # if self.force and self.remove:
+                #     # Remove subtitle of missed lang
+                #     not_found_langs = set(search_langs).difference(found_langs)
+                #     for lang in not_found_langs:
+                #         remove_subtitle(save_dir, release_name, lang)
 
                 self.event_manager.notify(EVENT_RELEASE_COMPLETED, {
                     'release_name': release_name,
