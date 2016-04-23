@@ -55,3 +55,7 @@ def parse_release_name(release_name):
             break
 
     return ret
+
+
+def build_title_query_from_title(title):
+    return ' '.join(tokenizer(title))

@@ -1,4 +1,5 @@
 from subfind.movie import MovieScoring
+from subfind.movie_parser import build_title_query_from_title
 from subfind.tokenizer import tokenizer
 
 
@@ -31,28 +32,52 @@ def cmp_to_key(mycmp):
 
 
 class MovieScoringAlice(MovieScoring):
+    a_win = -1
+    b_win = 1
+
     def sort(self, params, movies):
         query_tokens = set(params['title_tokens'])
+        arbiter_year = params['year']
+        arbiter_title_query = params['title_query']
 
         for movie in movies:
+            movie['title_query'] = build_title_query_from_title(movie['title'])
             # movie['d'] = distance.levenshtein(query, movie['title'].lower()),
             # Switch to jaccard index because it's more accuracy.
             # Failed case of distance.levenshtein() is 'men in black ii' vs 'men in black iii'
             movie_title_tokens = set(tokenizer(movie['title']))
+
             movie['d'] = 1 - float(len(query_tokens.intersection(movie_title_tokens))) / len(query_tokens.union(movie_title_tokens))
 
         def movie_cmp(a, b):
             if a['d'] < b['d']:
                 # smaller distances is better
-                return -1
+                return self.a_win
             elif a['d'] > b['d']:
-                return 1
+                return self.b_win
 
-            if a['year'] > b['year']:
-                # larger year is better
-                return -1
-            elif a['year'] < b['year']:
-                return 1
+            # Same score now
+
+            # Case: Both movies have wrong year
+            if a['year'] != arbiter_year and b['year'] != arbiter_year:
+                # The one match title_query win
+                if a['title_query'] == arbiter_title_query:
+                    return self.a_win
+                elif b['title_query'] == arbiter_title_query:
+                    return self.b_win
+
+                if a['year'] > b['year']:
+                    # larger year is better
+                    return self.a_win
+                elif a['year'] < b['year']:
+                    return self.b_win
+            else:
+                if a['year'] != b['year']:
+                    # Which one is the same with arbiter_year win
+                    if a['year'] == arbiter_year:
+                        return self.a_win
+                    elif b['year'] == arbiter_year:
+                        return self.b_win
 
             return 0
 
