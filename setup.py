@@ -26,6 +26,10 @@ setup(
         ],
         'subscene': [
             'requests==2.9.1',
+        ],
+        'web': [
+            'flask==0.10.1',
+            'tornado==4.3'
         ]
     },
     entry_points={
