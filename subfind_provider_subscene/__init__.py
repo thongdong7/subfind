@@ -17,6 +17,7 @@ from subfind.parser import Parser
 from subfind.release import ReleaseMatchingChecker
 from subfind.release.alice import ReleaseScoringAlice
 from subfind.scenario import BaseScenarioFactory, Scenario1
+from subfind.utils.process import which
 from subfind.utils.subtitle import get_subtitle_ext
 from subfind_provider_subscene.language import get_full_lang, get_short_lang
 from tempfile import mkdtemp
@@ -42,6 +43,15 @@ class SubsceneProvider(BaseProvider):
         self.logger = logging.getLogger(self.__class__.__name__)
 
         self.movie_score = MovieScoringAlice()
+
+        # Validate if unrar exists
+        tmp = which('unrar')
+        if tmp is None:
+            self.logger.warning('Could not find unrar command. Some subtitle maybe could not extract')
+            self.has_unrar = False
+        else:
+            self.has_unrar = True
+        # print(tmp)
 
     def search_movie(self, release_name, langs):
         release_matching_checker = ReleaseMatchingChecker(release_name)
@@ -255,6 +265,9 @@ class SubsceneProvider(BaseProvider):
                 except zipfile.BadZipFile:
                     raise SubtitleFileBroken(url=sub_page_url, message='Subtitle file broken')
             elif file_format == 'rar':
+                if not self.has_unrar:
+                    raise Exception('Could not extract rar because missing unrar command')
+
                 run_cmd('unrar e -inul %s' % tmp_file, cwd=tmp_folder)
                 for item in os.listdir(tmp_folder):
                     sub_extension = get_subtitle_ext(item)
