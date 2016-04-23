@@ -1,0 +1,13 @@
+#src: [/data/movies, /data2/tv-shows]
+# src: [/data2/test]
+# src: [/data2/movies/400.Days.2015.1080p.BluRay.H264.AAC-RARBG/]
+# src: ["/data2/movies/The Bag Man (2014) [1080p]/"]
+src: ["/data2/movies/Avengers Age of Ultron (2015) [1080p]/"]
+lang: [vi]
+force: true
+remove: true
+verbose: true
+#providers: [subscene]
+#providers: [opensubtitles]
+# min-movie-size: 0
+max-sub: 5
