@@ -105,8 +105,9 @@ class SubsceneTestCase(unittest.TestCase):
 
     def test_seach_movie(self):
         testcases = [
-            # ('13.2010.720p.BluRay.x264.YIFY', 'https://subscene.com/subtitles/13-russian-roulette'),
+            ('13.2010.720p.BluRay.x264.YIFY', 'https://subscene.com/subtitles/13-russian-roulette'),
             ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', 'https://subscene.com/subtitles/bad-boys-ii'),
+            ('400.Days.2015.1080p.BluRay.H264.AAC-RARBG', 'https://subscene.com/subtitles/400-days'),
         ]
 
         for release_name, expected_url in testcases:
