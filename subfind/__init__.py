@@ -25,22 +25,22 @@ EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
 class BaseProvider(object):
     __metaclass__ = ABCMeta
 
-    @abstractmethod
-    def download_sub(self, release, target_folder, release_name):
-        """
-        Download subtitle of `release` and save to target folder. Name of subtitle will base on the release name,
-         language and subtitle file format.
-
-        :param release:
-        :type release:
-        :param target_folder:
-        :type target_folder:
-        :param release_name:
-        :type release_name:
-        :return:
-        :rtype: str
-        """
-        pass
+    # @abstractmethod
+    # def download_sub(self, release, target_folder, release_name):
+    #     """
+    #     Download subtitle of `release` and save to target folder. Name of subtitle will base on the release name,
+    #      language and subtitle file format.
+    #
+    #     :param release:
+    #     :type release:
+    #     :param target_folder:
+    #     :type target_folder:
+    #     :param release_name:
+    #     :type release_name:
+    #     :return:
+    #     :rtype: str
+    #     """
+    #     pass
 
     @abstractmethod
     def get_releases(self, release_name, langs):
@@ -127,43 +127,45 @@ class SubFind(object):
 
         self.subtitle_processor = MultipleSubtitleProcessor()
 
-    def scan(self, movie_dirs):
+    def build_download_requests(self, movie_dir):
         reqs = []
-        for movie_dir in movie_dirs:
-            for root_dir, child_folders, file_names in os.walk(movie_dir):
-                for file_name in file_names:
-                    for ext in self.movie_extensions:
-                        if file_name.endswith('.%s' % ext):
-                            if self.min_movie_size and getsize(join(root_dir, file_name)) < self.min_movie_size:
-                                # Ignore small movie file
-                                continue
+        for root_dir, child_folders, file_names in os.walk(movie_dir):
+            for file_name in file_names:
+                for ext in self.movie_extensions:
+                    if file_name.endswith('.%s' % ext):
+                        if self.min_movie_size and getsize(join(root_dir, file_name)) < self.min_movie_size:
+                            # Ignore small movie file
+                            continue
 
-                            save_dir = root_dir
-                            m = self.movie_file_pattern.search(file_name)
-                            if not m:
-                                continue
+                        save_dir = root_dir
+                        m = self.movie_file_pattern.search(file_name)
+                        if not m:
+                            continue
 
-                            release_name = m.group(1)
+                        release_name = m.group(1)
 
-                            # Detect if the sub exists
-                            if not self.force:
-                                missed_langs = []
-                                for lang in self.languages:
-                                    found = False
-                                    for subtitle_extension in subtitle_extensions:
-                                        sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
-                                        if exists(sub_file):
-                                            found = True
-                                            break
+                        # Detect if the sub exists
+                        if not self.force:
+                            missed_langs = []
+                            for lang in self.languages:
+                                found = False
+                                for subtitle_extension in subtitle_extensions:
+                                    sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
+                                    if exists(sub_file):
+                                        found = True
+                                        break
 
-                                    if not found:
-                                        missed_langs.append(lang)
+                                if not found:
+                                    missed_langs.append(lang)
 
-                            if self.force:
-                                reqs.append((release_name, save_dir, self.languages))
-                            elif missed_langs:
-                                reqs.append((release_name, save_dir, missed_langs))
+                        if self.force:
+                            reqs.append((release_name, save_dir, self.languages))
+                        elif missed_langs:
+                            reqs.append((release_name, save_dir, missed_langs))
 
+        return reqs
+
+    def process_download_requests(self, reqs):
         for release_name, save_dir, search_langs in reqs:
             try:
                 subtitle_paths = []
@@ -207,3 +209,15 @@ class SubFind(object):
                 self.event_manager.notify(EVENT_RELEASE_MOVIE_NOT_FOUND, e)
             except SubtitleNotFound as e:
                 self.event_manager.notify(EVENT_RELEASE_SUBTITLE_NOT_FOUND, e)
+
+    def scan_movie_dir(self, movie_dir):
+        reqs = self.build_download_requests(movie_dir)
+
+        self.process_download_requests(reqs)
+
+    def scan(self, movie_dirs):
+        reqs = []
+        for movie_dir in movie_dirs:
+            reqs += self.build_download_requests(movie_dir)
+
+        self.process_download_requests(reqs)
