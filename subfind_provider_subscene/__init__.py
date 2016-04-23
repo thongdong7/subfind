@@ -46,6 +46,28 @@ class SubsceneProvider(BaseProvider):
     def search_movie(self, release_name, langs):
         release_matching_checker = ReleaseMatchingChecker(release_name)
 
+        movies = self.get_all_movies(release_name=release_name, release_matching_checker=release_matching_checker)
+
+        if not movies:
+            return movies
+
+        movie = movies[0]
+
+        return self._get_movie_release(release_matching_checker, movie, langs)
+
+    def get_all_movies(self, release_name, release_matching_checker=None):
+        """
+        Search all movies match with this releases
+        :param release_matching_checker:
+        :type release_matching_checker:
+        :param release_name:
+        :type release_name:
+        :return:
+        :rtype:
+        """
+        if release_matching_checker is None:
+            release_matching_checker = ReleaseMatchingChecker(release_name)
+
         query = release_matching_checker.info['title_query']
         base_url = (SUBSCENE_SEARCH_URL % urlencode({'q': query}))
 
@@ -85,12 +107,13 @@ class SubsceneProvider(BaseProvider):
             })
 
         if not movies:
+            # No movie found
             return movies
 
+        # Sort movie base on release info, the best match movie should be first
         self.movie_score.sort(release_matching_checker.info, movies)
 
-        movie = movies[0]
-        return self._get_movie_release(release_matching_checker, movie, langs)
+        return movies
 
     def _get_movie_release(self, release_matching_checker, movie, langs):
         base_url = movie['url']
