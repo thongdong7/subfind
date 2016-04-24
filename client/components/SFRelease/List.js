@@ -4,6 +4,7 @@ import RestService from '../RestService'
 import LanguageStats from './LanguageStats'
 import RPCButton from '../RPCButton'
 import SFConfigIndex from '../SFConfig/Index'
+import _ from 'lodash'
 
 export default class SFReleaseList extends React.Component {
   constructor(props) {
@@ -45,32 +46,25 @@ export default class SFReleaseList extends React.Component {
         </div>
         <div className="box-body">
           <SFConfigIndex />
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>subtitles</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-            {this.state.data.map((item, k) => {
-              return (
-                <tr key={k}>
-                  <td>
-                      {item.name}
-                  </td>
-                  <td>
-                    <LanguageStats data={item.subtitles} />
-                  </td>
-                  <td>
-                    <RPCButton query="release/download" params={{src: item.src}} name="Download" />
-                  </td>
-                </tr>
-              )
-            })}
-            </tbody>
-          </table>
+          {this.state.data.map((item, k) => {
+            let stateClass = ""
+            if (_.isEmpty(item.subtitles)) {
+              stateClass = " bg-warning"
+            }
+            return (
+              <div key={k} className={"row row-hover"+stateClass}>
+                <div className="col-xs-12">
+                    {item.name}
+                </div>
+                <div className="col-xs-6">
+                  <LanguageStats data={item.subtitles} />
+                </div>
+                <div className="col-xs-6 pull-right">
+                  <RPCButton query="release/download" params={{src: item.src}} name="Download" />
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     )
