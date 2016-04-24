@@ -35,7 +35,7 @@ export default class SFReleaseList extends React.Component {
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
-          <h3 className="box-title">SFReleaseList Title</h3>
+          <h3 className="box-title">Movies</h3>
 
           <div className="box-tools">
             <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
@@ -45,7 +45,6 @@ export default class SFReleaseList extends React.Component {
           </div>
         </div>
         <div className="box-body">
-          <SFConfigIndex />
           {this.state.data.map((item, k) => {
             let stateClass = ""
             if (_.isEmpty(item.subtitles)) {

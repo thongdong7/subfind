@@ -121,7 +121,7 @@ export default class SFConfigIndex extends React.Component {
     if (this.state.data) {
       content = (
         <div>
-          <div className="col-sm-2"><strong>Folders</strong></div>
+          <div className="col-sm-2"><strong>Movie Folders</strong></div>
           <div className="col-sm-10">
             {this.state.data.src.map((item, k) => {
               return (
@@ -147,7 +147,7 @@ export default class SFConfigIndex extends React.Component {
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
-          <h3 className="box-title">SFConfig Title</h3>
+          <h3 className="box-title">Config</h3>
 
           <div className="box-tools">
             <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
