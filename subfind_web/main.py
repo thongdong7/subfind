@@ -1,5 +1,4 @@
 import logging
-from os.path import abspath, exists
 
 import os
 from flask import Flask, request
@@ -7,7 +6,7 @@ from subfind import parse_release_name, SubFind
 from subfind.event import EventManager
 from subfind_web.api import api
 from subfind_web.crossdomain import crossdomain
-from subfind_web.exception.api import APIError
+from subfind_web.validate import folder_validator, ValidatorManager
 
 app = Flask(__name__)
 
@@ -91,32 +90,60 @@ def get_config():
     return config
 
 
+value_validator = {
+    'src': folder_validator
+}
+
+validator_manager = ValidatorManager(value_validator)
+
+
 @app.route("/config/update")
 @crossdomain(origin='*')
 @api
 def config_update():
     update = {}
 
-    add_src = request.args.get('src-$push')
-    if add_src:
-        add_src_abs = abspath(add_src)
-        if not exists(add_src_abs):
-            raise APIError("Invalid folder %s" % add_src)
+    for field_name in ['src', 'lang']:
+        push_value = request.args.get('%s-$push' % field_name)
+        if push_value:
+            push_value = validator_manager.validate_field(field_name, push_value)
+            # add_src_abs = abspath(add_src)
+            # if not exists(add_src_abs):
+            #     raise APIError("Invalid folder %s" % add_src)
 
-        src = set(config['src'])
-        src.add(add_src_abs)
-        update['src'] = sorted(list(src))
+            tmp = set(config[field_name])
+            tmp.add(push_value)
+            update[field_name] = sorted(list(tmp))
 
-    remove_src = request.args.get('src-$remove')
-    if remove_src:
-        remove_src_abs = abspath(remove_src)
-        if not exists(remove_src_abs):
-            raise APIError("Invalid folder %s" % remove_src)
+        remove_value = request.args.get('%s-$remove' % field_name)
+        if remove_value:
+            remove_value = validator_manager.validate_field(field_name, remove_value)
 
-        src = set(config['src'])
-        if remove_src_abs in src:
-            src.remove(remove_src_abs)
-            update['src'] = sorted(list(src))
+            tmp = set(config[field_name])
+            if remove_value in tmp:
+                tmp.remove(remove_value)
+                update[field_name] = sorted(list(tmp))
+
+    # add_src = request.args.get('src-$push')
+    # if add_src:
+    #     add_src_abs = abspath(add_src)
+    #     if not exists(add_src_abs):
+    #         raise APIError("Invalid folder %s" % add_src)
+    #
+    #     src = set(config['src'])
+    #     src.add(add_src_abs)
+    #     update['src'] = sorted(list(src))
+    #
+    # remove_value = request.args.get('src-$remove')
+    # if remove_value:
+    #     remove_src_abs = abspath(remove_value)
+    #     if not exists(remove_src_abs):
+    #         raise APIError("Invalid folder %s" % remove_value)
+    #
+    #     src = set(config['src'])
+    #     if remove_src_abs in src:
+    #         src.remove(remove_src_abs)
+    #         update['src'] = sorted(list(src))
 
     config.update(update)
 
