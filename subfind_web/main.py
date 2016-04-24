@@ -1,7 +1,11 @@
 import logging
 
+import re
+
+from os.path import join, abspath
+
 import os
-from flask import Flask, request
+from flask import Flask, request, render_template
 from subfind import parse_release_name, SubFind
 from subfind.event import EventManager
 from subfind_web.api import api
@@ -9,7 +13,18 @@ from subfind_web.crossdomain import crossdomain
 from subfind_web.utils import save_config, get_config
 from subfind_web.validate import folder_validator, ValidatorManager
 
-app = Flask(__name__)
+current_folder = os.path.abspath(os.path.dirname(__file__))
+
+template_folder = join(current_folder, 'templates')
+static_folder = abspath(join(current_folder, '..'))
+
+app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
+
+
+@app.route('/node_modules/<path:filename>')
+def node_files(filename):
+    return app.send_static_file(join('node_modules', filename))
+
 
 config = get_config()
 
@@ -45,12 +60,16 @@ def build_data():
 
 build_data()
 
-
 # print(data)
+port_pattern = re.compile(':\d+')
+
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    host = request.headers['Host']
+    domain = port_pattern.sub('', host)
+
+    return render_template("layout.html", domain=domain)
 
 
 @app.route("/release")
