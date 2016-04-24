@@ -15,14 +15,34 @@ providers = ['subscene']
 # providers = ['opensubtitles', 'subscene']
 force = False
 remove = False
-min_movie_size = 0
+# ignore files less than 500 MB
+min_movie_size = 500 * 1024 * 1024
 max_sub = 5
+src_dirs = ["/data2/movies"]
 
 event_manager = EventManager()
 
 sub_finder = SubFind(event_manager, languages=languages, provider_names=providers, force=force, remove=remove,
                      min_movie_size=min_movie_size, max_sub=max_sub)
 
+movie_requests = sub_finder.build_download_requests_for_movie_dirs(src_dirs)
+
+data = []
+for release_name, movie_dir, langs in movie_requests:
+    item = {
+        'name': release_name,
+        'src': movie_dir,
+        'languages': langs
+    }
+
+    item.update(parse_release_name(item['name']))
+
+    data.append(item)
+
+data = sorted(data, key=lambda x: x['name'])
+
+
+# print(data)
 
 @app.route("/")
 def hello():
@@ -32,12 +52,15 @@ def hello():
 @app.route("/release")
 @crossdomain(origin='*')
 def release():
-    data = [
-        {'name': 'Avengers.Age.of.Ultron.2015.1080p.BluRay.x264.YIFY'}
-    ]
+    # print(data)
+    # print(movie_requests)
+    #
+    # data = [
+    #     {'name': 'Avengers.Age.of.Ultron.2015.1080p.BluRay.x264.YIFY'}
+    # ]
 
-    for item in data:
-        item.update(parse_release_name(item['name']))
+    # for item in data:
+    #     item.update(parse_release_name(item['name']))
 
     content = json.dumps(data)
     # print(content)

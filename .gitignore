@@ -58,3 +58,5 @@ docs/_build/
 /dev3
 /dev
 /upload.sh
+
+/node_modules

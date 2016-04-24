@@ -165,6 +165,13 @@ class SubFind(object):
 
         return reqs
 
+    def build_download_requests_for_movie_dirs(self, movie_dirs):
+        reqs = []
+        for movie_dir in movie_dirs:
+            reqs += self.build_download_requests(movie_dir)
+
+        return reqs
+
     def process_download_requests(self, reqs):
         for release_name, save_dir, search_langs in reqs:
             try:
@@ -216,8 +223,6 @@ class SubFind(object):
         self.process_download_requests(reqs)
 
     def scan(self, movie_dirs):
-        reqs = []
-        for movie_dir in movie_dirs:
-            reqs += self.build_download_requests(movie_dir)
+        reqs = self.build_download_requests_for_movie_dirs(movie_dirs)
 
         self.process_download_requests(reqs)
