@@ -12,4 +12,3 @@ def api(func):
         return Response(content, mimetype='application/json')
 
     return update_wrapper(func_wrapper, func)
-    return func_wrapper
