@@ -24,22 +24,30 @@ event_manager = EventManager()
 sub_finder = SubFind(event_manager, languages=languages, provider_names=providers, force=force, remove=remove,
                      min_movie_size=min_movie_size, max_sub=max_sub)
 
-movie_requests = sub_finder.build_download_requests_for_movie_dirs(src_dirs)
-
 data = []
-for release_name, movie_dir, langs in movie_requests:
-    item = {
-        'name': release_name,
-        'src': movie_dir,
-        'languages': langs
-    }
 
-    item.update(parse_release_name(item['name']))
 
-    data.append(item)
+def build_data():
+    global data
+    movie_requests = sub_finder.build_download_requests_for_movie_dirs(src_dirs)
 
-data = sorted(data, key=lambda x: x['name'])
+    data = []
+    for release_name, movie_dir, langs in movie_requests:
+        item = {
+            'name': release_name,
+            'src': movie_dir,
+            'languages': langs,
+            'subtitles': sub_finder.stat_subtitle(movie_dir)
+        }
 
+        item.update(parse_release_name(item['name']))
+
+        data.append(item)
+
+    data = sorted(data, key=lambda x: x['name'])
+
+
+build_data()
 
 # print(data)
 
@@ -81,9 +89,11 @@ def get_config():
 @app.route("/release/download")
 @crossdomain(origin='*')
 def release_download():
-    movie_dir = request.args.get('dir')
+    save_dir = request.args.get('src')
 
-    sub_finder.scan_movie_dir(movie_dir)
+    sub_finder.scan_movie_dir(save_dir)
+
+    build_data()
 
     return 'Completed'
 
