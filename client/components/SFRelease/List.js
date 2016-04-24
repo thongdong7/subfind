@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 import RestService from '../RestService'
+import LanguageStats from './LanguageStats'
 
 export default class SFReleaseList extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ export default class SFReleaseList extends React.Component {
       this.setState({loading: true})
 
       let data = await RestService.load('release')
-      console.log(data)
+      // console.log(data)
 
       this.setState({data: data, connectionError: false, loading: false})
     } catch (promise) {
@@ -27,8 +28,9 @@ export default class SFReleaseList extends React.Component {
     }
   }
 
-  async downloadRelease(release_name) {
-    console.log('download release', release_name);
+  async downloadRelease(item) {
+    console.log('download release', item);
+    let data = await RestService.load('release/download', {src: item.src})
   }
 
   render() {
@@ -47,6 +49,7 @@ export default class SFReleaseList extends React.Component {
           <thead>
             <tr>
               <th>Name</th>
+              <th>subtitles</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -58,7 +61,10 @@ export default class SFReleaseList extends React.Component {
                     {item.name}
                 </td>
                 <td>
-                    <button className="btn btn-default" onClick={() => this.downloadRelease(item.name)}>Download</button>
+                  <LanguageStats data={item.subtitles} />
+                </td>
+                <td>
+                    <button className="btn btn-default" onClick={() => this.downloadRelease(item)}>Download</button>
                 </td>
               </tr>
             )
