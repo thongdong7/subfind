@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import RestService from '../RestService'
 import LanguageStats from './LanguageStats'
-import DownloadButton from './DownloadButton'
+import RPCButton from '../RPCButton'
 
 export default class SFReleaseList extends React.Component {
   constructor(props) {
@@ -38,6 +38,8 @@ export default class SFReleaseList extends React.Component {
           <div className="box-tools">
             <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
             </button>
+
+            <RPCButton query="release/scan-all" name="Scan All" />
           </div>
         </div>
         <div className="box-body">
@@ -60,7 +62,7 @@ export default class SFReleaseList extends React.Component {
                   <LanguageStats data={item.subtitles} />
                 </td>
                 <td>
-                  <DownloadButton release={item} />
+                  <RPCButton query="release/download" params={{src: item.src}} name="Download" />
                 </td>
               </tr>
             )
