@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import RestService from '../RestService'
 import LanguageStats from './LanguageStats'
 import RPCButton from '../RPCButton'
+import SFConfigIndex from '../SFConfig/Index'
 
 export default class SFReleaseList extends React.Component {
   constructor(props) {
@@ -43,32 +44,33 @@ export default class SFReleaseList extends React.Component {
           </div>
         </div>
         <div className="box-body">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>subtitles</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-          {this.state.data.map((item, k) => {
-            return (
-              <tr key={k}>
-                <td>
-                    {item.name}
-                </td>
-                <td>
-                  <LanguageStats data={item.subtitles} />
-                </td>
-                <td>
-                  <RPCButton query="release/download" params={{src: item.src}} name="Download" />
-                </td>
+          <SFConfigIndex />
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>subtitles</th>
+                <th>Actions</th>
               </tr>
-            )
-          })}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            {this.state.data.map((item, k) => {
+              return (
+                <tr key={k}>
+                  <td>
+                      {item.name}
+                  </td>
+                  <td>
+                    <LanguageStats data={item.subtitles} />
+                  </td>
+                  <td>
+                    <RPCButton query="release/download" params={{src: item.src}} name="Download" />
+                  </td>
+                </tr>
+              )
+            })}
+            </tbody>
+          </table>
         </div>
       </div>
     )
