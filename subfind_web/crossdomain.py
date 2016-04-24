@@ -42,4 +42,5 @@ def crossdomain(origin=None, methods=None, headers=None,
 
         f.provide_automatic_options = False
         return update_wrapper(wrapped_function, f)
+
     return decorator

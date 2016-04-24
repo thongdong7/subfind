@@ -6,6 +6,7 @@ import logging
 
 from subfind import parse_release_name, SubFind
 from subfind.event import EventManager
+from subfind_web.api import api
 from subfind_web.crossdomain import crossdomain
 
 app = Flask(__name__)
@@ -51,6 +52,7 @@ def hello():
 
 @app.route("/release")
 @crossdomain(origin='*')
+@api
 def release():
     # print(data)
     # print(movie_requests)
@@ -62,10 +64,7 @@ def release():
     # for item in data:
     #     item.update(parse_release_name(item['name']))
 
-    content = json.dumps(data)
-    # print(content)
-
-    return Response(content, mimetype='application/json')
+    return data
 
 
 @app.route("/release/download")
