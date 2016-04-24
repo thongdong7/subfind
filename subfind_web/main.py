@@ -1,9 +1,7 @@
-import json
-
-import os
-from flask import Flask, jsonify, Response, request
 import logging
 
+import os
+from flask import Flask, request
 from subfind import parse_release_name, SubFind
 from subfind.event import EventManager
 from subfind_web.api import api
@@ -65,6 +63,19 @@ def release():
     #     item.update(parse_release_name(item['name']))
 
     return data
+
+
+@crossdomain(origin='*')
+@app.route("/config")
+@api
+def get_config():
+    return {
+        'src': src_dirs,
+        'lang': languages,
+        'force': force,
+        'remove': remove,
+        'max-sub': max_sub
+    }
 
 
 @app.route("/release/download")
