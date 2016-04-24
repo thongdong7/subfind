@@ -37,7 +37,7 @@ def build_data():
             'name': release_name,
             'src': movie_dir,
             'languages': langs,
-            'subtitles': sub_finder.stat_subtitle(movie_dir)
+            'subtitles': sub_finder.stat_subtitle(release_name, movie_dir)
         }
 
         item.update(parse_release_name(item['name']))
@@ -48,6 +48,7 @@ def build_data():
 
 
 build_data()
+
 
 # print(data)
 
@@ -84,6 +85,16 @@ def get_config():
         'remove': remove,
         'max-sub': max_sub
     }
+
+
+@app.route("/release/scan-all")
+@crossdomain(origin='*')
+def release_scan_all():
+    sub_finder.scan(src_dirs)
+
+    build_data()
+
+    return 'Completed'
 
 
 @app.route("/release/download")

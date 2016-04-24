@@ -127,10 +127,12 @@ class SubFind(object):
 
         self.subtitle_processor = MultipleSubtitleProcessor()
 
-    def stat_subtitle(self, movie_dir):
+    def stat_subtitle(self, release_name, movie_dir):
         """
         Count how many subtitles by languages
 
+        :param release_name:
+        :type release_name:
         :param movie_dir:
         :type movie_dir:
         :return:
@@ -139,6 +141,9 @@ class SubFind(object):
         ret = {}
         for root_dir, child_folders, file_names in os.walk(movie_dir):
             for file_name in file_names:
+                if not file_name.startswith(release_name):
+                    continue
+
                 subtitle_info = get_subtitle_info(file_name)
                 if not subtitle_info:
                     continue
