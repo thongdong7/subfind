@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from os.path import join, exists, getsize
 from subfind.model import Subtitle
 from subfind.processor import SingleSubtitleProcessor, MultipleSubtitleProcessor
-from subfind.utils.subtitle import subtitle_extensions, remove_subtitle
+from subfind.utils.subtitle import subtitle_extensions, remove_subtitle, get_subtitle_info
 from .exception import MovieNotFound, SubtitleNotFound, ReleaseMissedLangError
 from .movie_parser import parse_release_name
 from .release.alice import ReleaseScoringAlice
@@ -126,6 +126,37 @@ class SubFind(object):
         self.scenario = ScenarioManager(ReleaseScoringAlice(), scenario_map)
 
         self.subtitle_processor = MultipleSubtitleProcessor()
+
+    def stat_subtitle(self, movie_dir):
+        """
+        Count how many subtitles by languages
+
+        :param movie_dir:
+        :type movie_dir:
+        :return:
+        :rtype:
+        """
+        ret = {}
+        for root_dir, child_folders, file_names in os.walk(movie_dir):
+            for file_name in file_names:
+                subtitle_info = get_subtitle_info(file_name)
+                if not subtitle_info:
+                    continue
+
+                if 'lang' not in subtitle_info:
+                    continue
+
+                lang = subtitle_info['lang']
+                if lang not in ret:
+                    ret[lang] = []
+
+                ret[lang].append(file_name)
+
+        # Sort result
+        for lang in ret:
+            ret[lang] = sorted(ret[lang])
+
+        return ret
 
     def build_download_requests(self, movie_dir):
         reqs = []
