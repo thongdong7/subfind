@@ -67,7 +67,7 @@ export default class SFReleaseList extends React.Component {
         </div>
         <div className="box-body">
           <button type="button" className="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" onClick={this.toggleFilter.bind(this)}>
-            Filter
+            {this.state.filter.empty ? "Show All" : "Show Missed"}
           </button>
           {this.state.data.filter(this.filter.bind(this)).map((item, k) => {
             let stateClass = ""
