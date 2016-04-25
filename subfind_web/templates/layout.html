@@ -49,7 +49,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   var restUrl = '{{request.url_root}}';
 </script>
 {% if is_production %}
-  <script async src="<%= env.assets.main.js %>"></script>
+  <script async src="js/vendor.bundle.js"></script>
+  <script async src="js/bundle.js"></script>
 {% else %}
   <script src="http://{{domain}}:3000/client/main.js"></script>
 {% endif %}

@@ -26,6 +26,11 @@ def node_files(filename):
     return app.send_static_file(join('node_modules', filename))
 
 
+@app.route('/js/<path:filename>')
+def dist_files(filename):
+    return app.send_static_file(join('client/dist', filename))
+
+
 config = get_config()
 
 event_manager = EventManager()
@@ -69,7 +74,12 @@ def hello():
     host = request.headers['Host']
     domain = port_pattern.sub('', host)
 
-    return render_template("layout.html", domain=domain)
+    if domain.startswith('192'):
+        is_production = True
+    else:
+        is_production = False
+
+    return render_template("layout.html", domain=domain, is_production=is_production)
 
 
 @app.route("/release")

@@ -51,7 +51,7 @@ export default class SFReleaseList extends React.Component {
               stateClass = " bg-warning"
             }
             return (
-              <div key={k} className={"row row-hover"+stateClass}>
+              <div key={k} className={"row row-hover row-list-item"+stateClass}>
                 <div className="col-xs-12">
                     {item.name}
                 </div>
