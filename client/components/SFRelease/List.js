@@ -5,12 +5,21 @@ import LanguageStats from './LanguageStats'
 import RPCButton from '../RPCButton'
 import SFConfigIndex from '../SFConfig/Index'
 import _ from 'lodash'
+import update from 'react-addons-update'
 
 export default class SFReleaseList extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {data: [], current: null, connectionError: false, loading: false}
+    this.state = {
+      data: [],
+      current: null,
+      connectionError: false,
+      loading: false,
+      filter: {
+        empty: false
+      }
+    }
   }
 
   componentWillMount() {
@@ -31,6 +40,18 @@ export default class SFReleaseList extends React.Component {
     }
   }
 
+  toggleFilter() {
+    this.setState(update(this.state, {filter: {$set: {empty: !this.state.filter.empty}}}))
+  }
+
+  filter(item) {
+    if (this.state.filter.empty) {
+      return _.isEmpty(item.subtitles)
+    }
+
+    return true
+  }
+
   render() {
     return (
       <div className="box box-solid">
@@ -45,7 +66,10 @@ export default class SFReleaseList extends React.Component {
           </div>
         </div>
         <div className="box-body">
-          {this.state.data.map((item, k) => {
+          <button type="button" className="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" onClick={this.toggleFilter.bind(this)}>
+            Filter
+          </button>
+          {this.state.data.filter(this.filter.bind(this)).map((item, k) => {
             let stateClass = ""
             if (_.isEmpty(item.subtitles)) {
               stateClass = " bg-warning"
