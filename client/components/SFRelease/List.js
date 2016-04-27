@@ -68,10 +68,10 @@ export default class SFReleaseList extends React.Component {
         </div>
         <div className="box-body">
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-6 col-xs-8">
               Only show missed subtitle release
             </div>
-            <div className="col-md-6">
+            <div className="col-md-6 col-xs-4">
               <Switch checked={this.state.filter.empty}
                 onChange={this.toggleFilter.bind(this)} />
             </div>
