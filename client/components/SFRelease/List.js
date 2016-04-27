@@ -6,6 +6,7 @@ import RPCButton from '../RPCButton'
 import SFConfigIndex from '../SFConfig/Index'
 import _ from 'lodash'
 import update from 'react-addons-update'
+import Switch from '../Switch'
 
 export default class SFReleaseList extends React.Component {
   constructor(props) {
@@ -66,9 +67,16 @@ export default class SFReleaseList extends React.Component {
           </div>
         </div>
         <div className="box-body">
-          <button type="button" className="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" onClick={this.toggleFilter.bind(this)}>
-            {this.state.filter.empty ? "Show All" : "Show Missed"}
-          </button>
+          <div className="row">
+            <div className="col-md-6">
+              Only show missed subtitle release
+            </div>
+            <div className="col-md-6">
+              <Switch checked={this.state.filter.empty}
+                onChange={this.toggleFilter.bind(this)} />
+            </div>
+          </div>
+
           {this.state.data.filter(this.filter.bind(this)).map((item, k) => {
             let stateClass = ""
             if (_.isEmpty(item.subtitles)) {

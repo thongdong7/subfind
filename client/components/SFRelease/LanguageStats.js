@@ -16,7 +16,9 @@ export default class LanguageStats extends React.Component {
       <div className="">
         {data.map((item, k) => {
           return (
-            <div key={k}><strong>{item.lang}</strong> {item.size}</div>
+            <div key={k}>
+              <strong>{item.lang}</strong> {item.size}
+            </div>
           )
         })}
       </div>

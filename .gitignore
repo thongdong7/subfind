@@ -60,3 +60,4 @@ docs/_build/
 /upload.sh
 
 /node_modules
+assets.json
