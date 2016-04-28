@@ -1,5 +1,6 @@
 import logging
 import zipfile
+from pprint import pprint
 
 from six.moves.urllib.parse import urlencode, urljoin
 
@@ -20,6 +21,7 @@ from subfind.scenario import BaseScenarioFactory, Scenario1
 from subfind.utils.process import which
 from subfind.utils.subtitle import get_subtitle_ext
 from subfind_provider_subscene.language import get_full_lang, get_short_lang
+from subfind.movie_parser import parse_release_name
 from tempfile import mkdtemp
 
 SUBSCENE_SEARCH_URL = "https://subscene.com/subtitles/title?%s"
@@ -102,15 +104,23 @@ class SubsceneProvider(BaseProvider):
 
             processed_urls.add(movie_url)
 
-            movie_title = node.text.strip()
-            m = self.movie_title_year_pattern.search(movie_title)
+            movie_display_title = node.text.strip()
+
+            # The movie title in url is better than the movie_display_title
+            # E.g.: https://subscene.com/subtitles/dragon-blade-2015
+            # movie_display_title = 'Dragon Blade (Tian jiang xiong shi)'
+            # movie_title = 'dragon blade'
+            movie_title = self._get_movie_title_from_url(movie_url)
+
+            m = self.movie_title_year_pattern.search(movie_display_title)
             movie_year = -1
             if m:
-                movie_title = m.group(1).strip()
+                movie_display_title = m.group(1).strip()
                 if m.group(2):
                     movie_year = int(m.group(3).strip())
 
             movies.append({
+                'display_title': movie_display_title,
                 'title': movie_title,
                 'year': movie_year,
                 'url': movie_url
@@ -122,6 +132,7 @@ class SubsceneProvider(BaseProvider):
 
         # Sort movie base on release info, the best match movie should be first
         self.movie_score.sort(release_matching_checker.info, movies)
+        pprint(movies)
 
         return movies
 
@@ -345,3 +356,15 @@ class SubsceneProvider(BaseProvider):
             ret[release_lang].append(release)
 
         return ret
+
+    @staticmethod
+    def _get_movie_title_from_url(movie_url):
+        title_in_url = movie_url[movie_url.rfind('/'):]
+        # print(title_in_url)
+        info = parse_release_name(title_in_url)
+        # print(info)
+        return info['title_query']
+
+
+if __name__ == '__main__':
+    print(SubsceneProvider.get_movie_title_from_url('https://subscene.com/subtitles/dragon-blade-2015'))
