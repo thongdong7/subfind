@@ -132,7 +132,7 @@ class SubsceneProvider(BaseProvider):
 
         # Sort movie base on release info, the best match movie should be first
         self.movie_score.sort(release_matching_checker.info, movies)
-        pprint(movies)
+        # pprint(movies)
 
         return movies
 
