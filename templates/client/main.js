@@ -2,7 +2,11 @@
 'use strict';
 
 import 'styles/main.scss';
-import 'styles/switch.scss';
+{% for item in components -%}
+  {%- if item.scss -%}
+  import 'styles/{{item.scss}}.scss';
+  {%- endif %}
+{%- endfor %}
 
 import React from 'react';
 import { render } from 'react-dom';
