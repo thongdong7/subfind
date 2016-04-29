@@ -73,35 +73,36 @@ class SubsceneTestCase(unittest.TestCase):
     #         finally:
     #             shutil.rmtree(sub_dir)
 
-    # def test_search_release(self):
-    #     testcases = [
-    #         # failed cases
-    #         # ('Boardwalk.Empire.S01E01.720p.HDTV.x264-IMMERSE', ['en', 'vi']),
-    #         # ('Game of Thrones S01E03 Lord Snow 1080p 5.1', ['vi']),
-    #
-    #         # pass cases
-    #         # ('black.mass.2015.1080p.bluray.6ch.hevc.x265.rmteam', ['vi']),
-    #         # ('Men.In.Black.II.2002.1080p.BluRay.x264.YIFY', ['vi']),
-    #         # ('Tammy.2014.1080p.BluRay.x264.YIFY', ['vi']),
-    #         # ('Brick.Mansions.2014.1080p.BluRay.x264.YIFY', ['vi']),
-    #         # ('Burnt.2015.1080p.BluRay.6CH.1.8GB.MkvCage', ['vi']),
-    #         # ('Avengers.Age.of.Ultron.2015.1080p.BluRay.x264.YIFY', ['vi']),
-    #         # ('The.Benefactor.2015.1080p.WEB-DL.DD5.1.H264-FGT', ['en']),
-    #         ('13.2010.720p.BluRay.x264.YIFY', ['vi']),
-    #     ]
-    #
-    #     for release_name, langs in testcases:
-    #         releases = self.provider.get_releases(release_name, langs)
-    #
-    #         pprint(releases)
-    #
-    #         self.assertTrue(releases is not None)
-    #         self.assertTrue(isinstance(releases, dict))
-    #         self.assertTrue(len(releases.keys()) > 0)
-    #
-    #         for lang in releases:
-    #             self.assertTrue(lang in langs)
-    #             self.assertTrue(len(releases[lang]) > 0)
+    def test_search_release(self):
+        testcases = [
+            # failed cases
+            # ('Boardwalk.Empire.S01E01.720p.HDTV.x264-IMMERSE', ['en', 'vi']),
+            # ('Game of Thrones S01E03 Lord Snow 1080p 5.1', ['vi']),
+
+            # pass cases
+            # ('black.mass.2015.1080p.bluray.6ch.hevc.x265.rmteam', ['vi']),
+            # ('Men.In.Black.II.2002.1080p.BluRay.x264.YIFY', ['vi']),
+            # ('Tammy.2014.1080p.BluRay.x264.YIFY', ['vi']),
+            # ('Brick.Mansions.2014.1080p.BluRay.x264.YIFY', ['vi']),
+            # ('Burnt.2015.1080p.BluRay.6CH.1.8GB.MkvCage', ['vi']),
+            # ('Avengers.Age.of.Ultron.2015.1080p.BluRay.x264.YIFY', ['vi']),
+            # ('The.Benefactor.2015.1080p.WEB-DL.DD5.1.H264-FGT', ['en']),
+            # ('13.2010.720p.BluRay.x264.YIFY', ['vi']),
+            ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', ['en']),
+        ]
+
+        for release_name, langs in testcases:
+            releases = self.provider.get_releases(release_name, langs)
+
+            pprint(releases)
+
+            self.assertTrue(releases is not None)
+            self.assertTrue(isinstance(releases, dict))
+            self.assertTrue(len(releases.keys()) > 0)
+
+            for lang in releases:
+                self.assertTrue(lang in langs)
+                self.assertTrue(len(releases[lang]) > 0)
 
     def test_seach_movie(self):
         testcases = [

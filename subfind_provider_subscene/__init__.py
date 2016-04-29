@@ -12,7 +12,7 @@ from os.path import join, abspath
 from shutil import rmtree
 from subfind import BaseProvider, Subtitle
 from subfind.cmd import run_cmd
-from subfind.exception import SubtitleFileBroken, HTTPConnectionError, ReleaseNotMatchError
+from subfind.exception import SubtitleFileBroken, HTTPConnectionError, ReleaseNotMatchError, MovieNotFound
 from subfind.movie.alice import MovieScoringAlice
 from subfind.parser import Parser
 from subfind.release import ReleaseMatchingChecker
@@ -178,6 +178,11 @@ class SubsceneProvider(BaseProvider):
                     release_not_match[release_lang] = []
 
                 release_not_match[release_lang].append(release)
+                continue
+            except MovieNotFound:
+                # Could not parse release name
+                # E.g.: https://subscene.com/subtitles/bad-boys-ii/english/129659
+                # release_name = `x264-uSk`
                 continue
 
             ret[release_lang].append(release)
