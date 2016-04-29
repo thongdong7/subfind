@@ -7,6 +7,7 @@ import SFConfigIndex from '../SFConfig/Index'
 import _ from 'lodash'
 import update from 'react-addons-update'
 import Switch from '../Switch'
+import SFReleaseFilter from './Filter'
 
 export default class SFReleaseList extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ export default class SFReleaseList extends React.Component {
       connectionError: false,
       loading: false,
       filter: {
-        empty: false
+        // empty: false
       }
     }
   }
@@ -41,19 +42,29 @@ export default class SFReleaseList extends React.Component {
     }
   }
 
-  toggleFilter() {
-    this.setState(update(this.state, {filter: {$set: {empty: !this.state.filter.empty}}}))
-  }
+  // toggleFilter() {
+  //   this.setState(update(this.state, {filter: {$set: {empty: !this.state.filter.empty}}}))
+  // }
 
   filter(item) {
     if (this.state.filter.empty) {
       return _.isEmpty(item.subtitles)
     }
 
+    if (this.state.filter.lang_vi) {
+      return !item.subtitles["vi"] || item.subtitles["vi"].length == 0
+    }
+
     return true
   }
 
+  updateFilter(filter) {
+    console.log('filter', filter);
+    this.setState({filter: filter})
+  }
+
   render() {
+
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
@@ -67,15 +78,7 @@ export default class SFReleaseList extends React.Component {
           </div>
         </div>
         <div className="box-body">
-          <div className="row">
-            <div className="col-md-6 col-xs-8">
-              Only show missed subtitle release
-            </div>
-            <div className="col-md-6 col-xs-4">
-              <Switch checked={this.state.filter.empty}
-                onChange={this.toggleFilter.bind(this)} />
-            </div>
-          </div>
+          <SFReleaseFilter onChange={this.updateFilter.bind(this)}/>
 
           {this.state.data.filter(this.filter.bind(this)).map((item, k) => {
             let stateClass = ""
