@@ -13,6 +13,10 @@ export default class RPCButton extends React.Component {
     let data = await RestService.load(this.props.query, this.props.params)
 
     this.setState({loading: false})
+
+    if (this.props.onComplete) {
+      this.props.onComplete(data)
+    }
   }
 
   render() {

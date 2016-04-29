@@ -74,10 +74,17 @@ export default class SFReleaseList extends React.Component {
           <h3 className="box-title">Movies</h3>
 
           <div className="box-tools">
-            <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
+            <button type="button" className="btn btn-box-tool" data-widget="collapse">
+              <i className="fa fa-minus"></i>
             </button>
 
-            <RPCButton query="release/scan-all" name="Scan All" />
+            <button type="button" className="btn btn-box-tool"
+              onClick={this.loadData.bind(this)}>
+              <i className="fa fa-refresh"></i>
+            </button>
+
+            <RPCButton query="release/scan-all" name="Scan All"
+              onComplete={this.loadData.bind(this)}/>
           </div>
         </div>
         <div className="box-body">
@@ -98,6 +105,10 @@ export default class SFReleaseList extends React.Component {
                 </div>
                 <div className="col-xs-6 pull-right">
                   <RPCButton query="release/download" params={{src: item.src}} name="Download" />
+                  <a href={`https://subscene.com/subtitles/title?q=${item.title_query}&l=`}
+                    target="subscence" className="btn btn-default">
+                    <i className="fa fa-debug"></i> Subscene
+                  </a>
                 </div>
               </div>
             )
