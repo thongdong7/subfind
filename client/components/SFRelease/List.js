@@ -51,8 +51,11 @@ export default class SFReleaseList extends React.Component {
       return _.isEmpty(item.subtitles)
     }
 
-    if (this.state.filter.lang_vi) {
-      return !item.subtitles["vi"] || item.subtitles["vi"].length == 0
+    for (let lang of ["en", "vi"]) {
+      let fieldName = `lang_${lang}`
+      if (this.state.filter[fieldName]) {
+        return !item.subtitles[lang] || item.subtitles[lang].length == 0
+      }
     }
 
     return true
