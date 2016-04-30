@@ -221,6 +221,10 @@ class SubFind(object):
                     'force': self.force,
                     'remove': self.remove,
                 }
+
+                if self.remove:
+                    self.remove_subtitle(save_dir, release_name=release_name, langs=found_subs_by_lang.keys())
+
                 for lang in found_subs_by_lang:
                     params['lang'] = lang
                     params['subtitles'] = found_subs_by_lang[lang]
@@ -238,11 +242,15 @@ class SubFind(object):
             except SubtitleNotFound as e:
                 self.event_manager.notify(EVENT_RELEASE_SUBTITLE_NOT_FOUND, e)
 
-    def remove_subtitle(self, movie_dir, release_name=None):
+    def remove_subtitle(self, movie_dir, release_name=None, langs=None):
         for root_dir, child_folders, file_names in os.walk(movie_dir):
             for file_name in file_names:
                 sub_info = get_subtitle_info(file_name)
                 if not sub_info:
+                    continue
+
+                if langs and sub_info.get('lang') not in langs:
+                    # This subtitle not belong to remove langs
                     continue
 
                 remove = False
