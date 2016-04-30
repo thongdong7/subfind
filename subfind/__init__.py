@@ -191,22 +191,12 @@ class SubFind(object):
 
                         # Detect if the sub exists
                         if not self.force:
-                            missed_langs = []
-                            for lang in self.languages:
-                                found = False
-                                for subtitle_extension in subtitle_extensions:
-                                    sub_file = join(root_dir, '%s.%s.%s' % (movie_release_name, lang, subtitle_extension))
-                                    if exists(sub_file):
-                                        found = True
-                                        break
+                            missed_langs = self._find_missed_langs(movie_release_name, file_names)
 
-                                if not found:
-                                    missed_langs.append(lang)
-
-                        if self.force:
+                            if missed_langs:
+                                reqs.append((movie_release_name, save_dir, missed_langs))
+                        else:
                             reqs.append((movie_release_name, save_dir, self.languages))
-                        elif missed_langs:
-                            reqs.append((movie_release_name, save_dir, missed_langs))
 
         return reqs
 
@@ -221,7 +211,6 @@ class SubFind(object):
         for release_name, save_dir, search_langs in reqs:
             try:
                 subtitle_paths = []
-                # found_langs = set()
                 self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name, search_langs))
 
                 # print(self.scenario, self.max_sub)
@@ -239,19 +228,6 @@ class SubFind(object):
 
                     if params['subtitles']:
                         self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, lang))
-
-                # for subtitle in self.scenario.execute(release_name, search_langs, save_dir):
-                #     found_langs.add(subtitle.lang)
-                #
-                #     subtitle_paths.append(subtitle.path)
-                #
-                #     self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, subtitle))
-
-                # if self.force and self.remove:
-                #     # Remove subtitle of missed lang
-                #     not_found_langs = set(search_langs).difference(found_langs)
-                #     for lang in not_found_langs:
-                #         remove_subtitle(save_dir, release_name, lang)
 
                 self.event_manager.notify(EVENT_RELEASE_COMPLETED, {
                     'release_name': release_name,
@@ -288,3 +264,18 @@ class SubFind(object):
         reqs = self.build_download_requests_for_movie_dirs(movie_dirs)
 
         self.process_download_requests(reqs)
+
+    def _find_missed_langs(self, movie_release_name, file_names):
+        found_langs = set()
+        for file_name in file_names:
+            if not file_name.startswith(movie_release_name):
+                continue
+
+            subtitle_info = get_subtitle_info(file_name)
+            if not subtitle_info:
+                continue
+
+            if 'lang' in subtitle_info:
+                found_langs.add(subtitle_info['lang'])
+
+        return self.languages - found_langs
