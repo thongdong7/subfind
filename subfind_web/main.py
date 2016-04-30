@@ -154,8 +154,9 @@ def release_scan_all():
 @crossdomain(origin='*')
 def release_download():
     save_dir = request.args.get('src')
+    release_name = request.args.get('name')
 
-    sub_finder.scan_movie_dir(save_dir)
+    sub_finder.scan_movie_dir(save_dir, release_name=release_name)
 
     build_data()
 

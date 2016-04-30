@@ -168,10 +168,14 @@ class SubFind(object):
 
         return ret
 
-    def build_download_requests(self, movie_dir):
+    def build_download_requests(self, movie_dir, release_name=None):
         reqs = []
         for root_dir, child_folders, file_names in os.walk(movie_dir):
             for file_name in file_names:
+                if release_name and not file_name.startswith(release_name):
+                    # Not match with the release we need
+                    continue
+
                 for ext in self.movie_extensions:
                     if file_name.endswith('.%s' % ext):
                         if self.min_movie_size and getsize(join(root_dir, file_name)) < self.min_movie_size:
@@ -183,7 +187,7 @@ class SubFind(object):
                         if not m:
                             continue
 
-                        release_name = m.group(1)
+                        movie_release_name = m.group(1)
 
                         # Detect if the sub exists
                         if not self.force:
@@ -191,7 +195,7 @@ class SubFind(object):
                             for lang in self.languages:
                                 found = False
                                 for subtitle_extension in subtitle_extensions:
-                                    sub_file = join(root_dir, '%s.%s.%s' % (release_name, lang, subtitle_extension))
+                                    sub_file = join(root_dir, '%s.%s.%s' % (movie_release_name, lang, subtitle_extension))
                                     if exists(sub_file):
                                         found = True
                                         break
@@ -200,9 +204,9 @@ class SubFind(object):
                                     missed_langs.append(lang)
 
                         if self.force:
-                            reqs.append((release_name, save_dir, self.languages))
+                            reqs.append((movie_release_name, save_dir, self.languages))
                         elif missed_langs:
-                            reqs.append((release_name, save_dir, missed_langs))
+                            reqs.append((movie_release_name, save_dir, missed_langs))
 
         return reqs
 
@@ -275,8 +279,8 @@ class SubFind(object):
                 if remove:
                     os.unlink(join(root_dir, file_name))
 
-    def scan_movie_dir(self, movie_dir):
-        reqs = self.build_download_requests(movie_dir)
+    def scan_movie_dir(self, movie_dir, release_name=None):
+        reqs = self.build_download_requests(movie_dir, release_name=release_name)
 
         self.process_download_requests(reqs)
 
