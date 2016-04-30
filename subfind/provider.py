@@ -1,7 +1,7 @@
 import shutil
 from abc import ABCMeta, abstractmethod
 from os.path import join
-from subfind import Subtitle
+from subfind.model import Subtitle
 
 
 class BaseProvider(object):
