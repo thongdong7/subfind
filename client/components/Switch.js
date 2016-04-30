@@ -10,13 +10,21 @@ export default class Switch extends React.Component {
       id: switchId,
       checked: this.props.checked ? true : false
     }
-    
+
     switchId++
   }
 
-  onChange() {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.checked != this.state.checked) {
+      this.setState({checked: nextProps.checked})
+    }
+  }
+
+  onChange(e) {
     if (this.props.onChange) {
-      this.props.onChange(this.state.checked)
+      // console.log(e.target.checked);
+      this.props.onChange(e.target.checked)
+      this.setState({checked: e.target.checked})
     }
   }
 

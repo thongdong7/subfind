@@ -162,6 +162,19 @@ def release_download():
     return 'Completed'
 
 
+@app.route("/release/remove-subtitle")
+@crossdomain(origin='*')
+def release_remove_subtitle():
+    save_dir = request.args.get('src')
+    release_name = request.args.get('name')
+
+    sub_finder.remove_subtitle(save_dir, release_name=release_name)
+
+    build_data()
+
+    return 'Completed'
+
+
 if __name__ == "__main__":
     from tornado import autoreload
     from tornado.wsgi import WSGIContainer

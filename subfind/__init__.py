@@ -117,7 +117,12 @@ class SubFind(object):
         scenario_map = {}
         for provider_name in provider_names:
             module_name = 'subfind_provider_%s' % provider_name
-            module = importlib.import_module(module_name)
+            try:
+                module = importlib.import_module(module_name)
+            except ImportError:
+                self.logger.warn('Invalid module %s' % module_name)
+                continue
+
             class_name = '%sFactory' % provider_name.capitalize()
             clazz = getattr(module, class_name)
             data_provider = clazz()
@@ -252,6 +257,23 @@ class SubFind(object):
                 self.event_manager.notify(EVENT_RELEASE_MOVIE_NOT_FOUND, e)
             except SubtitleNotFound as e:
                 self.event_manager.notify(EVENT_RELEASE_SUBTITLE_NOT_FOUND, e)
+
+    def remove_subtitle(self, movie_dir, release_name=None):
+        for root_dir, child_folders, file_names in os.walk(movie_dir):
+            for file_name in file_names:
+                sub_info = get_subtitle_info(file_name)
+                if not sub_info:
+                    continue
+
+                remove = False
+                if release_name:
+                    if file_name.startswith(release_name):
+                        remove = True
+                else:
+                    remove = True
+
+                if remove:
+                    os.unlink(join(root_dir, file_name))
 
     def scan_movie_dir(self, movie_dir):
         reqs = self.build_download_requests(movie_dir)

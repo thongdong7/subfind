@@ -3,6 +3,7 @@ import Loading from '../Loading'
 import RestService from '../RestService'
 import update from 'react-addons-update'
 import MovieFolder from './MovieFolder'
+import Switch from '../Switch'
 
 class SimpleForm extends React.Component {
   constructor(props) {
@@ -54,6 +55,11 @@ export default class SFConfigIndex extends React.Component {
   constructor(props) {
     super(props)
 
+    this.providers = [
+      {name: "opensubtitles", display_name: "Opensubtitles"},
+      {name: "subscene", display_name: "Subscene"},
+    ]
+
     this.state = {data: null, formData: {}, loading: false}
   }
 
@@ -65,6 +71,7 @@ export default class SFConfigIndex extends React.Component {
     this.setState({loading: true})
 
     let data = await RestService.load("config")
+    console.log(data);
 
     this.setState({data: data, loading: false})
   }
@@ -108,6 +115,12 @@ export default class SFConfigIndex extends React.Component {
     this.updateConfig({'lang-$remove': src})
   }
 
+  async updateProvider(checked, name) {
+    // console.log(`update ${name} to ${checked}`);
+    let fieldName = checked ? 'providers-$push' : 'providers-$remove'
+    this.updateConfig({[fieldName]: name})
+  }
+
   render() {
     // console.log('render', this.state.formData);
     let loading
@@ -119,6 +132,7 @@ export default class SFConfigIndex extends React.Component {
     }
     let content
     if (this.state.data) {
+      // console.log(this.state.data.providers);
       content = (
         <div>
           <div className="col-sm-2"><strong>Movie Folders</strong></div>
@@ -139,6 +153,22 @@ export default class SFConfigIndex extends React.Component {
             })}
 
             <SimpleForm field="name" onSubmit={this.addLanguage.bind(this)} />
+          </div>
+          <div className="col-sm-2"><strong>Providers</strong></div>
+          <div className="col-sm-10">
+            {this.providers.map((item, k) => {
+              let tmp = this.state.data.providers.filter(x => x == item.name)
+              let value = tmp.length == 1 ? true : false
+              // console.log(item.display_name, value);
+              return (
+                <div key={k}>
+                  <div className="col-sm-6">{item.display_name}</div>
+                  <div className="col-sm-6">
+                    <Switch checked={value} onChange={(checked) => this.updateProvider(checked, item.name)}/>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       )

@@ -105,6 +105,8 @@ export default class SFReleaseList extends React.Component {
                 <div className="col-xs-6 pull-right">
                   <RPCButton query="release/download" params={{src: item.src}}
                     onComplete={this.loadData.bind(this)} name="Download" />
+                    <RPCButton query="release/remove-subtitle" params={{src: item.src, name: item.name}}
+                      onComplete={this.loadData.bind(this)} name="Remove Subtitles" />
                   <a href={`https://subscene.com/subtitles/title?q=${item.title_query}&l=`}
                     target="subscence" className="btn btn-default">
                     <i className="fa fa-debug"></i> Subscene
