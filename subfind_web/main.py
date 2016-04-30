@@ -1,14 +1,12 @@
 import logging
 
-import re
-
-from os.path import join, abspath
-
 import os
+import re
 from flask import Flask, request, render_template
-from subfind import parse_release_name
-from subfind.finder import SubFind
+from os.path import join, abspath
 from subfind.event import EventManager
+from subfind.finder import SubFind
+from subfind.movie_parser import parse_release_name
 from subfind_web.api import api
 from subfind_web.crossdomain import crossdomain
 from subfind_web.utils import save_config, get_config
@@ -114,9 +112,6 @@ def config_update():
         push_value = request.args.get('%s-$push' % field_name)
         if push_value:
             push_value = validator_manager.validate_field(field_name, push_value)
-            # add_src_abs = abspath(add_src)
-            # if not exists(add_src_abs):
-            #     raise APIError("Invalid folder %s" % add_src)
 
             tmp = set(config[field_name])
             tmp.add(push_value)
@@ -130,6 +125,18 @@ def config_update():
             if remove_value in tmp:
                 tmp.remove(remove_value)
                 update[field_name] = sorted(list(tmp))
+
+    for bool_field in ['force', 'remove']:
+        bool_value = request.args.get(bool_field)
+        if bool_value is None:
+            continue
+
+        if bool_value == 'true':
+            bool_value = True
+        else:
+            bool_value = False
+
+        update[bool_field] = bool_value
 
     config.update(update)
 
