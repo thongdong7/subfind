@@ -101,3 +101,11 @@ class MovieScoringAlice(MovieScoring):
 
         movie[score_field_name] = 1 - float(len(query_tokens.intersection(movie_title_tokens))) / len(
             query_tokens.union(movie_title_tokens))
+
+    def is_match(self, params, movie):
+        if 'year' in params and 'year' in movie:
+            if abs(movie['year'] - params['year']) > 1:
+                # the year of movie too different
+                return False
+
+        return True

@@ -83,6 +83,12 @@ lang: [vi,en]
 #providers: [opensubtitles, subscene]
 ```
 
+# Change log
+
+## 4.1.0
+
+1. Movie matching: only return movies which year distance <= 1
+
 # Development
 
 ```

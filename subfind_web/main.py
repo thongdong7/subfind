@@ -109,7 +109,7 @@ validator_manager = ValidatorManager(value_validator)
 def config_update():
     update = {}
 
-    for field_name in ['src', 'lang']:
+    for field_name in ['src', 'lang', 'providers']:
         push_value = request.args.get('%s-$push' % field_name)
         if push_value:
             push_value = validator_manager.validate_field(field_name, push_value)

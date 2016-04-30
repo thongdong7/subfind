@@ -145,9 +145,10 @@ class SubsceneProvider(BaseProvider):
 
         # Sort movie base on release info, the best match movie should be first
         self.movie_score.sort(release_matching_checker.info, movies)
-        # pprint(movies)
 
-        return movies
+        filtered_movies = self.movie_score.get_match(release_matching_checker.info, movies)
+
+        return filtered_movies
 
     def _get_movie_release(self, release_matching_checker, movie, langs):
         base_url = movie['url']
