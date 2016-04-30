@@ -17,7 +17,7 @@ Supported providers:
 Subfind is developed by Python and packaged using pip. Ensure you have pip installed.
 
 ```
-pip install subfind-cli
+pip install subfind[cli,opensubtitles,subscene]
 ```
 
 ## Scan movie folder 
@@ -81,4 +81,10 @@ lang: [vi,en]
 # Remove old subtitle if not found. Only work when `force` is enabled.
 #remove: false
 #providers: [opensubtitles, subscene]
+```
+
+# Development
+
+```
+python setup.py bdist_wheel --universal upload
 ```

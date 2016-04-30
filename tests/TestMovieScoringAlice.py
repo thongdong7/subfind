@@ -35,10 +35,37 @@ class MovieScoringAliceTestCase(unittest.TestCase):
                     {'title': 'Inside Out', 'year': 2011},
                 ],
             ),
+            # Same score, the one match year win
+            (
+                {'title_query': '13', 'year': 2010},
+                [
+                    {'year': 2013, 'title': '13/13/13'},
+                    {'year': 2010, 'title': '13'},
+                ],
+                [
+                    {'year': 2010, 'title': '13'},
+                    {'year': 2013, 'title': '13/13/13'},
+                ],
+            ),
+            # Same score, the one match title win
+            (
+                {'title_query': '13', 'year': 2011},
+                [
+                    {'year': 2013, 'title': '13/13/13'},
+                    {'year': 2011, 'title': '13'},
+                ],
+                [
+                    {'year': 2011, 'title': '13'},
+                    {'year': 2013, 'title': '13/13/13'},
+                ],
+            ),
         ]
 
         for params, movies, expected_movies in testcases:
+            params['title_tokens'] = params['title_query'].split(' ')
+            # print(params)
             movie_scoring.sort(params, movies)
+            # print(movies)
 
             for i, movie in enumerate(movies):
                 self.assertEqual(expected_movies[i]['title'], movie['title'])

@@ -4,6 +4,12 @@ class MovieNotFound(Exception):
         self.message = message
         self.release_name = release_name
 
+    def __str__(self):
+        return '%s: %s' % (self.message, self.release_name)
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class SubtitleNotFound(Exception):
     def __init__(self, movie, params, detail=None, *args, **kwargs):
