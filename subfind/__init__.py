@@ -5,7 +5,7 @@ import os
 import re
 import shutil
 from abc import ABCMeta, abstractmethod
-from os.path import join, exists, getsize
+from os.path import join, getsize
 from subfind.model import Subtitle
 from subfind.processor import SingleSubtitleProcessor, MultipleSubtitleProcessor
 from subfind.utils.subtitle import subtitle_extensions, remove_subtitle, get_subtitle_info
@@ -24,23 +24,6 @@ EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
 
 class BaseProvider(object):
     __metaclass__ = ABCMeta
-
-    # @abstractmethod
-    # def download_sub(self, release, target_folder, release_name):
-    #     """
-    #     Download subtitle of `release` and save to target folder. Name of subtitle will base on the release name,
-    #      language and subtitle file format.
-    #
-    #     :param release:
-    #     :type release:
-    #     :param target_folder:
-    #     :type target_folder:
-    #     :param release_name:
-    #     :type release_name:
-    #     :return:
-    #     :rtype: str
-    #     """
-    #     pass
 
     @abstractmethod
     def get_releases(self, release_name, langs):
