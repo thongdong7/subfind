@@ -61,3 +61,4 @@ docs/_build/
 
 /node_modules
 assets.json
+/client/dist

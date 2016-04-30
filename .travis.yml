@@ -10,7 +10,7 @@ python:
 #  - "pypy"
 # command to install dependencies
 before_install:
-  - pip install -e [web,cli,opensubtitles,subscene]
+  - pip install -e .[web,cli,opensubtitles,subscene]
   - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install importlib; fi
 
 # command to run tests
