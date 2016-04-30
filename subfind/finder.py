@@ -12,6 +12,13 @@ from subfind.scenario import ScenarioManager
 from subfind.utils.subtitle import get_subtitle_info
 
 
+EVENT_SCAN_RELEASE = 'SCAN_RELEASE'
+EVENT_RELEASE_FOUND_LANG = 'RELEASE_FOUND_LANG'
+EVENT_RELEASE_COMPLETED = 'RELEASE_COMPLETED'
+EVENT_RELEASE_MOVIE_NOT_FOUND = 'RELEASE_MOVIE_NOT_FOUND'
+EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
+
+
 class SubFind(object):
     def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None, max_sub=1):
         """
@@ -226,8 +233,4 @@ class SubFind(object):
         return self.languages - found_langs
 
 
-EVENT_SCAN_RELEASE = 'SCAN_RELEASE'
-EVENT_RELEASE_FOUND_LANG = 'RELEASE_FOUND_LANG'
-EVENT_RELEASE_COMPLETED = 'RELEASE_COMPLETED'
-EVENT_RELEASE_MOVIE_NOT_FOUND = 'RELEASE_MOVIE_NOT_FOUND'
-EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
+
