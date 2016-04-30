@@ -103,7 +103,7 @@ export default class SFReleaseList extends React.Component {
                   <LanguageStats data={item.subtitles} />
                 </div>
                 <div className="col-xs-6 pull-right">
-                  <RPCButton query="release/download" params={{src: item.src}}
+                  <RPCButton query="release/download" params={{src: item.src, name: item.name}}
                     onComplete={this.loadData.bind(this)} name="Download" />
                     <RPCButton query="release/remove-subtitle" params={{src: item.src, name: item.name}}
                       onComplete={this.loadData.bind(this)} name="Remove Subtitles" />
