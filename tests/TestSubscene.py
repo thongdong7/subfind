@@ -88,7 +88,8 @@ class SubsceneTestCase(unittest.TestCase):
             # ('Avengers.Age.of.Ultron.2015.1080p.BluRay.x264.YIFY', ['vi']),
             # ('The.Benefactor.2015.1080p.WEB-DL.DD5.1.H264-FGT', ['en']),
             # ('13.2010.720p.BluRay.x264.YIFY', ['vi']),
-            ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', ['en']),
+            # ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', ['en']),
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', ['en']),
         ]
 
         for release_name, langs in testcases:
@@ -110,6 +111,8 @@ class SubsceneTestCase(unittest.TestCase):
             ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', 'https://subscene.com/subtitles/bad-boys-ii'),
             ('400.Days.2015.1080p.BluRay.H264.AAC-RARBG', 'https://subscene.com/subtitles/400-days'),
             ('Dragon Blade 2015 1080p BluRay x264 AAC - Ozlem', 'https://subscene.com/subtitles/dragon-blade-2015'),
+            # Case subscene redirect movie
+            ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'https://subscene.com/subtitles/release?q=game%20of%20thrones%20s01e01%20winter%20is%20coming'),
         ]
 
         for release_name, expected_url in testcases:

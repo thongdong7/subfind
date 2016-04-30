@@ -86,7 +86,20 @@ class SubsceneProvider(BaseProvider):
         r = self.session.get(base_url)
 
         if not r.ok:
+            # print('not ok')
             return []
+
+        if '/release?q=' in r.url:
+            # Response is redirect to release search page
+            # So, we return a mock movie
+            return [
+                {
+                    'display_title': query,
+                    'title': query,
+                    'url': r.url,
+                    'mock': True
+                }
+            ]
 
         parser = Parser(r.content)
         nodes = parser.query('//div[@class="title"]/a[contains(@href, "/subtitles/")]')
