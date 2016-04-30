@@ -71,7 +71,6 @@ export default class SFConfigIndex extends React.Component {
     this.setState({loading: true})
 
     let data = await RestService.load("config")
-    console.log(data);
 
     this.setState({data: data, loading: false})
   }
@@ -121,12 +120,8 @@ export default class SFConfigIndex extends React.Component {
     this.updateConfig({[fieldName]: name})
   }
 
-  async updateForce(checked) {
-    this.updateConfig({force: checked})
-  }
-
-  async updateRemove(checked) {
-    this.updateConfig({remove: checked})
+  updateSwitchField(fieldName, checked) {
+    this.updateConfig({[fieldName]: checked})
   }
 
   render() {
@@ -136,8 +131,8 @@ export default class SFConfigIndex extends React.Component {
       loading = (
         <Loading />
       )
-
     }
+
     let content
     if (this.state.data) {
       // console.log(this.state.data.providers);
@@ -187,7 +182,8 @@ export default class SFConfigIndex extends React.Component {
           <div className="row">
             <div className="col-sm-3"><strong>Force download subtitle</strong></div>
             <div className="col-sm-9">
-              <Switch checked={this.state.data.force} onChange={this.updateForce.bind(this)}/>
+              <Switch checked={this.state.data.force}
+                onChange={(checked) => this.updateSwitchField('force', checked)}/>
             </div>
           </div>
           <div className="row">
@@ -195,7 +191,8 @@ export default class SFConfigIndex extends React.Component {
               <strong>Remove old subtitles if not found new subtitle</strong>
             </div>
             <div className="col-sm-9">
-              <Switch checked={this.state.data.remove} onChange={this.updateRemove.bind(this)}/>
+              <Switch checked={this.state.data.remove}
+                onChange={(checked) => this.updateSwitchField('remove', checked)}/>
             </div>
           </div>
         </div>
@@ -205,7 +202,9 @@ export default class SFConfigIndex extends React.Component {
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
-          <h3 className="box-title">Config</h3>
+          <h3 className="box-title">
+            Config {loading}
+          </h3>
 
           <div className="box-tools">
             <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
@@ -213,9 +212,7 @@ export default class SFConfigIndex extends React.Component {
           </div>
         </div>
         <div className="box-body">
-          {loading}
           {content}
-
         </div>
       </div>
     )
