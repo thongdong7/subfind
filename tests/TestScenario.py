@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 class ScenarioTestCase(unittest.TestCase):
     def test_01(self):
         scenario = SubsceneFactory().get_scenario()
+        return
         testcases = [
             # Format: release_name, lang, expected_extension, expected_size
             # (

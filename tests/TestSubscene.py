@@ -76,26 +76,26 @@ class SubsceneTestCase(unittest.TestCase):
     def test_search_release(self):
         testcases = [
             # failed cases
-            # ('Boardwalk.Empire.S01E01.720p.HDTV.x264-IMMERSE', ['en', 'vi']),
-            # ('Game of Thrones S01E03 Lord Snow 1080p 5.1', ['vi']),
+            ('Boardwalk.Empire.S01E01.720p.HDTV.x264-IMMERSE', ['en', 'vi']),
+            ('Game of Thrones S01E03 Lord Snow 1080p 5.1', ['vi']),
 
             # pass cases
-            # ('black.mass.2015.1080p.bluray.6ch.hevc.x265.rmteam', ['vi']),
-            # ('Men.In.Black.II.2002.1080p.BluRay.x264.YIFY', ['vi']),
-            # ('Tammy.2014.1080p.BluRay.x264.YIFY', ['vi']),
-            # ('Brick.Mansions.2014.1080p.BluRay.x264.YIFY', ['vi']),
-            # ('Burnt.2015.1080p.BluRay.6CH.1.8GB.MkvCage', ['vi']),
-            # ('Avengers.Age.of.Ultron.2015.1080p.BluRay.x264.YIFY', ['vi']),
-            # ('The.Benefactor.2015.1080p.WEB-DL.DD5.1.H264-FGT', ['en']),
-            # ('13.2010.720p.BluRay.x264.YIFY', ['vi']),
-            # ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', ['en']),
+            ('black.mass.2015.1080p.bluray.6ch.hevc.x265.rmteam', ['vi']),
+            ('Men.In.Black.II.2002.1080p.BluRay.x264.YIFY', ['vi']),
+            ('Tammy.2014.1080p.BluRay.x264.YIFY', ['vi']),
+            ('Brick.Mansions.2014.1080p.BluRay.x264.YIFY', ['vi']),
+            ('Burnt.2015.1080p.BluRay.6CH.1.8GB.MkvCage', ['vi']),
+            ('Avengers.Age.of.Ultron.2015.1080p.BluRay.x264.YIFY', ['vi']),
+            ('The.Benefactor.2015.1080p.WEB-DL.DD5.1.H264-FGT', ['en']),
+            ('13.2010.720p.BluRay.x264.YIFY', ['vi']),
+            ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', ['en']),
             ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', ['en']),
         ]
 
         for release_name, langs in testcases:
             releases = self.provider.get_releases(release_name, langs)
 
-            pprint(releases)
+            # pprint(releases)
 
             self.assertTrue(releases is not None)
             self.assertTrue(isinstance(releases, dict))
@@ -113,10 +113,17 @@ class SubsceneTestCase(unittest.TestCase):
             ('Dragon Blade 2015 1080p BluRay x264 AAC - Ozlem', 'https://subscene.com/subtitles/dragon-blade-2015'),
             # Case subscene redirect movie
             ('Game of Thrones S01E01 Winter Is Coming 1080p 5.1', 'https://subscene.com/subtitles/release?q=game%20of%20thrones%20s01e01%20winter%20is%20coming'),
+            # No match movie
+            ('DamNation.2014.1080p.WEB-DL.AAC2.0.H264-RARBG', None),
         ]
 
         for release_name, expected_url in testcases:
             movies = self.provider.get_all_movies(release_name)
+
+            if expected_url is None:
+                # There is no match movie
+                self.assertEqual(0, len(movies))
+                continue
 
             # pprint(releases)
             #

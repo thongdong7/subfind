@@ -30,11 +30,43 @@ def cmp_to_key(mycmp):
 
     return K
 
+a_win = -1
+b_win = 1
+no_one_win = 0
+
+
+def movie_match_year(arbiter_year, a, b):
+    if a['year'] != b['year']:
+        # Which one is the same with arbiter_year win
+        if a['year'] == arbiter_year:
+            return a_win
+        elif b['year'] == arbiter_year:
+            return b_win
+
+    return no_one_win
+
+
+def movie_match_display_title(arbiter_title_query, a, b):
+    if a['display_title_query'] == arbiter_title_query:
+        return a_win
+
+    if b['display_title_query'] == arbiter_title_query:
+        return b_win
+
+    return no_one_win
+
+
+def movie_match_title(arbiter_title_query, a, b):
+    if a['title_query'] == arbiter_title_query:
+        return a_win
+
+    if b['title_query'] == arbiter_title_query:
+        return b_win
+
+    return no_one_win
+
 
 class MovieScoringAlice(MovieScoring):
-    a_win = -1
-    b_win = 1
-
     def sort(self, params, movies):
         query_tokens = set(params['title_tokens'])
         arbiter_year = params['year']
@@ -42,7 +74,8 @@ class MovieScoringAlice(MovieScoring):
 
         for movie in movies:
             self.build_score(movie, query_tokens, 'title', 'title_query', 'title_d')
-            self.build_score(movie, query_tokens, 'display_title', 'display_title_query', 'display_title_d')
+            if 'display_title' in movie:
+                self.build_score(movie, query_tokens, 'display_title', 'display_title_query', 'display_title_d')
             # movie['title_query'] = build_title_query_from_title(movie['title'])
             # # movie['d'] = distance.levenshtein(query, movie['title'].lower()),
             # # Switch to jaccard index because it's more accuracy.
@@ -52,38 +85,56 @@ class MovieScoringAlice(MovieScoring):
             # movie['d'] = 1 - float(len(query_tokens.intersection(movie_title_tokens))) / len(query_tokens.union(movie_title_tokens))
 
         def movie_cmp(a, b):
+            # important
+            if 'display_title_query' in a and 'display_title_query' in b:
+                display_title_score = movie_match_display_title(arbiter_title_query, a, b)
+            else:
+                display_title_score = no_one_win
+                
+            title_score = movie_match_title(arbiter_title_query, a, b)
+            year_score = movie_match_year(arbiter_year, a, b)
+
+            # print(display_title_score, title_score, year_score)
+
+            # title_score better than year_score
+            final_score = display_title_score + 2 * title_score + year_score
+            if final_score < 0:
+                return a_win
+            elif final_score > 0:
+                return b_win
+
             # Case: Both movies have wrong year
             if a['year'] != arbiter_year and b['year'] != arbiter_year:
                 # The one match title_query win
                 if a['title_query'] == arbiter_title_query:
-                    return self.a_win
+                    return a_win
                 elif b['title_query'] == arbiter_title_query:
-                    return self.b_win
+                    return b_win
 
                 if a['year'] > b['year']:
                     # larger year is better
-                    return self.a_win
+                    return a_win
                 elif a['year'] < b['year']:
-                    return self.b_win
+                    return b_win
             else:
                 if a['year'] != b['year']:
                     # Which one is the same with arbiter_year win
                     if a['year'] == arbiter_year:
-                        return self.a_win
+                        return a_win
                     elif b['year'] == arbiter_year:
-                        return self.b_win
+                        return b_win
 
             if a['display_title_d'] < b['display_title_d']:
                 # smaller distances is better
-                return self.a_win
+                return a_win
             elif a['display_title_d'] > b['display_title_d']:
-                return self.b_win
+                return b_win
 
             if a['title_d'] < b['title_d']:
                 # smaller distances is better
-                return self.a_win
+                return a_win
             elif a['title_d'] > b['title_d']:
-                return self.b_win
+                return b_win
 
             # Same score now
 

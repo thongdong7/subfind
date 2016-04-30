@@ -35,7 +35,7 @@ class MovieScoringAliceTestCase(unittest.TestCase):
                     {'title': 'Inside Out', 'year': 2011},
                 ],
             ),
-            # Same score, the one match year win
+            # Same `d` score, the one match year win
             (
                 {'title_query': '13', 'year': 2010},
                 [
