@@ -28,7 +28,6 @@ export default class SFReleaseFilter extends React.Component {
     if (this.props.onChange) {
       this.props.onChange(this.state.filter)
     }
-    console.log(this.state.filter);
   }
 
   render() {

@@ -62,7 +62,6 @@ export default class SFReleaseList extends React.Component {
   }
 
   updateFilter(filter) {
-    console.log('filter', filter);
     this.setState({filter: filter})
   }
 
