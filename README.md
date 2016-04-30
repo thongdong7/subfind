@@ -85,6 +85,16 @@ lang: [vi,en]
 
 # Change log
 
+## 4.1.2
+
+1. [Bug]: Fix download non-related release when click download button
+2. [Feature]: Remove subtitle for specific release
+
+## 4.1.1
+
+1. Movie matching bug: the matched title is more important than the matched year
+2. Remove `:` character when build title query
+
 ## 4.1.0
 
 1. Movie matching: only return movies which year distance <= 1
