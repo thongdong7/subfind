@@ -8,7 +8,7 @@ from six.moves.xmlrpc_client import ServerProxy
 import base64
 import re
 from babelfish import Language
-from subfind import BaseProvider
+from subfind.provider import BaseProvider
 from subfind.exception import ReleaseNotMatchError, MovieNotFound
 from subfind.model import Subtitle
 from subfind.release import ReleaseMatchingChecker

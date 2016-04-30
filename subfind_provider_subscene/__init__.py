@@ -10,7 +10,8 @@ import requests
 from os import listdir
 from os.path import join, abspath
 from shutil import rmtree
-from subfind import BaseProvider, Subtitle
+from subfind import Subtitle
+from subfind.provider import BaseProvider
 from subfind.cmd import run_cmd
 from subfind.exception import SubtitleFileBroken, HTTPConnectionError, ReleaseNotMatchError, MovieNotFound
 from subfind.movie.alice import MovieScoringAlice

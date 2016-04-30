@@ -1,7 +1,8 @@
 from os import unlink
 from os.path import dirname, join, abspath, exists
 
-from subfind import SubFind, EVENT_RELEASE_COMPLETED
+from subfind import EVENT_RELEASE_COMPLETED
+from subfind.finder import SubFind
 from subfind.event import EventManager
 from subfind.utils import get_file_content
 

@@ -6,7 +6,8 @@ from os.path import join, abspath
 
 import os
 from flask import Flask, request, render_template
-from subfind import parse_release_name, SubFind
+from subfind import parse_release_name
+from subfind.finder import SubFind
 from subfind.event import EventManager
 from subfind_web.api import api
 from subfind_web.crossdomain import crossdomain

@@ -6,7 +6,7 @@ from os.path import exists
 import click
 import yaml
 
-from subfind import SubFind
+from subfind.finder import SubFind
 from subfind.event import EventManager
 from subfind_cli.utils import ReleaseOutput, error_msg
 
@@ -40,6 +40,8 @@ def cli_scan(movie_dir, lang, providers, force, remove, verbose, min_movie_size,
 
 
 def scan(movie_dir, lang, providers, force, remove, verbose, min_movie_size, max_sub):
+    # print(movie_dir, lang, providers, force, remove, verbose, min_movie_size, max_sub)
+    # sys.exit(1)
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
     else:
