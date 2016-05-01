@@ -69,7 +69,7 @@ port_pattern = re.compile(':\d+')
 
 
 @app.route("/")
-def hello():
+def homepage():
     host = request.headers['Host']
     domain = port_pattern.sub('', host)
 
