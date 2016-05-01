@@ -46,7 +46,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="node_modules/admin-lte/dist/js/app.min.js"></script>
 
 <script type="text/javascript">
-  var restUrl = '{{request.url_root}}';
+  var restUrl = '{{request.url_root[:-1]}}';
 </script>
 {% if is_production %}
   <script async src="js/vendor.bundle.js"></script>
