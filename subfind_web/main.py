@@ -51,7 +51,7 @@ def build_data():
         item = {
             'name': release_name,
             'src': movie_dir,
-            'languages': langs,
+            'languages': list(langs),
             'subtitles': sub_finder.stat_subtitle(release_name, movie_dir)
         }
 
@@ -72,6 +72,7 @@ port_pattern = re.compile(':\d+')
 def homepage():
     host = request.headers['Host']
     domain = port_pattern.sub('', host)
+    print(domain)
 
     if domain.startswith('192'):
         is_production = True
