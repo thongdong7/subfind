@@ -24,7 +24,7 @@ export default class RPCButton extends React.Component {
     let icon
     if (this.state.loading) {
       loading = (
-        <i className="fa fa-spin fa-refresh"></i>
+        <i className="fa fa-spin fa-spinner"></i>
       )
     } else {
       if (this.props.icon) {

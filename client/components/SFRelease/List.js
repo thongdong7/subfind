@@ -69,17 +69,16 @@ export default class SFReleaseList extends React.Component {
           <h3 className="box-title">Movies</h3>
 
           <div className="box-tools">
-            <button type="button" className="btn btn-box-tool" data-widget="collapse">
-              <i className="fa fa-minus"></i>
-            </button>
-
             <button type="button" className="btn btn-box-tool"
               onClick={this.loadData.bind(this)}>
-              <i className="fa fa-refresh"></i>
+              <i className="fa fa-refresh"></i> Reload
             </button>
 
             <RPCButton query="release/scan-all" name="Scan All"
+              icon="tasks"
               onComplete={this.loadData.bind(this)}/>
+
+            <Link to="/release/config"><i className="fa fa-cog"></i> Config</Link>
           </div>
         </div>
         <div className="box-body">
