@@ -85,6 +85,12 @@ lang: [vi,en]
 
 # Change log
 
+## 4.2.0
+
+1. Refactor cli, core package
+2. [Web]: Add option `force` and `remove` to config form
+3. Update unit tests
+
 ## 4.1.2
 
 1. [Bug]: Fix download non-related release when click download button
