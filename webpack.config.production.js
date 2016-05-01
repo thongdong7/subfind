@@ -24,6 +24,7 @@ config.entry = {
     'ionicons/dist/css/ionicons.min.css',
     'admin-lte/dist/css/AdminLTE.min.css',
     'admin-lte/dist/css/skins/skin-blue.min.css',
+    'toastr.scss',
     'jquery',
     'admin-lte/bootstrap/js/bootstrap.js',
     'admin-lte/dist/js/app.js',
@@ -34,7 +35,9 @@ config.entry = {
     'react-router',
     'react-typeahead',
 
-    'react-dom'
+    'react-dom',
+
+    'toastr'
   ],
   app: "./client/main.js",
 }
@@ -47,7 +50,10 @@ config.plugins = config.plugins.concat([
   new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery",
-      "window.jQuery": "jquery"
+      "window.jQuery": "jquery",
+      toastr: "toastr",
+      "window.toastr": "toastr",
+
   }),
   new webpack.optimize.OccurenceOrderPlugin(true),
   new webpack.optimize.DedupePlugin(),

@@ -3,6 +3,7 @@
 
 import 'styles/main.scss';
 import 'styles/switch.scss';
+import 'toastr/toastr.scss';
 
 import React from 'react';
 import { render } from 'react-dom';
@@ -12,25 +13,17 @@ import { Router, Route, IndexRoute, hashHistory } from 'react-router'
 // import App from 'components/App'
 import AdminLTE from 'components/AdminLTE'
 
-
-// import CoffeeAreaCreate from 'components/CoffeeArea/Create'
-// import CoffeeAreaUpdate from 'components/CoffeeArea/Update'
-// import CoffeeAreaList from 'components/CoffeeArea/List'
-//
-// import CoffeeTableCreate from 'components/CoffeeTable/Create'
-// import CoffeeTableUpdate from 'components/CoffeeTable/Update'
-// import CoffeeTableList from 'components/CoffeeTable/List'
-//
-// import CoffeeProductCreate from 'components/CoffeeProduct/Create'
-// import CoffeeProductUpdate from 'components/CoffeeProduct/Update'
-// import CoffeeProductList from 'components/CoffeeProduct/List'
-//
-// import CoffeeOrderCreate from 'components/CoffeeOrder/Create'
-// import CoffeeOrderUpdate from 'components/CoffeeOrder/Update'
-// import CoffeeOrderList from 'components/CoffeeOrder/List'
-
 import SFConfigIndex from 'components/SFConfig/Index'
 import SFReleaseList from 'components/SFRelease/List'
+
+import toastr from 'toastr'
+
+toastr.options.closeButton = true;
+toastr.options.positionClass = "toast-top-left"
+
+$(document).ajaxError(function() {
+  toastr.error('Could not connect to subfind server')
+});
 
 render((
   <Router history={hashHistory}>
