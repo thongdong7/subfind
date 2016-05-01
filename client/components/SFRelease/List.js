@@ -42,10 +42,6 @@ export default class SFReleaseList extends React.Component {
     }
   }
 
-  // toggleFilter() {
-  //   this.setState(update(this.state, {filter: {$set: {empty: !this.state.filter.empty}}}))
-  // }
-
   filter(item) {
     if (this.state.filter.empty) {
       return _.isEmpty(item.subtitles)

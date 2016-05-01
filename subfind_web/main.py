@@ -44,7 +44,7 @@ data = []
 
 def build_data():
     global data
-    movie_requests = sub_finder.build_download_requests_for_movie_dirs(config['src'])
+    movie_requests = sub_finder.build_download_requests_for_movie_dirs(config['src'], force=True)
 
     data = []
     for release_name, movie_dir, langs in movie_requests:
@@ -64,7 +64,7 @@ def build_data():
 
 build_data()
 
-# print(data)
+# pprint(data)
 port_pattern = re.compile(':\d+')
 
 

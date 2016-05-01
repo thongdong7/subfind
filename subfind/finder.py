@@ -112,7 +112,7 @@ class SubFind(object):
 
         return ret
 
-    def build_download_requests(self, movie_dir, release_name=None):
+    def build_download_requests(self, movie_dir, release_name=None, force=False):
         reqs = []
         for root_dir, child_folders, file_names in os.walk(movie_dir):
             for file_name in file_names:
@@ -134,7 +134,7 @@ class SubFind(object):
                         movie_release_name = m.group(1)
 
                         # Detect if the sub exists
-                        if not self.force:
+                        if not force:
                             missed_langs = self._find_missed_langs(movie_release_name, file_names)
 
                             if missed_langs:
@@ -144,10 +144,10 @@ class SubFind(object):
 
         return reqs
 
-    def build_download_requests_for_movie_dirs(self, movie_dirs):
+    def build_download_requests_for_movie_dirs(self, movie_dirs, force=False):
         reqs = []
         for movie_dir in movie_dirs:
-            reqs += self.build_download_requests(movie_dir)
+            reqs += self.build_download_requests(movie_dir, force=force)
 
         return reqs
 
@@ -213,7 +213,7 @@ class SubFind(object):
         self.process_download_requests(reqs)
 
     def scan(self, movie_dirs):
-        reqs = self.build_download_requests_for_movie_dirs(movie_dirs)
+        reqs = self.build_download_requests_for_movie_dirs(movie_dirs, force=self.force)
 
         self.process_download_requests(reqs)
 
