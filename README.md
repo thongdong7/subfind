@@ -104,9 +104,3 @@ lang: [vi,en]
 ## 4.1.0
 
 1. Movie matching: only return movies which year distance <= 1
-
-# Development
-
-```
-python setup.py bdist_wheel --universal upload
-```
