@@ -72,7 +72,6 @@ port_pattern = re.compile(':\d+')
 def homepage():
     host = request.headers['Host']
     domain = port_pattern.sub('', host)
-    print(domain)
 
     if domain.startswith('192'):
         is_production = True
