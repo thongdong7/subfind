@@ -71,7 +71,6 @@ export default class SFConfigIndex extends React.Component {
     this.setState({loading: true})
 
     let data = await RestService.load("config")
-    console.log(data);
 
     this.setState({data: data, loading: false})
   }
@@ -121,6 +120,10 @@ export default class SFConfigIndex extends React.Component {
     this.updateConfig({[fieldName]: name})
   }
 
+  updateSwitchField(fieldName, checked) {
+    this.updateConfig({[fieldName]: checked})
+  }
+
   render() {
     // console.log('render', this.state.formData);
     let loading
@@ -128,47 +131,69 @@ export default class SFConfigIndex extends React.Component {
       loading = (
         <Loading />
       )
-
     }
+
     let content
     if (this.state.data) {
       // console.log(this.state.data.providers);
       content = (
         <div>
-          <div className="col-sm-2"><strong>Movie Folders</strong></div>
-          <div className="col-sm-10">
-            {this.state.data.src.map((item, k) => {
-              return (
-                <MovieFolder src={item} key={k} onRemove={() => this.removeFolder(item)}/>
-              )
-            })}
-            <SimpleForm field="src" onSubmit={this.addFolder.bind(this)} />
+          <div className="row">
+            <div className="col-sm-3"><strong>Movie Folders</strong></div>
+            <div className="col-sm-9">
+              {this.state.data.src.map((item, k) => {
+                return (
+                  <MovieFolder src={item} key={k} onRemove={() => this.removeFolder(item)}/>
+                )
+              })}
+              <SimpleForm field="src" onSubmit={this.addFolder.bind(this)} />
+            </div>
           </div>
-          <div className="col-sm-2"><strong>Languages</strong></div>
-          <div className="col-sm-10">
-            {this.state.data.lang.map((item, k) => {
-              return (
-                <MovieFolder src={item} key={k} onRemove={() => this.removeLang(item)}/>
-              )
-            })}
+          <div className="row">
+            <div className="col-sm-3"><strong>Languages</strong></div>
+            <div className="col-sm-9">
+              {this.state.data.lang.map((item, k) => {
+                return (
+                  <MovieFolder src={item} key={k} onRemove={() => this.removeLang(item)}/>
+                )
+              })}
 
-            <SimpleForm field="name" onSubmit={this.addLanguage.bind(this)} />
+              <SimpleForm field="name" onSubmit={this.addLanguage.bind(this)} />
+            </div>
           </div>
-          <div className="col-sm-2"><strong>Providers</strong></div>
-          <div className="col-sm-10">
-            {this.providers.map((item, k) => {
-              let tmp = this.state.data.providers.filter(x => x == item.name)
-              let value = tmp.length == 1 ? true : false
-              // console.log(item.display_name, value);
-              return (
-                <div key={k}>
-                  <div className="col-sm-6">{item.display_name}</div>
-                  <div className="col-sm-6">
-                    <Switch checked={value} onChange={(checked) => this.updateProvider(checked, item.name)}/>
+          <div className="row">
+            <div className="col-sm-3"><strong>Providers</strong></div>
+            <div className="col-sm-9">
+              {this.providers.map((item, k) => {
+                let tmp = this.state.data.providers.filter(x => x == item.name)
+                let value = tmp.length == 1 ? true : false
+                // console.log(item.display_name, value);
+                return (
+                  <div key={k}>
+                    <div className="col-sm-3">{item.display_name}</div>
+                    <div className="col-sm-9">
+                      <Switch checked={value} onChange={(checked) => this.updateProvider(checked, item.name)}/>
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-3"><strong>Force download subtitle</strong></div>
+            <div className="col-sm-9">
+              <Switch checked={this.state.data.force}
+                onChange={(checked) => this.updateSwitchField('force', checked)}/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-3">
+              <strong>Remove old subtitles if not found new subtitle</strong>
+            </div>
+            <div className="col-sm-9">
+              <Switch checked={this.state.data.remove}
+                onChange={(checked) => this.updateSwitchField('remove', checked)}/>
+            </div>
           </div>
         </div>
       )
@@ -177,7 +202,9 @@ export default class SFConfigIndex extends React.Component {
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
-          <h3 className="box-title">Config</h3>
+          <h3 className="box-title">
+            Config {loading}
+          </h3>
 
           <div className="box-tools">
             <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
@@ -185,9 +212,7 @@ export default class SFConfigIndex extends React.Component {
           </div>
         </div>
         <div className="box-body">
-          {loading}
           {content}
-
         </div>
       </div>
     )

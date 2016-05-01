@@ -6,7 +6,7 @@ from os.path import exists
 import click
 import yaml
 
-from subfind import SubFind
+from subfind.finder import SubFind
 from subfind.event import EventManager
 from subfind_cli.utils import ReleaseOutput, error_msg
 
@@ -40,6 +40,8 @@ def cli_scan(movie_dir, lang, providers, force, remove, verbose, min_movie_size,
 
 
 def scan(movie_dir, lang, providers, force, remove, verbose, min_movie_size, max_sub):
+    # print(movie_dir, lang, providers, force, remove, verbose, min_movie_size, max_sub)
+    # sys.exit(1)
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
     else:
@@ -60,27 +62,28 @@ def scan(movie_dir, lang, providers, force, remove, verbose, min_movie_size, max
 
 
 @click.command('scan-config', help='Load parameters from config file to scan')
-@click.option('--config', '-c', required=False, help='Config file. Default: subfind in current working dir'
-                                                     ' or $HOME/.subfind/subfind.yml')
-def cli_scan_config(config):
-    scan_config(config)
+@click.option('--config', '-c', 'config_file', required=False,
+              help='Config file. Default: subfind in current working dir'
+                   ' or $HOME/.subfind/subfind.yml')
+def cli_scan_config(config_file):
+    scan_config(config_file)
 
 
-def scan_config(config):
-    if not config:
-        config = 'subfind.yml'
-        if not exists(config):
-            config = '%s/.subfind/subfind.yml' % (os.getenv('HOME'))
-            if not exists(config):
+def scan_config(config_file):
+    if not config_file:
+        config_file = 'subfind.yml'
+        if not exists(config_file):
+            config_file = '%s/.subfind/subfind.yml' % (os.getenv('HOME'))
+            if not exists(config_file):
                 error_msg('Could not found subfind.yml in current folder and $HOME/.subfind/subfind.yml')
                 sys.exit(1)
-    elif not exists(config):
-        error_msg('File %s does not exists' % config)
+    elif not exists(config_file):
+        error_msg('File %s does not exists' % config_file)
         sys.exit(1)
 
     # Build params
     try:
-        data = yaml.load(open(config))
+        data = yaml.load(open(config_file))
     except Exception as e:
         error_msg('Could not load config file: %s' % str(e))
         sys.exit(2)

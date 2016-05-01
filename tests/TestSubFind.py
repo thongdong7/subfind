@@ -1,59 +1,66 @@
 from os import unlink
 from os.path import dirname, join, abspath, exists
-
-from subfind import SubFind, EVENT_RELEASE_COMPLETED
 from subfind.event import EventManager
-from subfind.utils import get_file_content
+from subfind.finder import SubFind, EVENT_RELEASE_FOUND_LANG
 
 __author__ = 'hiepsimu'
 import logging
 import unittest
 
 logging.basicConfig(level=logging.DEBUG)
-called_release_completed = False
+found_lang_flag = False
 
 
 class SubFindTestCase(unittest.TestCase):
     def test_01(self):
-        global called_release_completed
         self.data_dir = abspath(join(dirname(__file__), 'data'))
 
         testcases = [
-            ('m1', ['vi'], 'Everest.2015.HC.1080p.HDRiP.x264.ShAaNiG.vi.srt'),
-            ('m2', ['en'], 'Survivor.2014.1080p.BluRay.H264.AAC-RARBG.en.srt'),
+            ('m1', ['en'], 'Everest.2015.HC.1080p.HDRiP.x264.ShAaNiG.vi.srt'),
+            # ('m2', ['en'], 'Survivor.2014.1080p.BluRay.H264.AAC-RARBG.en.srt'),
         ]
+        providers_group = [
+            ['opensubtitles'],
+            ['subscene'],
+            ['opensubtitles', 'subscene'],
+        ]
+        global found_lang_flag
 
-        for test_dir, languages, sub_file in testcases:
-            m1_dir = join(self.data_dir, test_dir)
-            sub_file_path = join(m1_dir, sub_file)
-            if exists(sub_file_path):
-                unlink(sub_file_path)
+        for providers in providers_group:
+            for test_dir, languages, sub_file in testcases:
+                m1_dir = join(self.data_dir, test_dir)
+                # sub_file_path = join(m1_dir, sub_file)
+                # if exists(sub_file_path):
+                #     unlink(sub_file_path)
 
-            event_manager = EventManager()
-            called_release_completed = False
+                found_lang_flag = False
 
-            def release_completed(event):
-                global called_release_completed
-                called_release_completed = True
-                self.assertTrue('subtitle_paths' in event)
-                self.assertTrue(len(event['subtitle_paths']) > 0)
-                for subtitle_path in event['subtitle_paths']:
-                    # print(subtitle_path)
-                    self.assertTrue(exists(subtitle_path))
+                def release_found_lang(event):
+                    global found_lang_flag
+                    found_lang_flag = True
 
-                    sub_size = len(get_file_content(subtitle_path))
-                    self.assertTrue(sub_size > 0)
+                    release_name, found_lang = event
 
-                    unlink(subtitle_path)
+                    self.assertTrue(sub_file.startswith(release_name))
+                    self.assertTrue(found_lang in languages)
 
-            event_manager.register(EVENT_RELEASE_COMPLETED, release_completed)
+                event_manager = EventManager()
+                event_manager.register(EVENT_RELEASE_FOUND_LANG, release_found_lang)
 
-            sub_finder = SubFind(event_manager, languages=languages, provider_names=['opensubtitles', 'subscene'],
-                                 force=True)
+                sub_finder = SubFind(event_manager, languages=languages, provider_names=['opensubtitles', 'subscene'],
+                                     force=True)
 
-            sub_finder.scan([m1_dir])
+                # Remove subtitle before start
+                sub_finder.remove_subtitle(m1_dir)
 
-            self.assertTrue(called_release_completed)
+                # Start
+                sub_finder.scan([m1_dir])
+
+                # found_lang must be called
+                self.assertTrue(found_lang_flag)
+
+                # Remove subtitle
+                sub_finder.remove_subtitle(m1_dir)
 
 
 if __name__ == '__main__':

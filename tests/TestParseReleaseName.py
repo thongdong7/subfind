@@ -1,4 +1,4 @@
-from subfind import parse_release_name
+from subfind.movie_parser import parse_release_name
 
 __author__ = 'hiepsimu'
 import logging

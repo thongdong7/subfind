@@ -62,3 +62,6 @@ docs/_build/
 /node_modules
 assets.json
 /client/dist
+/tests/data/m1/*.srt
+/tests/data/m2/*.srt
+/tests/data/m2/*.ass

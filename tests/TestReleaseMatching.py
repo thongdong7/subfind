@@ -1,5 +1,5 @@
-from subfind import parse_release_name
 from subfind.exception import ReleaseNotMatchError, RELEASE_NOT_MATCH_ERROR__TITLE, RELEASE_NOT_MATCH_ERROR__SEASONEPS
+from subfind.movie_parser import parse_release_name
 from subfind.release import check_match_release_info
 
 __author__ = 'hiepsimu'

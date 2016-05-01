@@ -17,6 +17,7 @@ default_config = {
     'lang': ['en'],
     'force': False,
     'remove': False,
+    'verbose': False,
     # Get maximum 5 subtitles for each release
     'max-sub': 5,
     # ignore files less than 500 MB

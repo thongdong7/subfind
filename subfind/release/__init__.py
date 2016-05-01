@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from subfind import parse_release_name
 from subfind.exception import ReleaseNotMatchError, RELEASE_NOT_MATCH_ERROR__SEASONEPS, RELEASE_NOT_MATCH_ERROR__TITLE
+from subfind.movie_parser import parse_release_name
 
 
 class ReleaseScoring(object):
