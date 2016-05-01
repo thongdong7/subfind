@@ -21,14 +21,23 @@ export default class RPCButton extends React.Component {
 
   render() {
     let loading
+    let icon
     if (this.state.loading) {
       loading = (
         <i className="fa fa-spin fa-refresh"></i>
       )
+    } else {
+      if (this.props.icon) {
+        icon = (
+          <i className={"fa fa-"+this.props.icon}></i>
+        )
+      }
     }
 
     return (
-      <button className="btn btn-default" onClick={this.onClick.bind(this)}>{loading} {this.props.name}</button>
+      <button className="btn btn-default" onClick={this.onClick.bind(this)}>
+        {loading} {icon} {this.props.name}
+      </button>
     )
   }
 }
