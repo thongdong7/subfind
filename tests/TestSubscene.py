@@ -1,9 +1,4 @@
-from pprint import pprint
-
-import shutil
-from os.path import getsize, exists
 from subfind_provider_subscene import SubsceneProvider
-from tempfile import mkdtemp
 
 __author__ = 'hiepsimu'
 import logging

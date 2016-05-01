@@ -1,6 +1,8 @@
+from os import unlink
+
 import yaml
 from os.path import dirname, join, abspath
-from subfind import write_file_content
+from subfind.utils import write_file_content
 from subfind_cli.cli import scan_config
 
 __author__ = 'hiepsimu'
@@ -25,6 +27,8 @@ class CliScanConfigTestCase(unittest.TestCase):
         }))
 
         scan_config(config_file)
+
+        unlink(config_file)
 
 
 if __name__ == '__main__':

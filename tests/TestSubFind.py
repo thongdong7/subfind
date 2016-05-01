@@ -19,34 +19,48 @@ class SubFindTestCase(unittest.TestCase):
             ('m1', ['en'], 'Everest.2015.HC.1080p.HDRiP.x264.ShAaNiG.vi.srt'),
             # ('m2', ['en'], 'Survivor.2014.1080p.BluRay.H264.AAC-RARBG.en.srt'),
         ]
+        providers_group = [
+            ['opensubtitles'],
+            ['subscene'],
+            ['opensubtitles', 'subscene'],
+        ]
         global found_lang_flag
 
-        for test_dir, languages, sub_file in testcases:
-            m1_dir = join(self.data_dir, test_dir)
-            sub_file_path = join(m1_dir, sub_file)
-            if exists(sub_file_path):
-                unlink(sub_file_path)
+        for providers in providers_group:
+            for test_dir, languages, sub_file in testcases:
+                m1_dir = join(self.data_dir, test_dir)
+                # sub_file_path = join(m1_dir, sub_file)
+                # if exists(sub_file_path):
+                #     unlink(sub_file_path)
 
-            found_lang_flag = False
+                found_lang_flag = False
 
-            def release_found_lang(event):
-                global found_lang_flag
-                found_lang_flag = True
+                def release_found_lang(event):
+                    global found_lang_flag
+                    found_lang_flag = True
 
-                release_name, found_lang = event
+                    release_name, found_lang = event
 
-                self.assertTrue(sub_file.startswith(release_name))
-                self.assertTrue(found_lang in languages)
+                    self.assertTrue(sub_file.startswith(release_name))
+                    self.assertTrue(found_lang in languages)
 
-            event_manager = EventManager()
-            event_manager.register(EVENT_RELEASE_FOUND_LANG, release_found_lang)
+                event_manager = EventManager()
+                event_manager.register(EVENT_RELEASE_FOUND_LANG, release_found_lang)
 
-            sub_finder = SubFind(event_manager, languages=languages, provider_names=['opensubtitles', 'subscene'],
-                                 force=True)
+                sub_finder = SubFind(event_manager, languages=languages, provider_names=['opensubtitles', 'subscene'],
+                                     force=True)
 
-            sub_finder.scan([m1_dir])
+                # Remove subtitle before start
+                sub_finder.remove_subtitle(m1_dir)
 
-            self.assertTrue(found_lang_flag)
+                # Start
+                sub_finder.scan([m1_dir])
+
+                # found_lang must be called
+                self.assertTrue(found_lang_flag)
+
+                # Remove subtitle
+                sub_finder.remove_subtitle(m1_dir)
 
 
 if __name__ == '__main__':

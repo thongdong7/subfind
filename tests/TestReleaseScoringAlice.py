@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from subfind.release.alice import ReleaseScoringAlice
 
 __author__ = 'hiepsimu'
