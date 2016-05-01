@@ -19,10 +19,11 @@ class CliScanConfigTestCase(unittest.TestCase):
     def test_01(self):
         cli_dir = join(self.data_dir, 'cli1')
         config_file = join(cli_dir, 'subfind.yml')
-        movie_dir = [join(self.data_dir, 'm1'), join(self.data_dir, 'm2')]
+        movies_dir = [join(self.data_dir, 'm1'), join(self.data_dir, 'm2')]
         write_file_content(config_file, yaml.safe_dump({
-            'src': movie_dir,
-            'lang': 'vi,en',
+            'src': movies_dir,
+            'force': True,
+            'lang': ['vi', 'en'],
             'min-movie-size': 0
         }))
 
