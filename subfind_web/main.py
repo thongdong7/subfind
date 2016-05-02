@@ -11,6 +11,7 @@ from subfind_web.api import api
 from subfind_web.crossdomain import crossdomain
 from subfind_web.utils import save_config, get_config
 from subfind_web.validate import folder_validator, ValidatorManager
+from tornado.autoreload import watch
 
 current_folder = os.path.abspath(os.path.dirname(__file__))
 
@@ -201,7 +202,7 @@ if __name__ == "__main__":
     autoreload.start(ioloop)
 
     root_dir = os.path.abspath(os.path.dirname(__file__))
-    # watch(join(root_dir, 'data/postgresql'))
+    watch(join(root_dir, 'data/postgresql'))
     # watch(join(root_dir, 'generated'))
 
     ioloop.start()

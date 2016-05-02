@@ -25,12 +25,18 @@ config.entry = {
 //    'ionicons/dist/css/ionicons.min.css',
 //    'admin-lte/dist/css/AdminLTE.min.css',
 //    'admin-lte/dist/css/skins/skin-blue.min.css',
-    'admin-lte/bootstrap/css/bootstrap.css',
-    'font-awesome/css/font-awesome.css',
-    'ionicons/dist/css/ionicons.css',
-    'admin-lte/dist/css/AdminLTE.css',
-    'admin-lte/dist/css/skins/skin-blue.css',
-    'toastr/toastr.scss',
+
+{%- for item in extraComponents -%}
+  {%- if item.css -%}
+  {% for css in item.css %}
+    '{{css}}',
+  {%- endfor %}
+  {%- endif %}
+  {%- if item.scss -%}
+  {%- set scss = item.scss if item.scss.endswith('scss') else item.scss + '.scss' %}
+    '{{scss}}',
+  {%- endif %}
+{%- endfor %}
 
     'jquery',
     'admin-lte/bootstrap/js/bootstrap.js',

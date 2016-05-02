@@ -15,3 +15,9 @@ python setup.py bdist_wheel --universal upload
 ```
 ./tag.sg <tag_name>
 ```
+
+# Run server
+
+```
+./env/bin/python subfind_web/main.py
+```

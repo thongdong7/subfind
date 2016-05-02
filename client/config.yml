@@ -1,5 +1,0 @@
-components:
-  - name: Switch
-    scss: switch
-template:
-  - path: client/main.js
