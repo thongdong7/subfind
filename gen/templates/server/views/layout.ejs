@@ -11,12 +11,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <title>React Sample</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="node_modules/admin-lte/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="node_modules/ionicons/dist/css/ionicons.min.css">
-  <link rel="stylesheet" href="node_modules/admin-lte/dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="node_modules/admin-lte/dist/css/skins/skin-blue.min.css">
-  <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly.min.css">
+
+{%- for item in extraComponents -%}
+  {%- if item.css and not item.webpackImport -%}
+  {%- for css in item.css %}
+  <link rel="stylesheet" href="node_modules/{{css}}">
+  {%- endfor %}
+  {%- endif %}
+{%- endfor %}
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

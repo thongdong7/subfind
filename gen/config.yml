@@ -25,13 +25,15 @@ extraComponents:
   - name: admin-lte
     version: "2.3.2"
     css:
-      - admin-lte/bootstrap/css/bootstrap.css
-      - font-awesome/css/font-awesome.css
-      - ionicons/dist/css/ionicons.css
-      - admin-lte/dist/css/AdminLTE.css
-      - admin-lte/dist/css/skins/skin-blue.css
+      - admin-lte/bootstrap/css/bootstrap.min.css
+      - font-awesome/css/font-awesome.min.css
+      - ionicons/dist/css/ionicons.min.css
+      - admin-lte/dist/css/AdminLTE.min.css
+      - admin-lte/dist/css/skins/skin-blue.min.css
   - name: patternfly
     version: "^3.3.3"
+    css:
+      - patternfly/dist/css/patternfly.min.css
   - name: toastr
     css:
       - toastr/toastr.scss
