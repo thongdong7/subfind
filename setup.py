@@ -11,7 +11,6 @@ setup(
     url='https://github.com/thongdong7/subfind',
     packages=find_packages(exclude=["build", "dist", "tests*"]),
     install_requires=[
-        'lxml==3.6.0',
         'six==1.10.0',
     ],
     extras_require={
