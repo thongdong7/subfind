@@ -25,6 +25,7 @@ setup(
         ],
         'subscene': [
             'requests==2.9.1',
+            'beautifulsoup4==4.4.1'
         ],
         'web': [
             'flask==0.10.1',
