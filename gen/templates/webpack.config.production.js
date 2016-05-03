@@ -12,9 +12,9 @@ config.profile = false;
 config.devtool = '#source-map';
 
 config.output = {
-  path: './client/dist',
+  path: './subfind_web/static/js',
   pathInfo: true,
-  publicPath: '/js/',
+  publicPath: '/static/js/',
   filename: 'bundle.js'
 };
 

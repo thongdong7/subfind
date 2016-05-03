@@ -16,7 +16,7 @@ from tornado.autoreload import watch
 current_folder = os.path.abspath(os.path.dirname(__file__))
 
 template_folder = join(current_folder, 'templates')
-static_folder = abspath(join(current_folder, '..'))
+static_folder = abspath(join(current_folder, 'static'))
 
 app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
 

@@ -22,8 +22,8 @@
   var restUrl = '{{request.url_root[:-1]}}';
 </script>
 {% if is_production %}
-  <script src="js/vendor.bundle.js"></script>
-  <script async src="js/bundle.js"></script>
+  <script src="/static/js/vendor.bundle.js"></script>
+  <script async src="/static/js/bundle.js"></script>
 {% else %}
   <script src="http://{{domain}}:3000/client/main.js"></script>
 {% endif %}

@@ -12,9 +12,9 @@ config.profile = false;
 config.devtool = '#source-map';
 
 config.output = {
-  path: './client/dist',
+  path: './subfind_web/static/js',
   pathInfo: true,
-  publicPath: '/js/',
+  publicPath: '/static/js/',
   filename: 'bundle.js'
 };
 
@@ -61,7 +61,6 @@ config.plugins = config.plugins.concat([
       "window.jQuery": "jquery",
       toastr: "toastr",
       "window.toastr": "toastr",
-
   }),
   new webpack.optimize.OccurenceOrderPlugin(true),
   new webpack.optimize.DedupePlugin(),
