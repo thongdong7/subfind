@@ -85,6 +85,10 @@ lang: [vi,en]
 
 # Change log
 
+## 4.4.0
+
+1. Change to use `beautifulsoup` instead of `lxml`
+
 ## 4.3.0
 
 1. [Web]: Refactor web package
