@@ -85,6 +85,15 @@ lang: [vi,en]
 
 # Change log
 
+## 4.3.0
+
+1. [Web]: Refactor web package
+2. [Web]: Correct restUrl
+3. [Web]: Fix list languages and filter in release api
+4. [Web] Clean up layout, update icons, optimize css and js
+5. [Web]: Add config button in release page
+6. [Web]: Show toastr message when connection error
+
 ## 4.2.0
 
 1. Refactor cli, core package
