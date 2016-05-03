@@ -1,0 +1,2 @@
+recursive-include subfind_web/static *
+recursive-include subfind_web/templates *

@@ -25,13 +25,18 @@ config.entry = {
 //    'ionicons/dist/css/ionicons.min.css',
 //    'admin-lte/dist/css/AdminLTE.min.css',
 //    'admin-lte/dist/css/skins/skin-blue.min.css',
-    'admin-lte/bootstrap/css/bootstrap.min.css',
-    'font-awesome/css/font-awesome.min.css',
-    'ionicons/dist/css/ionicons.min.css',
-    'admin-lte/dist/css/AdminLTE.min.css',
-    'admin-lte/dist/css/skins/skin-blue.min.css',
-    'patternfly/dist/css/patternfly.min.css',
-    'toastr/toastr.scss',
+
+{%- for item in extraComponents -%}
+  {%- if item.css -%}
+  {% for css in item.css %}
+    '{{css}}',
+  {%- endfor %}
+  {%- endif %}
+  {%- if item.scss -%}
+  {%- set scss = item.scss if item.scss.endswith('scss') else item.scss + '.scss' %}
+    '{{scss}}',
+  {%- endif %}
+{%- endfor %}
 
     'jquery',
     'admin-lte/bootstrap/js/bootstrap.js',
@@ -61,6 +66,7 @@ config.plugins = config.plugins.concat([
       "window.jQuery": "jquery",
       toastr: "toastr",
       "window.toastr": "toastr",
+
   }),
   new webpack.optimize.OccurenceOrderPlugin(true),
   new webpack.optimize.DedupePlugin(),

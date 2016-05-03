@@ -11,11 +11,12 @@ from subfind_web.api import api
 from subfind_web.crossdomain import crossdomain
 from subfind_web.utils import save_config, get_config
 from subfind_web.validate import folder_validator, ValidatorManager
+from tornado.autoreload import watch
 
 current_folder = os.path.abspath(os.path.dirname(__file__))
 
 template_folder = join(current_folder, 'templates')
-static_folder = abspath(join(current_folder, '..'))
+static_folder = abspath(join(current_folder, 'static'))
 
 app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
 
@@ -44,14 +45,14 @@ data = []
 
 def build_data():
     global data
-    movie_requests = sub_finder.build_download_requests_for_movie_dirs(config['src'])
+    movie_requests = sub_finder.build_download_requests_for_movie_dirs(config['src'], force=True)
 
     data = []
     for release_name, movie_dir, langs in movie_requests:
         item = {
             'name': release_name,
             'src': movie_dir,
-            'languages': langs,
+            'languages': list(langs),
             'subtitles': sub_finder.stat_subtitle(release_name, movie_dir)
         }
 
@@ -64,12 +65,12 @@ def build_data():
 
 build_data()
 
-# print(data)
+# pprint(data)
 port_pattern = re.compile(':\d+')
 
 
 @app.route("/")
-def hello():
+def homepage():
     host = request.headers['Host']
     domain = port_pattern.sub('', host)
 
@@ -201,7 +202,7 @@ if __name__ == "__main__":
     autoreload.start(ioloop)
 
     root_dir = os.path.abspath(os.path.dirname(__file__))
-    # watch(join(root_dir, 'data/postgresql'))
+    watch(join(root_dir, 'data/postgresql'))
     # watch(join(root_dir, 'generated'))
 
     ioloop.start()

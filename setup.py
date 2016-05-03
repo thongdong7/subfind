@@ -4,14 +4,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='subfind',
-    version='4.2.0',
+    version='4.3.0',
     description='Subtitle crawler written in Python',
     author='Thong Dong',
     author_email='thongdong7@gmail.com',
     url='https://github.com/thongdong7/subfind',
     packages=find_packages(exclude=["build", "dist", "tests*"]),
     install_requires=[
-        'lxml==3.6.0',
         'six==1.10.0',
     ],
     extras_require={
@@ -25,6 +24,7 @@ setup(
         ],
         'subscene': [
             'requests==2.9.1',
+            'beautifulsoup4==4.4.1'
         ],
         'web': [
             'flask==0.10.1',
@@ -48,4 +48,5 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
     ],
+    include_package_data=True,
 )

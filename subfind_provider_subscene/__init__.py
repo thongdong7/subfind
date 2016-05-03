@@ -6,6 +6,7 @@ from six.moves.urllib.parse import urlencode, urljoin
 import os
 import re
 import requests
+from bs4 import BeautifulSoup
 from os import listdir
 from os.path import join, abspath
 from shutil import rmtree
@@ -14,7 +15,6 @@ from subfind.exception import SubtitleFileBroken, HTTPConnectionError, ReleaseNo
 from subfind.model import Subtitle
 from subfind.movie.alice import MovieScoringAlice
 from subfind.movie_parser import parse_release_name
-from subfind.parser import Parser
 from subfind.provider import BaseProvider
 from subfind.release import ReleaseMatchingChecker
 from subfind.release.alice import ReleaseScoringAlice
@@ -101,13 +101,29 @@ class SubsceneProvider(BaseProvider):
                 }
             ]
 
-        parser = Parser(r.content)
-        nodes = parser.query('//div[@class="title"]/a[contains(@href, "/subtitles/")]')
+        soup = BeautifulSoup(r.content, 'html.parser')
+
+        nodes = soup.find_all('div', attrs={'class': 'title'})
+
+        movie_nodes = []
+        for node in nodes:
+            a_nodes = node.find_all('a')
+            if not a_nodes:
+                continue
+
+            found = False
+            for a_node in a_nodes:
+                if '/subtitles/' in a_node.attrs['href']:
+                    found = True
+                    break
+
+            if found:
+                movie_nodes.append(a_node)
 
         movies = []
         processed_urls = set()
-        for node in nodes:
-            url = node.get('href')
+        for node in movie_nodes:
+            url = node.attrs['href']
             if url.startswith('/subtitles/release?'):
                 continue
 
@@ -157,8 +173,19 @@ class SubsceneProvider(BaseProvider):
         if not r.ok:
             raise HTTPConnectionError(base_url, r.status_code, r.content)
 
-        parser = Parser(r.content)
-        release_nodes = parser.query("//td/a[contains(@href, '/subtitles/')]")
+        soup = BeautifulSoup(r.content, 'html.parser')
+        nodes = soup.find_all('td')
+        release_nodes = []
+        for node in nodes:
+            a_nodes = list(filter(lambda a: '/subtitles/' in a.attrs['href'], node.find_all('a')))
+
+            if not a_nodes:
+                continue
+
+            a_node = a_nodes[0]
+
+            release_nodes.append(a_node)
+
         ret = {}
         if not release_nodes:
             return ret
@@ -166,7 +193,8 @@ class SubsceneProvider(BaseProvider):
         release_not_match = {}
 
         for release_node in release_nodes:
-            release_lang = release_node.find('span[1]').text.strip()
+            release_lang = release_node.find('span').text.strip()
+
             release_lang = get_short_lang(release_lang)
 
             if release_lang not in langs:
@@ -175,7 +203,7 @@ class SubsceneProvider(BaseProvider):
             if release_lang not in ret:
                 ret[release_lang] = []
 
-            item_release_name = release_node.find('span[2]').text.strip()
+            item_release_name = release_node.find_all('span')[1].text.strip()
 
             release_url = urljoin(base_url, release_node.get('href'))
 
@@ -218,28 +246,24 @@ class SubsceneProvider(BaseProvider):
         m = re.compile('/subtitles/([^/]+)$').search(movie_url)
         movie_slug_name = m.group(1)
 
-        parser = Parser(r.content)
         lang_full_name = get_full_lang(lang)
-        nodes = parser.query('//a[contains(@href, "/subtitles/%s/%s/")]' % (movie_slug_name, lang_full_name))
 
-        # pprint(nodes)
-
-        # subtitle_match_str = ' '.join(sorted(params['release_name_tokens']))
-        # subtitle_match_tokens = set(params['release_name_tokens'])
-        # print 'subtitle_match_str', subtitle_match_str
+        soup = BeautifulSoup(r.content, 'html.parser')
+        href_pattern = "/subtitles/%s/%s/" % (movie_slug_name, lang_full_name)
+        nodes = soup.find_all('a')
+        a_nodes = []
+        for node in nodes:
+            if href_pattern in node.get('href'):
+                a_nodes.append(node)
 
         subtitles = []
-        for node in nodes:
+        for node in a_nodes:
             subtitle_url = node.get('href')
-            subtitle_name = node.find('span[2]').text.strip()
-
-            # tmp1 = set(tokenizer(subtitle_name))
-            # d = len(subtitle_match_tokens.intersection(tmp1)) * 100 - len(tmp1)
+            subtitle_name = node.find_all('span')[1].text.strip()
 
             subtitles.append({
                 'url': urljoin(movie_url, subtitle_url),
                 'name': subtitle_name,
-                # 'd': d
             })
 
         return subtitles
@@ -320,61 +344,6 @@ class SubsceneProvider(BaseProvider):
 
     def get_releases(self, release_name, langs):
         return self.search_movie(release_name, langs)
-
-    def get_releases_old(self, release_name, langs):
-        """
-        Search release is no longer support by subscene
-        :param release_name:
-        :type release_name:
-        :param langs:
-        :type langs:
-        :return:
-        :rtype:
-        """
-        release_matching_checker = ReleaseMatchingChecker(release_name)
-        # Using title_query to search release will return more releases than using release_name
-        query = release_matching_checker.info['title_query']
-        base_url = (SUBSCENE_RELEASE_SEARCH_URL % urlencode({'q': query, 'l': '', 'r': 'true'}))
-
-        r = self.session.get(base_url)
-
-        if not r.ok:
-            raise HTTPConnectionError(base_url, r.status_code, r.content)
-
-        parser = Parser(r.content)
-        release_nodes = parser.query("//td/a[contains(@href, '/subtitles/')]")
-        ret = {}
-        if not release_nodes:
-            return ret
-
-        for release_node in release_nodes:
-            release_lang = release_node.find('span[1]').text.strip()
-            release_lang = get_short_lang(release_lang)
-
-            if release_lang not in langs:
-                continue
-
-            if release_lang not in ret:
-                ret[release_lang] = []
-
-            item_release_name = release_node.find('span[2]').text.strip()
-
-            try:
-                release_matching_checker.check(item_release_name)
-            except ReleaseNotMatchError:
-                continue
-
-            release_url = urljoin(base_url, release_node.get('href'))
-
-            release = {
-                'name': item_release_name,
-                'lang': release_lang,
-                'url': release_url
-            }
-
-            ret[release_lang].append(release)
-
-        return ret
 
     @staticmethod
     def _get_movie_title_from_url(movie_url):

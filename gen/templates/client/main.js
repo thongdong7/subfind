@@ -2,10 +2,22 @@
 'use strict';
 
 import 'styles/main.scss';
-import 'styles/switch.scss'
+{% for item in components -%}
+  {%- if item.css -%}
+  {%- for css in item.css -%}
+import '{{css}}'
+  {%- endfor %}
+  {%- endif %}
+{%- endfor %}
 
 // Extra components
-import 'toastr/toastr.scss'
+{%- for item in extraComponents -%}
+  {%- if item.css and item.webpackImport -%}
+  {%- for css in item.css %}
+import '{{css}}'
+  {%- endfor %}
+  {%- endif %}
+{%- endfor %}
 
 import React from 'react';
 import { render } from 'react-dom';
