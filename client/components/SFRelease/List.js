@@ -78,7 +78,7 @@ export default class SFReleaseList extends React.Component {
               icon="tasks"
               onComplete={this.loadData.bind(this)}/>
 
-            <Link to="/release/config"><i className="fa fa-cog"></i> Config</Link>
+            <Link to="/release/config" className="btn btn-default"><i className="fa fa-cog"></i> Config</Link>
           </div>
         </div>
         <div className="box-body">
