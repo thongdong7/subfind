@@ -132,9 +132,11 @@ export default class SFConfigIndex extends React.Component {
   }
 
   async onMinMovieSizeUpdate(value) {
-    console.log('min movie size changed to ', value);
-
     await this.updateConfig({'min-movie-size': value * mb})
+  }
+
+  async onMaxSubUpdate(value) {
+    await this.updateConfig({'max-sub': value})
   }
 
   render() {
@@ -216,6 +218,15 @@ export default class SFConfigIndex extends React.Component {
             <div className="col-sm-9">
               <InputEditable name="min-movie-size" defaultValue={this.state.data['min-movie-size'] / mb}
                 onUpdate={this.onMinMovieSizeUpdate.bind(this)} />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-3">
+              <strong>Number subtitles</strong>
+            </div>
+            <div className="col-sm-9">
+              <InputEditable name="max-sub" defaultValue={this.state.data['max-sub']}
+                onUpdate={this.onMaxSubUpdate.bind(this)} />
             </div>
           </div>
         </div>

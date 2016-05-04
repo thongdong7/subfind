@@ -146,7 +146,7 @@ def config_update():
 
         update[bool_field] = bool_value
 
-    for int_field in ['min-movie-size']:
+    for int_field in ['min-movie-size', 'max-sub']:
         int_value = request.args.get(int_field)
         if int_value is None:
             continue
