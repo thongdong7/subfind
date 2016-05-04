@@ -5,11 +5,16 @@ import update from 'react-addons-update'
 import MovieFolder from './MovieFolder'
 import Switch from '../Switch'
 
+let mb = 1024 * 1024
+
 class SimpleForm extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {formData: {}}
+    this.state = {
+      formData: {},
+      editMinMovieSize: false
+    }
   }
 
   async onSubmit(e) {
@@ -124,6 +129,39 @@ export default class SFConfigIndex extends React.Component {
     this.updateConfig({[fieldName]: checked})
   }
 
+  getMinMovieSize(defaultValue) {
+    let size = this.state.data['min-movie-size'] != undefined ? (this.state.data['min-movie-size'] / mb) : defaultValue
+
+    return size
+  }
+
+  async toggleMinMovieSize() {
+    // console.log('toggle');
+    await this.setState({editMinMovieSize: !this.state.editMinMovieSize})
+
+    if (this.state.editMinMovieSize) {
+      // console.log('do focus');
+      $("[name='min-movie-size']").focus()
+    }
+  }
+
+  onControlChange(e) {
+    let value = e.target.value * mb
+    let fieldName = e.target.name
+    // console.log(fieldName, value);
+    this.setState(update(this.state, {data: {[fieldName]: {$set: value}}}))
+  }
+
+  async updateMinMovieSize(e) {
+    e.preventDefault()
+
+    // console.log('update min movie size', this.state.data);
+
+    await this.updateConfig({'min-movie-size': this.state.data['min-movie-size']})
+
+    this.setState({editMinMovieSize: false})
+  }
+
   render() {
     // console.log('render', this.state.formData);
     let loading
@@ -193,6 +231,30 @@ export default class SFConfigIndex extends React.Component {
             <div className="col-sm-9">
               <Switch checked={this.state.data.remove}
                 onChange={(checked) => this.updateSwitchField('remove', checked)}/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-3">
+              <strong>Min movie size (MB)</strong>
+              <div>(to ignore sample videos)</div>
+            </div>
+            <div className="col-sm-9">
+              {!this.state.editMinMovieSize &&
+                <div className="editable-value" onClick={this.toggleMinMovieSize.bind(this)}>
+                  {this.getMinMovieSize(500)}
+                </div>
+              }
+              {
+                this.state.editMinMovieSize &&
+                <form onSubmit={this.updateMinMovieSize.bind(this)}>
+                  <input type="number" className="form-control"
+                    name="min-movie-size"
+                    value={this.getMinMovieSize(500)}
+                    onChange={this.onControlChange.bind(this)}
+                    onBlur={this.toggleMinMovieSize.bind(this)}
+                  />
+                </form>
+              }
             </div>
           </div>
         </div>

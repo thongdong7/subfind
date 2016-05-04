@@ -1,9 +1,11 @@
 import logging
 
+import sys
+
 import os
 import re
 from flask import Flask, request, render_template
-from os.path import join, abspath
+from os.path import join, abspath, dirname
 from subfind.event import EventManager
 from subfind.finder import SubFind
 from subfind.movie_parser import parse_release_name
@@ -13,7 +15,11 @@ from subfind_web.utils import save_config, get_config
 from subfind_web.validate import folder_validator, ValidatorManager
 from tornado.autoreload import watch
 
-current_folder = os.path.abspath(os.path.dirname(__file__))
+if getattr(sys, 'frozen', False):
+    current_folder = abspath(dirname(sys.executable))
+elif __file__:
+    current_folder = abspath(os.path.dirname(__file__))
+
 
 template_folder = join(current_folder, 'templates')
 static_folder = abspath(join(current_folder, 'static'))
@@ -65,8 +71,9 @@ def build_data():
 
 build_data()
 
-# pprint(data)
+# print(data)
 port_pattern = re.compile(':\d+')
+ip_pattern = re.compile('^[\d\.]+$')
 
 
 @app.route("/")
@@ -74,7 +81,7 @@ def homepage():
     host = request.headers['Host']
     domain = port_pattern.sub('', host)
 
-    if domain.startswith('192'):
+    if ip_pattern.match(domain):
         is_production = True
     else:
         is_production = False
@@ -138,6 +145,18 @@ def config_update():
             bool_value = False
 
         update[bool_field] = bool_value
+
+    for int_field in ['min-movie-size']:
+        int_value = request.args.get(int_field)
+        if int_value is None:
+            continue
+
+        try:
+            int_value = int(int_value)
+        except ValueError:
+            continue
+
+        update[int_field] = int_value
 
     config.update(update)
 
