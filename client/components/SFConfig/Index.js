@@ -6,6 +6,7 @@ import MovieFolder from './MovieFolder'
 import Switch from '../Switch'
 import InputEditable from '../InputEditable'
 import SimpleForm from '../SimpleForm'
+import toastr from 'toastr'
 
 let mb = 1024 * 1024
 
@@ -47,18 +48,20 @@ export default class SFConfigIndex extends React.Component {
 
   async updateConfig(params) {
     this.setState({loading: true})
-    let ret = await RestService.load("config/update", params)
-    // console.log(ret);
+    try {
+      let ret = await RestService.load("config/update", params)
+      // console.log(ret);
 
-    if (ret.ok === false) {
-      console.warn(ret.message);
-      this.setState({loading: false})
-
-      return false
-    } else {
       this.setState({data: ret, loading: false})
 
       return true
+    } catch (response) {
+      // console.log(response);
+      toastr.error(response.responseJSON.message)
+
+      this.setState({loading: false})
+
+      return false
     }
   }
 

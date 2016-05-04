@@ -10,8 +10,8 @@ import Switch from '../Switch'
 import SFReleaseFilter from './Filter'
 
 export default class SFReleaseList extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor(props, context) {
+    super(props, context)
 
     this.state = {
       data: [],
@@ -37,7 +37,12 @@ export default class SFReleaseList extends React.Component {
 
       this.setState({data: data, connectionError: false, loading: false})
     } catch (promise) {
-//      console.log('error', promise)
+      if (promise.responseJSON && promise.responseJSON.code == 501) {
+        // Missed config file
+        this.context.router.push('/release/config')
+        return
+      }
+
       this.setState({connectionError: true, loading: false})
     }
   }
@@ -119,4 +124,8 @@ export default class SFReleaseList extends React.Component {
       </div>
     )
   }
+}
+
+SFReleaseList.contextTypes = {
+    router: React.PropTypes.object
 }

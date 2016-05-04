@@ -20,12 +20,6 @@ config.output = {
 
 config.entry = {
   vendor: [
-//    'admin-lte/bootstrap/css/bootstrap.css',
-//    'font-awesome/css/font-awesome.min.css',
-//    'ionicons/dist/css/ionicons.min.css',
-//    'admin-lte/dist/css/AdminLTE.min.css',
-//    'admin-lte/dist/css/skins/skin-blue.min.css',
-
 {%- for item in extraComponents -%}
   {%- if item.css -%}
   {% for css in item.css %}
@@ -64,9 +58,6 @@ config.plugins = config.plugins.concat([
       $: "jquery",
       jQuery: "jquery",
       "window.jQuery": "jquery",
-      toastr: "toastr",
-      "window.toastr": "toastr",
-
   }),
   new webpack.optimize.OccurenceOrderPlugin(true),
   new webpack.optimize.DedupePlugin(),

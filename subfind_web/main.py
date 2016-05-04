@@ -11,7 +11,8 @@ from subfind.finder import SubFind
 from subfind.movie_parser import parse_release_name
 from subfind_web.api import api
 from subfind_web.crossdomain import crossdomain
-from subfind_web.utils import save_config, get_config
+from subfind_web.exception.api import MissConfigError
+from subfind_web.utils import save_config, get_config, has_config
 from subfind_web.validate import folder_validator, ValidatorManager
 from tornado.autoreload import watch
 
@@ -93,6 +94,13 @@ def homepage():
 @crossdomain(origin='*')
 @api
 def release():
+    if not has_config():
+        global config
+
+        config = get_config()
+
+        raise MissConfigError()
+
     return data
 
 
