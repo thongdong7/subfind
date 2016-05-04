@@ -193,11 +193,6 @@ export default class SFConfigIndex extends React.Component {
           <h3 className="box-title">
             Config {loading}
           </h3>
-
-          <div className="box-tools">
-            <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
-            </button>
-          </div>
         </div>
         <div className="box-body">
           {content}
