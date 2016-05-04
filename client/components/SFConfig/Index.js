@@ -11,8 +11,8 @@ import toastr from 'toastr'
 let mb = 1024 * 1024
 
 export default class SFConfigIndex extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor(props, context) {
+    super(props, context)
 
     this.providers = [
       {name: "opensubtitles", display_name: "Opensubtitles"},
@@ -91,6 +91,10 @@ export default class SFConfigIndex extends React.Component {
 
   async onMaxSubUpdate(value) {
     await this.updateConfig({'max-sub': value})
+  }
+
+  back() {
+    this.context.router.goBack()
   }
 
   render() {
@@ -191,7 +195,9 @@ export default class SFConfigIndex extends React.Component {
       <div className="box box-solid">
         <div className="box-header with-border">
           <h3 className="box-title">
-            Config {loading}
+            <button className="btn btn-default" onClick={this.back.bind(this)}><i className="fa fa-arrow-left"></i> Back</button>
+            &nbsp;
+            Setup {loading}
           </h3>
         </div>
         <div className="box-body">
@@ -200,4 +206,8 @@ export default class SFConfigIndex extends React.Component {
       </div>
     )
   }
+}
+
+SFConfigIndex.contextTypes = {
+    router: React.PropTypes.object
 }
