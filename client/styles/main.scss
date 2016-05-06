@@ -116,6 +116,10 @@
   padding-bottom: 10px;
 }
 
+.row-list-item:nth-of-type(odd) {
+  background-color: #fcf8e3;
+}
+
 .editable-value:hover {
   background-color: #fcf8e3;
 }

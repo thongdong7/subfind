@@ -34,10 +34,15 @@ export default class RPCButton extends React.Component {
       }
     }
 
-    return (
-      <button className="btn btn-default" onClick={this.onClick.bind(this)}>
-        {loading} {icon} {this.props.name}
-      </button>
-    )
+    let tag = this.props.tag ? this.props.tag : "button"
+
+    let props = this.props['tag-props'] ? this.props['tag-props'] : {}
+    if (tag == "button") {
+      props.className = "btn btn-default"
+    }
+
+    props.onClick = this.onClick.bind(this)
+
+    return React.createElement(tag, props, loading, icon, ' ' + this.props.name)
   }
 }

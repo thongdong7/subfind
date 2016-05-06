@@ -115,7 +115,7 @@ export default class SFReleaseList extends React.Component {
 
   updateFilter(filter) {
 //    console.log('update filter', filter);
-    let filteredData = this.filteredData(this.state.data, filter)
+    let filteredData = this.filterData(this.state.data, filter)
     this.setState({filter: filter, filteredData: filteredData})
   }
 
@@ -149,26 +149,40 @@ export default class SFReleaseList extends React.Component {
             }
             return (
               <div key={k} className={"row row-hover row-list-item"+stateClass}>
-                <div className="col-xs-12">
+                <div className="col-lg-10 col-xs-12">
                     {item.name}
                 </div>
-                <div className="col-xs-6">
+                <div className="col-lg-1 col-xs-10">
                   <LanguageStats data={item.subtitles} />
                 </div>
-                <div className="col-xs-6 pull-right">
-                  <RPCButton query="release/download" params={{src: item.src, name: item.name}}
-                    icon="download"
-                    onComplete={this.loadData.bind(this)} name="Download" />
-                  &nbsp;
-                  <RPCButton query="release/remove-subtitle"
-                    params={{src: item.src, name: item.name}}
-                    icon="eraser"
-                    onComplete={this.loadData.bind(this)} name="Remove Subtitles" />
-                  &nbsp;
-                  <a href={`https://subscene.com/subtitles/title?q=${item.title_query}&l=`}
-                    target="subscence" className="btn btn-default">
-                    <i className="fa fa-bug"></i> Subscene
-                  </a>
+                <div className="col-lg-1 col-xs-2">
+                  <div className="dropdown">
+                    <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      <i className="fa fa-ellipsis-v"></i>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                      <li>
+                        <RPCButton query="release/download" params={{src: item.src, name: item.name}}
+                          icon="download"
+                          tag="a"
+                          onComplete={this.loadData.bind(this)} name="Download" />
+                      </li>
+                      <li>
+                        <RPCButton query="release/remove-subtitle"
+                          params={{src: item.src, name: item.name}}
+                          icon="eraser"
+                          tag="a"
+                          onComplete={this.loadData.bind(this)} name="Remove Subtitles" />
+                      </li>
+                      <li role="separator" className="divider"></li>
+                      <li>
+                        <a href={`https://subscene.com/subtitles/title?q=${item.title_query}&l=`}
+                          target="subscence">
+                          <i className="fa fa-bug"></i> Subscene
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             )
