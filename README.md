@@ -85,6 +85,12 @@ lang: [vi,en]
 
 # Change log
 
+## 4.5.0
+
+1. [Web] Support `edit max-sub` and `min-movie-size`
+2. [Web] Redirect to config page when missed config file
+3. [Web] Improve performance when has a lot of movies
+
 ## 4.4.0
 
 1. Change to use `beautifulsoup` instead of `lxml`

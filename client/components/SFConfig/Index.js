@@ -4,56 +4,15 @@ import RestService from '../RestService'
 import update from 'react-addons-update'
 import MovieFolder from './MovieFolder'
 import Switch from '../Switch'
+import InputEditable from '../InputEditable'
+import SimpleForm from '../SimpleForm'
+import toastr from 'toastr'
 
-class SimpleForm extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {formData: {}}
-  }
-
-  async onSubmit(e) {
-    e.preventDefault()
-
-    if (this.props.onSubmit) {
-      let ok = await this.props.onSubmit(this.getData())
-      if (ok === true) {
-        this.setState({formData: {}})
-      }
-    }
-  }
-
-  formChange(e) {
-    let field = e.target.name
-    let value = e.target.value
-    this.setState(update(this.state, {formData: {[field]: {$set: value}}}))
-  }
-
-  getData() {
-    return this.state.formData
-  }
-
-  render() {
-    let field = this.props.field
-    return (
-      <form role="form" onSubmit={this.onSubmit.bind(this)}
-        onChange={this.formChange.bind(this)}>
-        <div className="input-group input-group-sm">
-          <input name={field} type="text" className="form-control"
-            autoComplete="off"
-            value={this.state.formData[field] || ''} />
-          <span className="input-group-btn">
-            <button type="submit" className="btn btn-default">Add</button>
-          </span>
-        </div>
-      </form>
-    )
-  }
-}
+let mb = 1024 * 1024
 
 export default class SFConfigIndex extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor(props, context) {
+    super(props, context)
 
     this.providers = [
       {name: "opensubtitles", display_name: "Opensubtitles"},
@@ -89,18 +48,20 @@ export default class SFConfigIndex extends React.Component {
 
   async updateConfig(params) {
     this.setState({loading: true})
-    let ret = await RestService.load("config/update", params)
-    // console.log(ret);
+    try {
+      let ret = await RestService.load("config/update", params)
+      // console.log(ret);
 
-    if (ret.ok === false) {
-      console.warn(ret.message);
-      this.setState({loading: false})
-
-      return false
-    } else {
       this.setState({data: ret, loading: false})
 
       return true
+    } catch (response) {
+      // console.log(response);
+      toastr.error(response.responseJSON.message)
+
+      this.setState({loading: false})
+
+      return false
     }
   }
 
@@ -122,6 +83,18 @@ export default class SFConfigIndex extends React.Component {
 
   updateSwitchField(fieldName, checked) {
     this.updateConfig({[fieldName]: checked})
+  }
+
+  async onMinMovieSizeUpdate(value) {
+    await this.updateConfig({'min-movie-size': value * mb})
+  }
+
+  async onMaxSubUpdate(value) {
+    await this.updateConfig({'max-sub': value})
+  }
+
+  back() {
+    this.context.router.goBack()
   }
 
   render() {
@@ -195,6 +168,25 @@ export default class SFConfigIndex extends React.Component {
                 onChange={(checked) => this.updateSwitchField('remove', checked)}/>
             </div>
           </div>
+          <div className="row">
+            <div className="col-sm-3">
+              <strong>Min movie size (MB)</strong>
+              <div>(to ignore sample videos)</div>
+            </div>
+            <div className="col-sm-9">
+              <InputEditable name="min-movie-size" defaultValue={this.state.data['min-movie-size'] / mb}
+                onUpdate={this.onMinMovieSizeUpdate.bind(this)} />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-3">
+              <strong>Number subtitles</strong>
+            </div>
+            <div className="col-sm-9">
+              <InputEditable name="max-sub" defaultValue={this.state.data['max-sub']}
+                onUpdate={this.onMaxSubUpdate.bind(this)} />
+            </div>
+          </div>
         </div>
       )
     }
@@ -203,13 +195,10 @@ export default class SFConfigIndex extends React.Component {
       <div className="box box-solid">
         <div className="box-header with-border">
           <h3 className="box-title">
-            Config {loading}
+            <button className="btn btn-default" onClick={this.back.bind(this)}><i className="fa fa-arrow-left"></i> Back</button>
+            &nbsp;
+            Setup {loading}
           </h3>
-
-          <div className="box-tools">
-            <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus"></i>
-            </button>
-          </div>
         </div>
         <div className="box-body">
           {content}
@@ -217,4 +206,8 @@ export default class SFConfigIndex extends React.Component {
       </div>
     )
   }
+}
+
+SFConfigIndex.contextTypes = {
+    router: React.PropTypes.object
 }

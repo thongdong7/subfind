@@ -25,6 +25,10 @@ default_config = {
 }
 
 
+def has_config():
+    return exists(config_path)
+
+
 def get_config():
     if not exists(config_path):
         save_config(default_config)

@@ -21,8 +21,11 @@ import toastr from 'toastr'
 toastr.options.closeButton = true;
 toastr.options.positionClass = "toast-top-left"
 
-$(document).ajaxError(function() {
-  toastr.error('Could not connect to subfind server')
+$(document).ajaxError(function(e, response) {
+  if (response.status == 0) {
+    toastr.error('Could not connect to subfind server')
+  }
+
 });
 
 render((

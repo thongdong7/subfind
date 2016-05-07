@@ -1,26 +1,32 @@
 import json
-from functools import update_wrapper
 
 from flask import Response
+from functools import update_wrapper
 from subfind_web.exception.api import APIError
 
 
-def failed(message):
-    return {
+def failed(**kwargs):
+    ret = {
         'ok': False,
-        'message': message
     }
+
+    ret.update(kwargs)
+
+    return ret
 
 
 def api(func):
     def func_wrapper(*args, **kwargs):
+        http_code = 200
+
         try:
             data = func(*args, **kwargs)
         except APIError as e:
-            data = failed(str(e))
+            http_code = 500
+            data = failed(message=str(e), code=e.code)
 
         content = json.dumps(data)
 
-        return Response(content, mimetype='application/json')
+        return Response(content, status=http_code, mimetype='application/json')
 
     return update_wrapper(func_wrapper, func)
