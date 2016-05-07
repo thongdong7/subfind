@@ -2,6 +2,8 @@
 
 set -e
 
+rm subfind_web/static/js/* -rf
+
 echo Build js files...
 npm run dist
 
