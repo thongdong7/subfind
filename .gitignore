@@ -66,3 +66,5 @@ assets.json
 /tests/data/m2/*.srt
 /tests/data/m2/*.ass
 /subfind_web/static/js
+/deb_dist
+/*.tar.gz
