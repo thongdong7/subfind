@@ -1,0 +1,15 @@
+Source: subfind
+Section: unknown
+Priority: optional
+Maintainer: Thong Dong <thongdong7@gmail.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://anonscm.debian.org/collab-maint/subfind.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/subfind.git
+
+Package: subfind
+Architecture: all
+Depends: ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

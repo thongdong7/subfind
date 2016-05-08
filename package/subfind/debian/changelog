@@ -1,0 +1,5 @@
+subfind (4.5.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Thong Dong <thongdong7@gmail.com>  Sun, 08 May 2016 05:34:33 +0700
