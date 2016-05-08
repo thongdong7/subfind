@@ -9,3 +9,9 @@ npm run dist
 
 echo Upload packages...
 python setup.py bdist_wheel --universal upload
+
+echo Build deb file
+rm deb_dist -rf
+
+python3 setup.py --command-packages=stdeb.command bdist_deb
+python setup.py --command-packages=stdeb.command bdist_deb
