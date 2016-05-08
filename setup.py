@@ -16,7 +16,15 @@ setup(
     extras_require={
         'cli': [
             'click==6.6',
-            'pyyaml==3.11'
+            'pyyaml==3.11',
+            # opensubtitles
+            'requests==2.9.1',
+            'babelfish==0.5.5',
+            # subscene
+            'beautifulsoup4==4.4.1',
+            # web
+            'flask==0.10.1',
+            'tornado==4.3'
         ],
         'opensubtitles': [
             'requests==2.9.1',
@@ -24,7 +32,7 @@ setup(
         ],
         'subscene': [
             'requests==2.9.1',
-            'beautifulsoup4==4.4.1'
+            'beautifulsoup4==4.4.1',
         ],
         'web': [
             'flask==0.10.1',

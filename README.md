@@ -17,7 +17,7 @@ Supported providers:
 Subfind is developed by Python and packaged using pip. Ensure you have pip installed.
 
 ```
-pip install subfind[cli,opensubtitles,subscene]
+pip install subfind[cli]
 ```
 
 ## Scan movie folder 

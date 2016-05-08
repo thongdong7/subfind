@@ -21,7 +21,6 @@ if getattr(sys, 'frozen', False):
 elif __file__:
     current_folder = abspath(os.path.dirname(__file__))
 
-
 template_folder = join(current_folder, 'templates')
 static_folder = abspath(join(current_folder, 'static'))
 
@@ -212,24 +211,39 @@ def release_remove_subtitle():
     return 'Completed'
 
 
-if __name__ == "__main__":
+def run_web(port=80):
     from tornado import autoreload
     from tornado.wsgi import WSGIContainer
     from tornado.httpserver import HTTPServer
     from tornado.ioloop import IOLoop
 
-    DEFAULT_APP_TCP_PORT = 5000
-
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s %(message)s', )
 
     http_server = HTTPServer(WSGIContainer(app))
-    http_server.listen(DEFAULT_APP_TCP_PORT)
-    ioloop = IOLoop.instance()
-    autoreload.start(ioloop)
+    try:
+        http_server.listen(port)
+    except PermissionError:
+        print('Port %s is not available. Please select another port' % port)
+        return 1
 
-    root_dir = os.path.abspath(os.path.dirname(__file__))
-    watch(join(root_dir, 'data/postgresql'))
+    io_loop = IOLoop.instance()
+    autoreload.start(io_loop)
+
+    # root_dir = os.path.abspath(os.path.dirname(__file__))
+    # watch(join(root_dir, 'data/postgresql'))
     # watch(join(root_dir, 'generated'))
 
-    ioloop.start()
+    if port == 80:
+        host = 'http://localhost'
+    else:
+        host = 'http://localhost:%s' % port
+
+    print('Subfind Web is available at {0}'.format(host))
+
+    io_loop.start()
+
+
+
+if __name__ == "__main__":
+    run_web(port=5000)

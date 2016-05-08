@@ -15,3 +15,5 @@ rm deb_dist -rf
 
 python3 setup.py --command-packages=stdeb.command bdist_deb
 python setup.py --command-packages=stdeb.command bdist_deb
+
+#dpkg -i deb_dist/python3-subfind_4.5.0-1_all.deb
