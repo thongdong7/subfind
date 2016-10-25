@@ -236,7 +236,7 @@ def run_web(port=80, debug=False):
 
                 select_port = click.confirm('Port %s is not available. Would you like to try another port?' % port, default=True)
 
-                print '-', select_port
+                print('-', select_port)
 
             if select_port:
                 port += 1
