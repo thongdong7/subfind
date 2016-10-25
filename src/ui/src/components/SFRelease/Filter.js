@@ -34,8 +34,12 @@ class SFReleaseFilter extends React.Component {
   }
 
   render() {
-    const {releaseFilter: {onlyShowMissedSubtitle}, onToggleOnlyShowMissedSubtitle} = this.props
-    console.log(onlyShowMissedSubtitle);
+    const {
+      releaseFilter: {onlyShowMissedSubtitle, onlyShowLang},
+      onToggleOnlyShowMissedSubtitle,
+      onToggleOnlyShowLang,
+    } = this.props
+    console.log(onlyShowLang);
     return (
       <div>
         <div className="row">
@@ -55,8 +59,8 @@ class SFReleaseFilter extends React.Component {
                 Only show missed lang {lang}
               </div>
               <div className="col-md-6 col-xs-4">
-                <Switch checked={this.state.filter[filter_lang]}
-                  onChange={() => this.toggleFilter(filter_lang)} />
+                <Switch checked={onlyShowLang.indexOf(lang) >= 0}
+                  onChange={() => onToggleOnlyShowLang(lang)} />
               </div>
             </div>
           )
@@ -69,6 +73,7 @@ class SFReleaseFilter extends React.Component {
 export default tb.connect2({
   props: ({releaseFilter}, ownProps, dispatch) => ({
     releaseFilter,
-    onToggleOnlyShowMissedSubtitle: () => dispatch(releaseFilterActions.toggleOnlyShowMissedSubtitle)
+    onToggleOnlyShowMissedSubtitle: () => dispatch(releaseFilterActions.toggleOnlyShowMissedSubtitle),
+    onToggleOnlyShowLang: lang => dispatch(releaseFilterActions.toggleOnlyShowLang, lang)
   })
 })(SFReleaseFilter)

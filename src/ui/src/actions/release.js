@@ -17,9 +17,22 @@ export const releaseActions = {
 
 export const releaseFilterActions = {
   toggleOnlyShowMissedSubtitle: () => state => ({...state, onlyShowMissedSubtitle: !state.onlyShowMissedSubtitle}),
+  toggleOnlyShowLang: lang => state => {
+    let {onlyShowLang} = state
+    if (onlyShowLang.indexOf(lang) < 0) {
+      onlyShowLang = [...onlyShowLang, lang]
+    } else {
+      onlyShowLang = onlyShowLang.filter(l => l != lang)
+    }
+
+    return {
+      ...state,
+      onlyShowLang
+    }
+  }
 }
 
 export default {
   releases: [releaseActions, []],
-  releaseFilter: [releaseFilterActions, {onlyShowMissedSubtitle: false, }],
+  releaseFilter: [releaseFilterActions, {onlyShowMissedSubtitle: false, onlyShowLang: [] }],
 }
