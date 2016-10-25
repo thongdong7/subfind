@@ -234,7 +234,8 @@ def run_web(port=80, debug=False):
                 if debug:
                     logging.exception(e)
 
-                select_port = click.confirm('Port %s is not available. Would you like to try another port?' % port, default=True)
+                select_port = click.confirm('Port %s is not available. Would you like to try another port?' % port,
+                                            default=True)
 
                 print('-', select_port)
 
