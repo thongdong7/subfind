@@ -1,8 +1,11 @@
 import React from 'react'
 import Switch from '../Switch'
 import update from 'react-addons-update'
+import * as tb from 'tb-react'
+import {releaseFilterActions} from '../../actions/release'
 
-export default class SFReleaseFilter extends React.Component {
+
+class SFReleaseFilter extends React.Component {
   constructor(props) {
     super(props)
 
@@ -30,7 +33,10 @@ export default class SFReleaseFilter extends React.Component {
     }
   }
 
+
   render() {
+    const {releaseFilter: {showMissed}, onToggleShow} = this.props
+    console.log(showMissed);
     return (
       <div>
         <div className="row">
@@ -38,8 +44,8 @@ export default class SFReleaseFilter extends React.Component {
             Only show missed subtitle release
           </div>
           <div className="col-md-6 col-xs-4">
-            <Switch checked={this.state.filter.empty}
-              onChange={() => this.toggleFilter('empty')} />
+            <Switch checked={showMissed}
+              onChange={onToggleShow} />
           </div>
         </div>
         {this.state.languages.map((lang, k) => {
@@ -60,3 +66,10 @@ export default class SFReleaseFilter extends React.Component {
     )
   }
 }
+
+export default tb.connect2({
+  props: ({releaseFilter}, ownProps, dispatch) => ({
+    releaseFilter,
+    onToggleShow: () => dispatch(releaseFilterActions.toggleShow)
+  })
+})(SFReleaseFilter)

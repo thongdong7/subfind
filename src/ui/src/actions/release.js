@@ -15,6 +15,11 @@ export const releaseActions = {
   })),
 }
 
+export const releaseFilterActions = {
+  toggleShow: () => state => ({...state, showMissed: !state.showMissed}),
+}
+
 export default {
   releases: [releaseActions, []],
+  releaseFilter: [releaseFilterActions, {showMissed: false, }],
 }
