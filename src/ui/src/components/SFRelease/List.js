@@ -168,38 +168,26 @@ class SFReleaseList extends React.Component {
                   <LanguageStats data={item.subtitles} />
                 </div>
                 <div className="col-lg-1 col-xs-2">
-                  <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                      <i className="fa fa-ellipsis-v"></i>
-                    </button>
-                    <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                      <li>
-                        <tb.RemoteButton
-                          url="Release/download"
-                          params={{src: item.src, name: item.name}}
-                          icon="download"
-                          onComplete={reload}
-                          name="Download"
-                        />
-                      </li>
-                      <li>
-                        <tb.RemoteButton
-                          url="Release/remove-subtitle"
-                          params={{src: item.src, name: item.name}}
-                          icon="eraser"
-                          onComplete={reload}
-                          name="Remove Subtitles"
-                        />
-                      </li>
-                      <li role="separator" className="divider"></li>
-                      <li>
-                        <a href={`https://subscene.com/subtitles/title?q=${item.title_query}&l=`}
-                          target="subscence">
-                          <i className="fa fa-bug"></i> Subscene
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  <tb.RemoteButton
+                    url="Release/download"
+                    params={{src: item.src, name: item.name}}
+                    icon="download"
+                    onComplete={reload}
+                    name="Download"
+                    type="info"
+                  />
+                  <tb.RemoteButton
+                    url="Release/remove-subtitle"
+                    params={{src: item.src, name: item.name}}
+                    icon="trash"
+                    onComplete={reload}
+                    name="Remove Subtitles"
+                    type="danger"
+                  />
+                  <a href={`https://subscene.com/subtitles/title?q=${item.title_query}&l=`}
+                    target="subscence">
+                    <i className="fa fa-bug"></i> Subscene
+                  </a>
                 </div>
               </div>
             )
