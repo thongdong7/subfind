@@ -36,12 +36,14 @@ setup(
         ],
         'web': [
             'flask==0.10.1',
-            'tornado==4.3'
+            'tornado==4.3',
+            'click==6.6',
         ]
     },
     entry_points={
         'console_scripts': [
             'subfind=subfind_cli.cli:cli',
+            'subfind-web=subfind_web.script:run',
         ],
     },
     classifiers=[

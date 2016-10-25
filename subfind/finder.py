@@ -11,7 +11,6 @@ from subfind.release.alice import ReleaseScoringAlice
 from subfind.scenario import ScenarioManager
 from subfind.utils.subtitle import get_subtitle_info
 
-
 EVENT_SCAN_RELEASE = 'SCAN_RELEASE'
 EVENT_RELEASE_FOUND_LANG = 'RELEASE_FOUND_LANG'
 EVENT_RELEASE_COMPLETED = 'RELEASE_COMPLETED'
@@ -20,7 +19,8 @@ EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
 
 
 class SubFind(object):
-    def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None, max_sub=1):
+    def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None,
+                 max_sub=1):
         """
 
         :param event_manager:
@@ -75,6 +75,13 @@ class SubFind(object):
         self.scenario = ScenarioManager(ReleaseScoringAlice(), scenario_map)
 
         self.subtitle_processor = MultipleSubtitleProcessor()
+
+    @staticmethod
+    def from_config(event_manager, config):
+        return SubFind(event_manager, languages=config['lang'],
+                       provider_names=config['providers'], force=config['force'],
+                       remove=config['remove'],
+                       min_movie_size=config['min-movie-size'], max_sub=config['max-sub'])
 
     def stat_subtitle(self, release_name, movie_dir):
         """
@@ -231,6 +238,3 @@ class SubFind(object):
                 found_langs.add(subtitle_info['lang'])
 
         return self.languages - found_langs
-
-
-

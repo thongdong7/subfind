@@ -4,6 +4,7 @@ import sys
 
 import os
 import re
+
 from flask import Flask, request, render_template
 from os.path import join, abspath, dirname
 from subfind.event import EventManager
@@ -211,28 +212,42 @@ def release_remove_subtitle():
     return 'Completed'
 
 
-def run_web(port=80):
+def run_web(port=80, debug=False):
     from tornado import autoreload
     from tornado.wsgi import WSGIContainer
     from tornado.httpserver import HTTPServer
     from tornado.ioloop import IOLoop
+    import click
 
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s %(message)s', )
 
     http_server = HTTPServer(WSGIContainer(app))
-    try:
-        http_server.listen(port)
-    except PermissionError:
-        print('Port %s is not available. Please select another port' % port)
-        return 1
+    ask = True
+    select_port = False
+    while True:
+        try:
+            http_server.listen(port)
+            break
+        except Exception as e:
+            if ask:
+                if debug:
+                    logging.exception(e)
+
+                select_port = click.confirm('Port %s is not available. Would you like to try another port?' % port, default=True)
+
+                print '-', select_port
+
+            if select_port:
+                port += 1
+                ask = False
+                continue
+
+            return 1
 
     io_loop = IOLoop.instance()
-    autoreload.start(io_loop)
-
-    # root_dir = os.path.abspath(os.path.dirname(__file__))
-    # watch(join(root_dir, 'data/postgresql'))
-    # watch(join(root_dir, 'generated'))
+    if debug:
+        autoreload.start(io_loop)
 
     if port == 80:
         host = 'http://localhost'
@@ -240,9 +255,10 @@ def run_web(port=80):
         host = 'http://localhost:%s' % port
 
     print('Subfind Web is available at {0}'.format(host))
+    import subprocess
+    subprocess.Popen("xdg-open " + host, shell=True)
 
     io_loop.start()
-
 
 
 if __name__ == "__main__":

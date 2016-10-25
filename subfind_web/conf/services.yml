@@ -1,0 +1,24 @@
+parameters:
+  ValidatorConfig:
+    src: folder_validator
+
+services:
+  Config:
+    class: subfind_web.model.config.Config
+
+  SubFinder:
+    factory: [subfind.finder.SubFind, from_config]
+    arguments: [$EventManager, $Config]
+
+  EventManager:
+    class: subfind.event.EventManager
+
+  DataProvider:
+    class: subfind_web.model.config.DataProvider
+    arguments: [$SubFinder, $Config]
+    calls:
+      - [build_data]
+
+  ValidatorManager:
+    class: subfind_web.validate.ValidatorManager
+    arguments: ["%ValidatorConfig%"]
