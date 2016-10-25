@@ -202,11 +202,18 @@ SFReleaseList.contextTypes = {
     router: React.PropTypes.object
 }
 
+function doFilter(releases, {onlyShowMissedSubtitle}) {
+  let ret = releases.filter(i => !onlyShowMissedSubtitle || Object.keys(i.subtitles).length === 0)
+
+
+
+  return ret
+}
 
 export default tb.connect2({
   start: (dispatch) => dispatch(releaseActions.load),
-  props: ({releases}, ownProps, dispatch) => ({
-    releases,
+  props: ({releases, releaseFilter}, ownProps, dispatch) => ({
+    releases: doFilter(releases, releaseFilter),
     reload: () => dispatch(releaseActions.load),
     onRemoveComplete: (res, {name}) => {
       dispatch(releaseActions.load)

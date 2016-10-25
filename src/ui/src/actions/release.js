@@ -16,10 +16,10 @@ export const releaseActions = {
 }
 
 export const releaseFilterActions = {
-  toggleShow: () => state => ({...state, showMissed: !state.showMissed}),
+  toggleOnlyShowMissedSubtitle: () => state => ({...state, onlyShowMissedSubtitle: !state.onlyShowMissedSubtitle}),
 }
 
 export default {
   releases: [releaseActions, []],
-  releaseFilter: [releaseFilterActions, {showMissed: false, }],
+  releaseFilter: [releaseFilterActions, {onlyShowMissedSubtitle: false, }],
 }
