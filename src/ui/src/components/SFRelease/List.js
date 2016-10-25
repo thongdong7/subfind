@@ -7,7 +7,7 @@ import LanguageStats from './LanguageStats'
 import _ from 'lodash'
 import update from 'react-addons-update'
 import Switch from '../Switch'
-//import SFReleaseFilter from './Filter'
+import SFReleaseFilter from './Filter'
 import * as tb from 'tb-react'
 import {releaseActions} from '../../actions/release'
 
@@ -123,7 +123,7 @@ class SFReleaseList extends React.Component {
   render() {
     // console.log('render', this.state.filteredData.length);
     // console.log('props', this.props);
-    const {releases, reload} = this.props
+    const {releases, reload, onScanComplete} = this.props
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
@@ -141,7 +141,8 @@ class SFReleaseList extends React.Component {
               url="Release/scan-all"
               name="Scan All"
               icon="tasks"
-              onComplete={this.loadData.bind(this)}/>
+              onComplete={onScanComplete}
+            />
 
             <tb.LinkButton
               to="/release/config"
@@ -151,9 +152,7 @@ class SFReleaseList extends React.Component {
           </div>
         </div>
         <div className="box-body">
-          {/*}
           <SFReleaseFilter onChange={this.updateFilter.bind(this)}/>
-          */}
 
           {releases.map((item, k) => {
             let stateClass = ""
@@ -220,6 +219,10 @@ export default tb.connect2({
   start: (dispatch) => dispatch(releaseActions.load),
   props: ({releases}, ownProps, dispatch) => ({
     releases,
-    reload: () => dispatch(releaseActions.load)
+    reload: () => dispatch(releaseActions.load),
+    onScanComplete: () => {
+      dispatch(releaseActions.load)
+      tb.success('Scan completed')
+    }
   })
 })(SFReleaseList)

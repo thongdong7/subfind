@@ -29,6 +29,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 import 'toastr/build/toastr.css';
 import './index.css';
+import 'tb-react/index.css';
 
 // Setup configuration
 setup()
