@@ -16,3 +16,10 @@ class ReleaseService(object):
         self.data_provider.build_data()
 
         return True
+
+    def remove_subtitle(self, src, name):
+        self.sub_finder.remove_subtitle(movie_dir=src, release_name=name)
+
+        self.data_provider.build_data()
+
+        return True

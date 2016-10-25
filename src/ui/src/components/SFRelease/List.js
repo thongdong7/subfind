@@ -123,7 +123,7 @@ class SFReleaseList extends React.Component {
   render() {
     // console.log('render', this.state.filteredData.length);
     // console.log('props', this.props);
-    const {releases, reload, onScanComplete} = this.props
+    const {releases, reload, onScanComplete, onRemoveComplete} = this.props
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
@@ -180,7 +180,7 @@ class SFReleaseList extends React.Component {
                     url="Release/remove-subtitle"
                     params={{src: item.src, name: item.name}}
                     icon="trash"
-                    onComplete={reload}
+                    onComplete={onRemoveComplete}
                     name="Remove Subtitles"
                     type="danger"
                   />
@@ -208,6 +208,10 @@ export default tb.connect2({
   props: ({releases}, ownProps, dispatch) => ({
     releases,
     reload: () => dispatch(releaseActions.load),
+    onRemoveComplete: (res, {name}) => {
+      dispatch(releaseActions.load)
+      tb.success(`Removed subtitles of ${name}`)
+    },
     onScanComplete: () => {
       dispatch(releaseActions.load)
       tb.success('Scan completed')
