@@ -1,0 +1,4 @@
+up:
+  - ./env/bin/subfind-web --port 5001 --dev
+  - cd src/ui && npm start
+  - cd ../tb-react && npm run prepublish -- --watch

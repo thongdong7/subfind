@@ -61,7 +61,6 @@ class DataProvider(object):
         self.data = []
 
     def build_data(self):
-        print 'build data'
         movie_requests = self.sub_finder.build_download_requests_for_movie_dirs(self.config['src'], force=True)
 
         data = []

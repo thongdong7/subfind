@@ -12,6 +12,8 @@ python:
 before_install:
   - pip install -e .[web,cli,opensubtitles,subscene]
   - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install importlib; fi
+  - subfind --help
+  - subfind-web --help
 
 # command to run tests
 script:
