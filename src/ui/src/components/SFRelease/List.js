@@ -58,11 +58,11 @@ class SFReleaseList extends React.Component {
           <h3 className="box-title">Movies</h3>
 
           <div className="box-tools">
-            <tb.Button
+            <tb.APIActionButton
               name="Reload"
               icon="refresh"
               type="info"
-              onClick={reload}
+              action={[releaseActions.load]}
             />
 
             <tb.RemoteButton
