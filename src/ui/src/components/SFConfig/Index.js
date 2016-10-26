@@ -126,15 +126,14 @@ class SFConfigIndex extends React.Component {
                   src={folder}
                   key={k}
                 >
-                  <tb.RemoteButton
+                  <tb.APIActionButton
                     name="Remove"
                     icon="trash"
                     hideName
                     type="danger"
-                    url="Config/update"
-                    params={{"src-$remove": folder}}
-                    onComplete={onReload}
-                    />
+
+                    action={[configActions.removeField, 'src', folder]}
+                  />
                 </MovieFolder>
               )
             })}
@@ -154,15 +153,13 @@ class SFConfigIndex extends React.Component {
                   src={item}
                   key={k}
                 >
-                  <tb.RemoteButton
+                  <tb.APIActionButton
                     name="Remove"
                     icon="trash"
                     hideName
                     type="danger"
-                    url="Config/update"
-                    params={{"lang-$remove": item}}
-                    onComplete={onReload}
-                    />
+                    action={[configActions.removeField, 'lang', item]}
+                  />
                 </MovieFolder>
               )
             })}
@@ -178,8 +175,8 @@ class SFConfigIndex extends React.Component {
           <div className="col-sm-3"><strong>Providers</strong></div>
           <div className="col-sm-9">
             {this.providers.map((item, k) => {
-              let tmp = providers.filter(x => x == item.name)
-              let value = tmp.length == 1 ? true : false
+              let tmp = providers.filter(x => x === item.name)
+              let value = tmp.length === 1 ? true : false
               // console.log(item.display_name, value);
               return (
                 <div key={k}>
