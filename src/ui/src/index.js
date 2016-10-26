@@ -45,13 +45,11 @@ const Root = ({store}) => (
       <Route path="/" component={AdminLTE}>
         <IndexRoute component={SFReleaseList} />
         <Route path="/release/config" component={SFConfigIndex}/>
-
-
+        <Route path="/release/list" component={SFReleaseList}/>
       </Route>
     </Router>
   </Provider>
 );
-//      <Route path="/release/list" component={SFReleaseList}/>
 
 Root.propTypes = {
   store: PropTypes.object.isRequired,
