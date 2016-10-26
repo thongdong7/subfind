@@ -21,7 +21,7 @@ export const configActions = {
       [`${field}-$push`]: value
     },
     success: (dispatch, data) => {
-      console.log('config update response', data);
+      // console.log('config update response', data);
       dispatch(configActions.load)
       success(`Added ${value} to ${field}`)
     },
@@ -36,7 +36,7 @@ export const configActions = {
       [`${field}-$remove`]: value
     },
     success: (dispatch, data) => {
-      console.log('config update response', data);
+      // console.log('config update response', data);
       dispatch(configActions.load)
       success(`Removed ${value} from ${field}`)
     },

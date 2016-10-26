@@ -100,17 +100,8 @@ class SFConfigIndex extends React.Component {
   }
 
   render() {
-    // console.log('render', this.state.formData);
-    let loading
-    // if (this.state.loading) {
-    //   loading = (
-    //     <Loading />
-    //   )
-    // }
-
     const {
       config: {src: folders, lang, providers, force, remove},
-      onReload,
     } = this.props
     // console.log('config', this.props.config);
     const config = this.props.config
@@ -138,9 +129,7 @@ class SFConfigIndex extends React.Component {
               )
             })}
             <SimpleForm
-              url="Config/update"
-              field={`src-$push`}
-              onComplete={onReload}
+              action={[configActions.pushField, 'src']}
             />
           </div>
         </div>
@@ -165,9 +154,7 @@ class SFConfigIndex extends React.Component {
             })}
 
             <SimpleForm
-              url="Config/update"
-              field={`lang-$push`}
-              onComplete={onReload}
+              action={[configActions.pushField, 'lang']}
             />
           </div>
         </div>
@@ -233,7 +220,6 @@ class SFConfigIndex extends React.Component {
           <h3 className="box-title">
             <button className="btn btn-default" onClick={this.back.bind(this)}><i className="fa fa-arrow-left"></i> Back</button>
             &nbsp;
-            Setup {loading}
           </h3>
         </div>
         <div className="box-body">
@@ -254,8 +240,5 @@ export default tb.connect2({
   },
   props: ({config}, ownProps, dispatch) => ({
     config,
-    onReload: (data) => dispatch(configActions.load)
-    // onPushField: (field, value) => dispatch(configActions.pushField, field, value),
-    // removeField: (field, value) => dispatch(configActions.removeField, field, value),
   })
 })(SFConfigIndex)

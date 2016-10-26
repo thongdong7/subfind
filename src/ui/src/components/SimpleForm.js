@@ -37,11 +37,8 @@ class SimpleForm extends React.Component {
   }
 
   render() {
-    const {field, url} = this.props
+    const {action=[]} = this.props
     const {value, error} = this.state
-    const params = {
-      [field]: value
-    }
 
     const errorClass = error ? 'has-error': ''
     return (
@@ -49,16 +46,14 @@ class SimpleForm extends React.Component {
         onChange={this.formChange.bind(this)}>
         <div className={`input-group input-group-sm ${errorClass}`}>
           <input
-            name={field}
             type="text"
             className={`form-control`}
             autoComplete="off"
             value={value} />
           <span className="input-group-btn">
-            <tb.RemoteButton
+            <tb.APIActionButton
               ref="submitButton"
-              url={url}
-              params={params}
+              action={[...action, value]}
               name="Add"
               onError={this.onError}
               onComplete={this.onComplete}
