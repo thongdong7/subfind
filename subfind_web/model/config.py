@@ -42,8 +42,11 @@ class Config(object):
 
         return yaml.load(open(self.config_path))
 
-    def save_config(self, config):
-        content = yaml.safe_dump(config)
+    def update(self, data):
+        self._data.update(data)
+
+    def save(self):
+        content = yaml.safe_dump(self._data)
 
         open(self.config_path, 'w').write(content)
 

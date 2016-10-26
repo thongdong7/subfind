@@ -24,10 +24,10 @@ export default class InputEditable extends React.Component {
   async toggle() {
     await this.setState({editing: !this.state.editing})
 
-    if (this.state.editing) {
-      // console.log('do focus');
-      $(`[name='${this.state.name}']`).focus()
-    }
+    // if (this.state.editing) {
+    //   // console.log('do focus');
+    //   $(`[name='${this.state.name}']`).focus()
+    // }
   }
 
   onControlChange(e) {
@@ -49,14 +49,20 @@ export default class InputEditable extends React.Component {
     return (
       <div>
         {!this.state.editing &&
-          <div className="editable-value" onClick={this.toggle.bind(this)}>
+          <div
+            className="editable-value"
+            onClick={this.toggle.bind(this)}
+          >
             {this.getValue()}
           </div>
         }
         {
           this.state.editing &&
           <form onSubmit={this.updateValue.bind(this)}>
-            <input type="number" className="form-control"
+            <input
+              type="number"
+              className="form-control"
+              focus={this.state.editing}
               name={this.state.name}
               value={this.getValue()}
               onChange={this.onControlChange.bind(this)}

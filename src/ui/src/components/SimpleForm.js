@@ -15,6 +15,7 @@ export default class SimpleForm extends React.Component {
     e.preventDefault()
 
     if (this.props.onSubmit) {
+      console.log('submit form');
       let ok = await this.props.onSubmit(this.getData())
       if (ok === true) {
         this.setState({formData: {}})

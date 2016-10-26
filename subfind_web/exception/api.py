@@ -2,6 +2,16 @@ API_ERROR_CODE__UNKNOWN = 500
 API_ERROR_CODE__MISS_CONFIG = 501
 
 
+def failed(message, **kwargs):
+    ret = {
+        'ok': False,
+        'message': message
+    }
+    ret.update(kwargs)
+
+    return ret
+
+
 class APIError(Exception):
     code = API_ERROR_CODE__UNKNOWN
 
@@ -15,11 +25,12 @@ class APIError(Exception):
     def __str__(self, *args, **kwargs):
         return self.message
 
+    def to_json(self):
+        return failed(self.message)
+
 
 class MissConfigError(APIError):
     code = API_ERROR_CODE__MISS_CONFIG
 
     def __init__(self, *args, **kwargs):
         super().__init__("Missed config file", *args, **kwargs)
-
-

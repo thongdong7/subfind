@@ -7,7 +7,7 @@ import { Router, Route, IndexRoute, hashHistory } from 'react-router'
 
 import AdminLTE from './components/AdminLTE'
 
-//import SFConfigIndex from './components/SFConfig/Index'
+import SFConfigIndex from './components/SFConfig/Index'
 import SFReleaseList from './components/SFRelease/List'
 
 import toastr from 'toastr'
@@ -44,13 +44,13 @@ const Root = ({store}) => (
     <Router history={hashHistory}>
       <Route path="/" component={AdminLTE}>
         <IndexRoute component={SFReleaseList} />
+        <Route path="/release/config" component={SFConfigIndex}/>
 
 
       </Route>
     </Router>
   </Provider>
 );
-//      <Route path="/release/config" component={SFConfigIndex}/>
 //      <Route path="/release/list" component={SFReleaseList}/>
 
 Root.propTypes = {
