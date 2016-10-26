@@ -1,32 +1,35 @@
 import React from 'react'
-import update from 'react-addons-update'
+import * as tb from 'tb-react'
 
-export default class SimpleForm extends React.Component {
+class SimpleForm extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      formData: {},
-      editMinMovieSize: false
+      value: '',
+      error: false,
     }
   }
 
   async onSubmit(e) {
     e.preventDefault()
 
-    if (this.props.onSubmit) {
-      console.log('submit form');
-      let ok = await this.props.onSubmit(this.getData())
-      if (ok === true) {
-        this.setState({formData: {}})
-      }
+    this.refs.submitButton.submit()
+  }
+
+  formChange({target: {value}}) {
+    this.setState({value})
+  }
+
+  onComplete = () => {
+    this.setState({error: false, value: ''})
+    if (this.props.onComplete) {
+      this.props.onComplete()
     }
   }
 
-  formChange(e) {
-    let field = e.target.name
-    let value = e.target.value
-    this.setState(update(this.state, {formData: {[field]: {$set: value}}}))
+  onError = () => {
+    this.setState({error: true})
   }
 
   getData() {
@@ -34,19 +37,37 @@ export default class SimpleForm extends React.Component {
   }
 
   render() {
-    let field = this.props.field
+    const {field, url} = this.props
+    const {value, error} = this.state
+    const params = {
+      [field]: value
+    }
+
+    const errorClass = error ? 'has-error': ''
     return (
       <form role="form" onSubmit={this.onSubmit.bind(this)}
         onChange={this.formChange.bind(this)}>
-        <div className="input-group input-group-sm">
-          <input name={field} type="text" className="form-control"
+        <div className={`input-group input-group-sm ${errorClass}`}>
+          <input
+            name={field}
+            type="text"
+            className={`form-control`}
             autoComplete="off"
-            value={this.state.formData[field] || ''} />
+            value={value} />
           <span className="input-group-btn">
-            <button type="submit" className="btn btn-default">Add</button>
+            <tb.RemoteButton
+              ref="submitButton"
+              url={url}
+              params={params}
+              name="Add"
+              onError={this.onError}
+              onComplete={this.onComplete}
+            />
           </span>
         </div>
       </form>
     )
   }
 }
+
+export default SimpleForm

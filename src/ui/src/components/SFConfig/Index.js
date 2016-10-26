@@ -38,10 +38,7 @@ class SFConfigIndex extends React.Component {
 
   async addFolder(data) {
     console.log('data', data);
-    this.props.pushField('src', data.src)
-    // return this.updateConfig({
-    //   'src-$push': data.src
-    // })
+    this.props.onPushField('src', data.src)
   }
 
   async addLanguage(data) {
@@ -71,7 +68,8 @@ class SFConfigIndex extends React.Component {
 
   removeFolder(src) {
     // console.log('remove ', src);
-    this.updateConfig({'src-$remove': src})
+    // this.updateConfig({'src-$remove': src})
+    this.props.removeField('src', src)
   }
 
   removeLang(src) {
@@ -110,8 +108,11 @@ class SFConfigIndex extends React.Component {
     //   )
     // }
 
-    const {config: {src, lang, providers, force, remove}} = this.props
-    console.log(this.props.config);
+    const {
+      config: {src: folders, lang, providers, force, remove},
+      onReload,
+    } = this.props
+    // console.log('config', this.props.config);
     const config = this.props.config
 
     let content = (
@@ -119,16 +120,29 @@ class SFConfigIndex extends React.Component {
         <div className="row">
           <div className="col-sm-3"><strong>Movie Folders</strong></div>
           <div className="col-sm-9">
-            {src.map((item, k) => {
+            {folders.map((folder, k) => {
               return (
                 <MovieFolder
-                  src={item}
+                  src={folder}
                   key={k}
-                  onRemove={() => this.removeFolder(item)}
-                />
+                >
+                  <tb.RemoteButton
+                    name="Remove"
+                    icon="trash"
+                    hideName
+                    type="danger"
+                    url="Config/update"
+                    params={{"src-$remove": folder}}
+                    onComplete={onReload}
+                    />
+                </MovieFolder>
               )
             })}
-            <SimpleForm field="src" onSubmit={this.addFolder.bind(this)} />
+            <SimpleForm
+              url="Config/update"
+              field={`src-$push`}
+              onComplete={onReload}
+            />
           </div>
         </div>
         <div className="row">
@@ -136,11 +150,28 @@ class SFConfigIndex extends React.Component {
           <div className="col-sm-9">
             {lang.map((item, k) => {
               return (
-                <MovieFolder src={item} key={k} onRemove={() => this.removeLang(item)}/>
+                <MovieFolder
+                  src={item}
+                  key={k}
+                >
+                  <tb.RemoteButton
+                    name="Remove"
+                    icon="trash"
+                    hideName
+                    type="danger"
+                    url="Config/update"
+                    params={{"lang-$remove": item}}
+                    onComplete={onReload}
+                    />
+                </MovieFolder>
               )
             })}
 
-            <SimpleForm field="name" onSubmit={this.addLanguage.bind(this)} />
+            <SimpleForm
+              url="Config/update"
+              field={`lang-$push`}
+              onComplete={onReload}
+            />
           </div>
         </div>
         <div className="row">
@@ -226,6 +257,8 @@ export default tb.connect2({
   },
   props: ({config}, ownProps, dispatch) => ({
     config,
-    pushField: (field, value) => dispatch(configActions.pushField, field, value)
+    onReload: (data) => dispatch(configActions.load)
+    // onPushField: (field, value) => dispatch(configActions.pushField, field, value),
+    // removeField: (field, value) => dispatch(configActions.removeField, field, value),
   })
 })(SFConfigIndex)
