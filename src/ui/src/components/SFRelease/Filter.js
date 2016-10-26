@@ -1,5 +1,4 @@
 import React from 'react'
-import Switch from '../Switch'
 import update from 'react-addons-update'
 import * as tb from 'tb-react'
 import {releaseFilterActions} from '../../actions/release'
@@ -47,8 +46,10 @@ class SFReleaseFilter extends React.Component {
             Only show missed subtitle release
           </div>
           <div className="col-md-6 col-xs-4">
-            <Switch checked={onlyShowMissedSubtitle}
-              onChange={onToggleOnlyShowMissedSubtitle} />
+            <tb.Switch
+              checked={onlyShowMissedSubtitle}
+              onChange={onToggleOnlyShowMissedSubtitle}
+            />
           </div>
         </div>
         {this.state.languages.map((lang, k) => {
@@ -58,7 +59,7 @@ class SFReleaseFilter extends React.Component {
                 Only show missed lang {lang}
               </div>
               <div className="col-md-6 col-xs-4">
-                <Switch checked={onlyShowLang.indexOf(lang) >= 0}
+                <tb.Switch checked={onlyShowLang.indexOf(lang) >= 0}
                   onChange={() => onToggleOnlyShowLang(lang)} />
               </div>
             </div>

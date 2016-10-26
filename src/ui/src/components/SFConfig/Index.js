@@ -1,12 +1,7 @@
 import React from 'react'
-// import Loading from '../Loading'
-// import RestService from '../RestService'
-// import update from 'react-addons-update'
 import MovieFolder from './MovieFolder'
-import Switch from '../Switch'
 import InputEditable from '../InputEditable'
 import SimpleForm from '../SimpleForm'
-// import toastr from 'toastr'
 import * as tb from 'tb-react'
 import {configActions} from '../../actions/config'
 
@@ -169,7 +164,7 @@ class SFConfigIndex extends React.Component {
                 <div key={k}>
                   <div className="col-sm-3">{item.display_name}</div>
                   <div className="col-sm-9">
-                    <Switch checked={value} onChange={(checked) => this.updateProvider(checked, item.name)}/>
+                    <tb.Switch checked={value} onChange={(checked) => this.updateProvider(checked, item.name)}/>
                   </div>
                 </div>
               )
@@ -179,7 +174,7 @@ class SFConfigIndex extends React.Component {
         <div className="row">
           <div className="col-sm-3"><strong>Force download subtitle</strong></div>
           <div className="col-sm-9">
-            <Switch checked={force}
+            <tb.Switch checked={force}
               onChange={(checked) => this.updateSwitchField('force', checked)}/>
           </div>
         </div>
@@ -188,7 +183,7 @@ class SFConfigIndex extends React.Component {
             <strong>Remove old subtitles if not found new subtitle</strong>
           </div>
           <div className="col-sm-9">
-            <Switch checked={remove}
+            <tb.Switch checked={remove}
               onChange={(checked) => this.updateSwitchField('remove', checked)}/>
           </div>
         </div>
