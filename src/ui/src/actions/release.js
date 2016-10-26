@@ -22,7 +22,7 @@ export const releaseFilterActions = {
     if (onlyShowLang.indexOf(lang) < 0) {
       onlyShowLang = [...onlyShowLang, lang]
     } else {
-      onlyShowLang = onlyShowLang.filter(l => l != lang)
+      onlyShowLang = onlyShowLang.filter(l => l !== lang)
     }
 
     return {

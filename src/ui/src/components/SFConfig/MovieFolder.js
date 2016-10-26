@@ -1,5 +1,4 @@
 import React from 'react'
-import * as tb from 'tb-react'
 
 class MovieFolder extends React.Component {
   render() {

@@ -39,7 +39,7 @@ class SFReleaseFilter extends React.Component {
       onToggleOnlyShowMissedSubtitle,
       onToggleOnlyShowLang,
     } = this.props
-    console.log(onlyShowLang);
+    // console.log(onlyShowLang);
     return (
       <div>
         <div className="row">
@@ -52,7 +52,6 @@ class SFReleaseFilter extends React.Component {
           </div>
         </div>
         {this.state.languages.map((lang, k) => {
-          let filter_lang = `lang_${lang}`
           return (
             <div className="row" key={k}>
               <div className="col-md-6 col-xs-8">

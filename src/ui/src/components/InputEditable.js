@@ -6,28 +6,19 @@ export default class InputEditable extends React.Component {
 
     this.state = {
       editing: false,
-      name: this.props.name,
-      value: this.props.defaultValue
+      name: props.name,
+      value: props.defaultValue
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.name != this.props.name) {
+    if (nextProps.name !== this.props.name) {
       this.setState({name: nextProps.name})
     }
   }
 
-  getValue() {
-    return this.state.value != undefined ? this.state.value : this.props.defaultValue
-  }
-
   async toggle() {
     await this.setState({editing: !this.state.editing})
-
-    // if (this.state.editing) {
-    //   // console.log('do focus');
-    //   $(`[name='${this.state.name}']`).focus()
-    // }
   }
 
   onControlChange(e) {
@@ -35,7 +26,7 @@ export default class InputEditable extends React.Component {
     this.setState({value: value})
   }
 
-  async updateValue(e) {
+  updateValue = async (e) => {
     e.preventDefault()
 
     if (this.props.onUpdate) {
@@ -46,27 +37,31 @@ export default class InputEditable extends React.Component {
   }
 
   render() {
+    const {value: stateValue} = this.state
+    const {defaultValue} = this.props
+    const value = stateValue || defaultValue || ''
     return (
       <div>
-        {!this.state.editing &&
+        {
+          !this.state.editing &&
           <div
             className="editable-value"
             onClick={this.toggle.bind(this)}
           >
-            {this.getValue()}
+            {value}
           </div>
         }
         {
           this.state.editing &&
-          <form onSubmit={this.updateValue.bind(this)}>
+          <form onSubmit={this.updateValue}>
             <input
               type="number"
               className="form-control"
-              focus={this.state.editing}
+              autoFocus={this.state.editing}
               name={this.state.name}
-              value={this.getValue()}
+              value={value}
               onChange={this.onControlChange.bind(this)}
-              onBlur={this.updateValue.bind(this)}
+              onBlur={this.updateValue}
             />
           </form>
         }
