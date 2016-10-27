@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react'
 import MovieFolder from './MovieFolder'
-import InputEditable from '../InputEditable'
 import * as tb from 'tb-react'
 import {configActions} from '../../actions/config'
 
@@ -157,7 +156,7 @@ class SFConfigIndex extends Component {
                     <div className="col-sm-9">
                       <tb.APIActionSwitch
                         checked={value}
-                        action={[configActions.updateListField, 'provider', item.name]}
+                        action={[configActions.updateListField, 'providers', item.name]}
                       />
                     </div>
                   </div>
@@ -191,10 +190,9 @@ class SFConfigIndex extends Component {
               <div>(to ignore sample videos)</div>
             </div>
             <div className="col-sm-9">
-              <InputEditable
-                name="min-movie-size"
-                defaultValue={config['min-movie-size'] / mb}
-                onUpdate={this.onMinMovieSizeUpdate.bind(this)}
+              <tb.InputInplace
+                value={config['min-movie-size'] / mb}
+                actionFunc={(value) => [configActions.updateField, 'min-movie-size', Number(value) * mb]}
               />
             </div>
           </div>
@@ -203,8 +201,10 @@ class SFConfigIndex extends Component {
               <strong>Number subtitles</strong>
             </div>
             <div className="col-sm-9">
-              <InputEditable name="max-sub" defaultValue={config['max-sub']}
-                onUpdate={this.onMaxSubUpdate.bind(this)} />
+              <tb.InputInplace
+                value={config['max-sub']}
+                action={[configActions.updateField, 'max-sub']}
+              />
             </div>
           </div>
         </div>
