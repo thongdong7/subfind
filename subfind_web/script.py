@@ -1,4 +1,4 @@
-from os.path import abspath
+from os.path import abspath, join
 from os.path import dirname
 
 import click
@@ -13,7 +13,7 @@ def run(port, dev):
     start(
         base_name='subfind_web.service',
         module_suffix='Service',
-        project_dir=web_dir,
+        project_dir=join(web_dir, 'ui/build'),
         debug=dev,
         port=port
     )
