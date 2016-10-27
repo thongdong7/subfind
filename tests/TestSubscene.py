@@ -102,6 +102,7 @@ class SubsceneTestCase(unittest.TestCase):
 
     def test_seach_movie(self):
         testcases = [
+            ('Ice.Age.Collision.Course.2016.720p.HDRiP.850MB.ShAaNiG', 'https://subscene.com/subtitles/ice-age-collision-course'),
             ('13.2010.720p.BluRay.x264.YIFY', 'https://subscene.com/subtitles/13-russian-roulette'),
             ('Bad.Boys.II.2003.1080.BluRay.X264.YIFY', 'https://subscene.com/subtitles/bad-boys-ii'),
             ('400.Days.2015.1080p.BluRay.H264.AAC-RARBG', 'https://subscene.com/subtitles/400-days'),

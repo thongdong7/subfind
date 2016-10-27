@@ -17,6 +17,7 @@ class MovieParserTestCase(unittest.TestCase):
 
         for release_name, expected in testcases:
             actual = parse_release_name(release_name)
+            # pprint(actual)
             for field in expected:
                 self.assertEqual(expected[field], actual.get(field),
                                  "Field '{0}' in {1} does not match".format(field, release_name))

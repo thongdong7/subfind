@@ -139,7 +139,10 @@ class SubsceneProvider(BaseProvider):
             # E.g.: https://subscene.com/subtitles/dragon-blade-2015
             # movie_display_title = 'Dragon Blade (Tian jiang xiong shi)'
             # movie_title = 'dragon blade'
-            movie_title = self._get_movie_title_from_url(movie_url)
+            try:
+                movie_title = self._get_movie_title_from_url(movie_url)
+            except MovieNotFound:
+                continue
 
             m = self.movie_title_year_pattern.search(movie_display_title)
             movie_year = -1
