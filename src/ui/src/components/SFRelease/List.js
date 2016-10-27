@@ -1,57 +1,63 @@
 import React from 'react'
-// import { Link } from 'react-router'
-//import RestService from '../RestService'
-import LanguageStats from './LanguageStats'
-//import RemoteButton from '../RemoteButton'
-//import SFConfigIndex from '../SFConfig/Index'
 import _ from 'lodash'
-// import update from 'react-addons-update'
-// import Switch from '../Switch'
-import SFReleaseFilter from './Filter'
 import * as tb from 'tb-react'
+
+import LanguageStats from './LanguageStats'
+import SFReleaseFilter from './Filter'
 import {releaseActions} from '../../actions/release'
 
-// let onBottom
-//
-// window.onscroll = function(ev) {
-//   if ((window.innerHeight + window.scrollY + 100) >= document.body.offsetHeight) {
-//     if (onBottom) {
-//       onBottom()
-//     }
-//     // console.log('bottom');
-//   }
-// };
+let onBottom
+
+window.onscroll = function(ev) {
+  if ((window.innerHeight + window.scrollY + 100) >= document.body.offsetHeight) {
+    if (onBottom) {
+      onBottom()
+    }
+    // console.log('bottom', onBottom);
+  }
+};
 
 class SFReleaseList extends React.Component {
-  // constructor(props, context) {
-  //   super(props, context)
-  //
-  //   this.state = {
-  //     current: null,
-  //     page: 1,
-  //     maxPage: 1
-  //   }
-  //
-  //   this.limit = 20
-  // }
+  constructor(props, context) {
+    super(props, context)
 
-  // onBottom = () => {
-  //   if (this.state.page >= this.state.maxPage) {
-  //     return
-  //   }
-  //
-  //   let nextPage = this.state.page + 1
-  //   // this.setState({
-  //   //   page: nextPage,
-  //   //   filteredData: this.filterData(this.state.data, this.state.filter, nextPage)
-  //   // })
-  //   // console.log('b', nextPage);
-  // }
+    this.state = {
+      page: 1,
+    }
+
+    this.limit = 20
+    this.maxPage = props.releases.length / this.limit
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.maxPage = nextProps.releases.length / this.limit
+  }
+
+  componentWillMount() {
+    onBottom = this.onBottom
+  }
+
+  onBottom = () => {
+    // console.log('page', this.state.page, this.maxPage, this.props.releases.length);
+    if (this.state.page >= this.maxPage) {
+      return
+    }
+
+    let nextPage = this.state.page + 1
+    this.setState({
+      page: nextPage,
+    })
+    // console.log('b', nextPage);
+  }
+
+  get releases() {
+    return this.props.releases.slice(0, this.state.page * this.limit)
+  }
 
   render() {
     // console.log('render', this.state.filteredData.length);
     // console.log('props', this.props);
-    const {releases, reload, onScanComplete, onRemoveComplete} = this.props
+    const {reload, onScanComplete, onRemoveComplete} = this.props
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
@@ -82,7 +88,7 @@ class SFReleaseList extends React.Component {
         <div className="box-body">
           <SFReleaseFilter />
 
-          {releases.map((item, k) => {
+          {this.releases.map((item, k) => {
             let stateClass = ""
             if (_.isEmpty(item.subtitles)) {
               stateClass = " bg-warning"
