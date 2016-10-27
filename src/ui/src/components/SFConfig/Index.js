@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component, PropTypes} from 'react'
 import MovieFolder from './MovieFolder'
 import InputEditable from '../InputEditable'
 import * as tb from 'tb-react'
@@ -6,7 +6,11 @@ import {configActions} from '../../actions/config'
 
 let mb = 1024 * 1024
 
-class SFConfigIndex extends React.Component {
+class SFConfigIndex extends Component {
+  static contextTypes = {
+      router: PropTypes.object
+  }
+
   constructor(props, context) {
     super(props, context)
 
@@ -58,10 +62,6 @@ class SFConfigIndex extends React.Component {
     //
     //   return false
     // }
-  }
-
-  updateSwitchField(fieldName, checked) {
-    this.updateConfig({[fieldName]: checked})
   }
 
   async onMinMovieSizeUpdate(value) {
@@ -168,8 +168,10 @@ class SFConfigIndex extends React.Component {
           <div className="row">
             <div className="col-sm-3"><strong>Force download subtitle</strong></div>
             <div className="col-sm-9">
-              <tb.Switch checked={force}
-                onChange={(checked) => this.updateSwitchField('force', checked)}/>
+              <tb.APIActionSwitch
+                checked={force}
+                action={[configActions.updateField, 'force']}
+              />
             </div>
           </div>
           <div className="row">
@@ -177,8 +179,10 @@ class SFConfigIndex extends React.Component {
               <strong>Remove old subtitles if not found new subtitle</strong>
             </div>
             <div className="col-sm-9">
-              <tb.Switch checked={remove}
-                onChange={(checked) => this.updateSwitchField('remove', checked)}/>
+              <tb.APIActionSwitch
+                checked={remove}
+                action={[configActions.updateField, 'remove']}
+              />
             </div>
           </div>
           <div className="row">
@@ -187,8 +191,11 @@ class SFConfigIndex extends React.Component {
               <div>(to ignore sample videos)</div>
             </div>
             <div className="col-sm-9">
-              <InputEditable name="min-movie-size" defaultValue={config['min-movie-size'] / mb}
-                onUpdate={this.onMinMovieSizeUpdate.bind(this)} />
+              <InputEditable
+                name="min-movie-size"
+                defaultValue={config['min-movie-size'] / mb}
+                onUpdate={this.onMinMovieSizeUpdate.bind(this)}
+              />
             </div>
           </div>
           <div className="row">
@@ -207,9 +214,9 @@ class SFConfigIndex extends React.Component {
   }
 }
 
-SFConfigIndex.contextTypes = {
-    router: React.PropTypes.object
-}
+// SFConfigIndex.contextTypes = {
+//     router: React.PropTypes.object
+// }
 
 export default tb.connect2({
   start: (dispatch) => {

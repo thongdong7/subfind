@@ -33,6 +33,23 @@ export const configActions = {
       }
     }
   }),
+  updateField: APIAction((field, value) => {
+    return {
+      url: 'Config/update',
+      params: {
+        [field]: value
+      },
+      success: (dispatch, data) => {
+        // console.log('config update response', data);
+        dispatch(configActions.load)
+        success(`Update ${field} to ${value}`)
+      },
+      error: (dispatch, data) => {
+        console.error(data);
+        error(data.message)
+      }
+    }
+  }),
 }
 
 export default {
