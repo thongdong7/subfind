@@ -9,7 +9,7 @@ import unittest
 logging.basicConfig(level=logging.DEBUG)
 
 
-class ReleaseTestCase(unittest.TestCase):
+class OpensubtitleTestCase(unittest.TestCase):
     def setUp(self):
         self.provider = OpensubtitlesProvider()
 

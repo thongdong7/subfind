@@ -69,7 +69,7 @@ def movie_match_title(arbiter_title_query, a, b):
 class MovieScoringAlice(MovieScoring):
     def sort(self, params, movies):
         query_tokens = set(params['title_tokens'])
-        arbiter_year = params['year']
+        arbiter_year = params.get('year')
         arbiter_title_query = params['title_query']
 
         for movie in movies:
