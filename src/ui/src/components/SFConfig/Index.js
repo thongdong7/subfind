@@ -14,61 +14,9 @@ class SFConfigIndex extends Component {
     super(props, context)
 
     this.providers = [
-      {name: "opensubtitles", display_name: "Opensubtitles"},
-      {name: "subscene", display_name: "Subscene"},
+      {name: "opensubtitles", displayName: "Opensubtitles"},
+      {name: "subscene", displayName: "Subscene"},
     ]
-
-    this.state = {data: null, formData: {}, loading: false}
-  }
-
-  componentWillMount() {
-    this.loadData()
-  }
-
-  async loadData() {
-    // this.setState({loading: true})
-    //
-    // let data = await RestService.load("config")
-    //
-    // this.setState({data: data, loading: false})
-  }
-
-  async addFolder(data) {
-    console.log('data', data);
-    this.props.onPushField('src', data.src)
-  }
-
-  async addLanguage(data) {
-    return this.updateConfig({
-      'lang-$push': data.name
-    })
-  }
-
-  async updateConfig(params) {
-    // this.setState({loading: true})
-    // try {
-    //   let ret = await RestService.load("config/update", params)
-    //   // console.log(ret);
-    //
-    //   this.setState({data: ret, loading: false})
-    //
-    //   return true
-    // } catch (response) {
-    //   // console.log(response);
-    //   toastr.error(response.responseJSON.message)
-    //
-    //   this.setState({loading: false})
-    //
-    //   return false
-    // }
-  }
-
-  async onMinMovieSizeUpdate(value) {
-    await this.updateConfig({'min-movie-size': value * mb})
-  }
-
-  async onMaxSubUpdate(value) {
-    await this.updateConfig({'max-sub': value})
   }
 
   back() {
@@ -146,17 +94,15 @@ class SFConfigIndex extends Component {
           <div className="row">
             <div className="col-sm-3"><strong>Providers</strong></div>
             <div className="col-sm-9">
-              {this.providers.map((item, k) => {
-                let tmp = providers.filter(x => x === item.name)
-                let value = tmp.length === 1 ? true : false
-                // console.log(item.display_name, value);
+              {this.providers.map(({name: providerName, displayName}, k) => {
+                let checked = providers.indexOf(providerName) >= 0
                 return (
                   <div key={k}>
-                    <div className="col-sm-3">{item.display_name}</div>
+                    <div className="col-sm-3">{displayName}</div>
                     <div className="col-sm-9">
                       <tb.APIActionSwitch
-                        checked={value}
-                        action={[configActions.updateListField, 'providers', item.name]}
+                        checked={checked}
+                        action={[configActions.updateListField, 'providers', providerName]}
                       />
                     </div>
                   </div>
