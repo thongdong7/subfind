@@ -15,36 +15,24 @@ export const configActions = {
     },
     error: (dispatch) => {},
   })),
-  pushField: APIAction((field, value) => ({
-    url: 'Config/update',
-    params: {
-      [`${field}-$push`]: value
-    },
-    success: (dispatch, data) => {
-      // console.log('config update response', data);
-      dispatch(configActions.load)
-      success(`Added ${value} to ${field}`)
-    },
-    error: (dispatch, data) => {
-      console.error(data);
-      error(data.message)
+  updateListField: APIAction((field, value, enable) => {
+    const updateField = enable ? `${field}-$push` : `${field}-$remove`
+    return {
+      url: 'Config/update',
+      params: {
+        [updateField]: value
+      },
+      success: (dispatch, data) => {
+        // console.log('config update response', data);
+        dispatch(configActions.load)
+        success(`${enable ? 'Added' : 'Removed'} ${value} from ${field}`)
+      },
+      error: (dispatch, data) => {
+        console.error(data);
+        error(data.message)
+      }
     }
-  })),
-  removeField: APIAction((field, value) => ({
-    url: 'Config/update',
-    params: {
-      [`${field}-$remove`]: value
-    },
-    success: (dispatch, data) => {
-      // console.log('config update response', data);
-      dispatch(configActions.load)
-      success(`Removed ${value} from ${field}`)
-    },
-    error: (dispatch, data) => {
-      console.error(data);
-      error(data.message)
-    }
-  })),
+  }),
 }
 
 export default {

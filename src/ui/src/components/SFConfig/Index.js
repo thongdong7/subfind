@@ -60,23 +60,6 @@ class SFConfigIndex extends React.Component {
     // }
   }
 
-  removeFolder(src) {
-    // console.log('remove ', src);
-    // this.updateConfig({'src-$remove': src})
-    this.props.removeField('src', src)
-  }
-
-  removeLang(src) {
-    // console.log('remove ', src);
-    this.updateConfig({'lang-$remove': src})
-  }
-
-  async updateProvider(checked, name) {
-    // console.log(`update ${name} to ${checked}`);
-    let fieldName = checked ? 'providers-$push' : 'providers-$remove'
-    this.updateConfig({[fieldName]: name})
-  }
-
   updateSwitchField(fieldName, checked) {
     this.updateConfig({[fieldName]: checked})
   }
@@ -95,7 +78,7 @@ class SFConfigIndex extends React.Component {
 
   render() {
     const {
-      config: {src: folders, lang, providers, force, remove},
+      config: {src: folders, lang: languages, providers, force, remove},
     } = this.props
     // console.log('config', this.props.config);
     const config = this.props.config
@@ -125,23 +108,23 @@ class SFConfigIndex extends React.Component {
                       hideName
                       type="danger"
 
-                      action={[configActions.removeField, 'src', folder]}
+                      action={[configActions.updateListField, 'src', folder, false]}
                     />
                   </MovieFolder>
                 )
               })}
               <tb.InputTextForm
-                action={[configActions.pushField, 'src']}
+                actionFunc={(value) => [configActions.updateListField, 'src', value, true]}
               />
             </div>
           </div>
           <div className="row">
             <div className="col-sm-3"><strong>Languages</strong></div>
             <div className="col-sm-9">
-              {lang.map((item, k) => {
+              {languages.map((lang, k) => {
                 return (
                   <MovieFolder
-                    src={item}
+                    src={lang}
                     key={k}
                   >
                     <tb.APIActionButton
@@ -149,14 +132,15 @@ class SFConfigIndex extends React.Component {
                       icon="trash"
                       hideName
                       type="danger"
-                      action={[configActions.removeField, 'lang', item]}
+
+                      action={[configActions.updateListField, 'lang', lang, false]}
                     />
                   </MovieFolder>
                 )
               })}
 
               <tb.InputTextForm
-                action={[configActions.pushField, 'lang']}
+                actionFunc={(value) => [configActions.updateListField, 'lang', value, true]}
               />
             </div>
           </div>
@@ -171,7 +155,10 @@ class SFConfigIndex extends React.Component {
                   <div key={k}>
                     <div className="col-sm-3">{item.display_name}</div>
                     <div className="col-sm-9">
-                      <tb.Switch checked={value} onChange={(checked) => this.updateProvider(checked, item.name)}/>
+                      <tb.APIActionSwitch
+                        checked={value}
+                        action={[configActions.updateListField, 'provider', item.name]}
+                      />
                     </div>
                   </div>
                 )
