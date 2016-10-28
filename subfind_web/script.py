@@ -5,7 +5,7 @@ import click
 
 
 @click.command()
-@click.option('--port', '-p', default=5000, help='Web port')
+@click.option('--port', '-p', default=32500, help='Web port')
 @click.option('--dev', is_flag=True, help='Run in development mode')
 def run(port, dev):
     from tb_api.script import start
