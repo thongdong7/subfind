@@ -1,0 +1,9 @@
+click==6.6
+pyyaml==3.11
+requests==2.9.1
+babelfish==0.5.5
+beautifulsoup4==4.4.1
+flask==0.10.1
+tornado==4.3
+tb-api==0.0.6
+tb-ioc==0.1.7

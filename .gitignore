@@ -68,3 +68,7 @@ assets.json
 /subfind_web/static/js
 /deb_dist
 /*.tar.gz
+
+/debian/subfind*
+/debian/debhelper-build-stamp
+/debian/files
