@@ -7,21 +7,15 @@ set -e
 PACKAGE=subfind
 VERSION=4.5.3
 
-FULL_PACKAGE=$PACKAGE-$VERSION
-FULL_PACKAGE2=${PACKAGE}_$VERSION
-echo $FULL_PACKAGE2
-rm *.tar.gz || true
-rm *.deb || true
+rm ../subfind_4.5.3-1_amd64.deb || true
 
 dpkg-buildpackage -us -uc
 
-apt-get remove -y $PACKAGE || true
+sudo apt-get remove -y subfind || true
+sudo dpkg -i ../subfind_4.5.3-1_amd64.deb
 
-sudo apt-get remove -y $PACKAGE
-sudo dpkg -i ../$FULL_PACKAGE2-1_amd64.deb
-
-test -x /opt/venvs/$PACKAGE/bin/subfind-web
-/opt/venvs/$PACKAGE/bin/pip list
+test -x /opt/venvs/subfind/bin/subfind-web
+/opt/venvs/subfind/bin/pip list
 
 echo Expect service script exists
 test -x /lib/systemd/system/subfind.service

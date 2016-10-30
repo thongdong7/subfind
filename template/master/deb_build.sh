@@ -7,21 +7,15 @@ set -e
 PACKAGE={{package}}
 VERSION={{version}}
 
-FULL_PACKAGE=$PACKAGE-$VERSION
-FULL_PACKAGE2=${PACKAGE}_$VERSION
-echo $FULL_PACKAGE2
-rm *.tar.gz || true
-rm *.deb || true
+rm ../{{package}}_{{version}}-1_amd64.deb || true
 
 dpkg-buildpackage -us -uc
 
-apt-get remove -y $PACKAGE || true
+sudo apt-get remove -y {{package}} || true
+sudo dpkg -i ../{{package}}_{{version}}-1_amd64.deb
 
-sudo apt-get remove -y $PACKAGE
-sudo dpkg -i ../$FULL_PACKAGE2-1_amd64.deb
-
-test -x /opt/venvs/$PACKAGE/bin/{{PackageService}}
-/opt/venvs/$PACKAGE/bin/pip list
+test -x /opt/venvs/{{package}}/bin/{{PackageService}}
+/opt/venvs/{{package}}/bin/pip list
 
 echo Expect service script exists
 test -x /lib/systemd/system/{{package}}.service
