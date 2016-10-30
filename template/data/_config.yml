@@ -2,3 +2,4 @@ override:
   - setup.py
   - debian
   - override
+  - deb_build.sh

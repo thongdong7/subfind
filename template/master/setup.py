@@ -1,4 +1,6 @@
-{{'#!/usr/bin/env python'}}
+#!/usr/bin/env python
+
+{{ generated_file_note }}
 
 from setuptools import setup
 
@@ -28,9 +30,6 @@ setup(
             'babelfish==0.5.5',
             {{'#'}} subscene
             'beautifulsoup4==4.4.1',
-            {{'#'}} web
-            'flask==0.10.1',
-            'tornado==4.3'
         ],
         'opensubtitles': [
             'requests==2.9.1',

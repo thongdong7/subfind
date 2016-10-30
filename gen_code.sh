@@ -2,4 +2,4 @@
 
 echo "Monitoring gen folder"
 
-find gen |entr sh -c "export PYTHONPATH=`pwd` && ./env/bin/python gen.py"
+find template |entr sh -c "~/dev3/bin/code-gen"
