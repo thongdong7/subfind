@@ -38,7 +38,8 @@ class Config(object):
 
     def get_config(self):
         if not exists(self.config_path):
-            self.save_config(self.default_config)
+            self._data = self.default_config
+            self.save()
 
         return yaml.load(open(self.config_path))
 
