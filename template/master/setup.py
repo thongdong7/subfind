@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+{{'#!/usr/bin/env python'}}
 
 from setuptools import setup
 
 setup(
-    name='subfind',
-    version='4.5.3',
+    name='{{package}}',
+    version='{{version}}',
     description='Subtitle crawler written in Python',
-    author='Thong Dong',
-    author_email='thongdong7@gmail.com',
+    author='{{author}}',
+    author_email='{{email}}',
     url='https://github.com/thongdong7/subfind',
     packages=[
         'subfind',
@@ -23,12 +23,12 @@ setup(
         'cli': [
             'click==6.6',
             'pyyaml==3.11',
-            # opensubtitles
+            {{'#'}} opensubtitles
             'requests==2.9.1',
             'babelfish==0.5.5',
-            # subscene
+            {{'#'}} subscene
             'beautifulsoup4==4.4.1',
-            # web
+            {{'#'}} web
             'flask==0.10.1',
             'tornado==4.3'
         ],
@@ -59,7 +59,7 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
-        # "Programming Language :: Python :: 3.2",
+        {{'#'}} "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",

@@ -1,7 +1,7 @@
-Source: subfind
+Source: {{package}}
 Section: python
 Priority: extra
-Maintainer: Thong Dong <thongdong7@gmail.com>
+Maintainer: {{author}} <{{email}}>
 Build-Depends: debhelper (>= 9), python, dh-virtualenv (>= 0.8)
 Standards-Version: 3.9.5
 
