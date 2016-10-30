@@ -14,7 +14,7 @@ Supported providers:
 
 ## Install
 
-For Ubuntu 64 bit 15.04 or later, you could download the .deb file at https://github.com/thongdong7/subfind/releases. After install, SubFind will be started at a service automatically.
+For Ubuntu 64 bit 15.04 or later, you could download the .deb file at [https://github.com/thongdong7/subfind/releases]. After install, SubFind will be started at a service automatically.
 
 For other system, your could install using pip. Ensure you have pip installed.
 
@@ -25,5 +25,5 @@ $ subfind-web
 
 ## Usage
 
-Open http://localhost:32500 to enjoy.
+Open [http://localhost:32500] to enjoy.
 
