@@ -69,8 +69,8 @@ assets.json
 /deb_dist
 /*.tar.gz
 
-/debian/subfind*
-/debian/debhelper-build-stamp
-/debian/files
+/debian
+/override
+/deb_build.sh
 
 /.code-gen

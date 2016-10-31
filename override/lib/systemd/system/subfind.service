@@ -1,6 +1,0 @@
-[Unit]
-Description=Job that runs the subfind daemon
-
-[Service]
-Type=simple
-ExecStart=/opt/venvs/subfind/bin/subfind-web
