@@ -59,7 +59,7 @@ docs/_build/
 /dev
 /upload.sh
 
-/node_modules
+node_modules
 assets.json
 /client/dist
 /tests/data/m1/*.srt
