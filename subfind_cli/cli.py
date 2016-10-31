@@ -5,11 +5,9 @@ from os.path import exists
 
 import click
 import yaml
-
-from subfind.finder import SubFind
 from subfind.event import EventManager
+from subfind.finder import SubFind
 from subfind_cli.utils import ReleaseOutput, error_msg
-from subfind_web.main import run_web
 
 
 @click.group(context_settings=dict(help_option_names=['-h', '--help']))
@@ -115,16 +113,8 @@ def scan_config(config_file):
     scan(movie_dir, lang, providers, force, remove, verbose, min_movie_size, max_sub)
 
 
-@click.command('web', help='Execute web')
-@click.option('--port', '-p', 'port', default=5000,
-              help='Web port')
-def cli_web(port):
-    return run_web(port=port)
-
-
 cli.add_command(cli_scan)
 cli.add_command(cli_scan_config)
-cli.add_command(cli_web)
 
 if __name__ == '__main__':
     cli()

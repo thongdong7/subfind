@@ -91,14 +91,18 @@ class SubsceneTestCase(unittest.TestCase):
             releases = self.provider.get_releases(release_name, langs)
 
             # pprint(releases)
+            try:
 
-            self.assertTrue(releases is not None)
-            self.assertTrue(isinstance(releases, dict))
-            self.assertTrue(len(releases.keys()) > 0)
+                self.assertTrue(releases is not None)
+                self.assertTrue(isinstance(releases, dict))
+                self.assertTrue(len(releases.keys()) > 0)
 
-            for lang in releases:
-                self.assertTrue(lang in langs)
-                self.assertTrue(len(releases[lang]) > 0)
+                for lang in releases:
+                    self.assertTrue(lang in langs)
+                    self.assertTrue(len(releases[lang]) > 0)
+            except:
+                logging.error('Failed when test release: %s' % release_name)
+                raise
 
     def test_seach_movie(self):
         testcases = [

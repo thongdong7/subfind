@@ -1,0 +1,6 @@
+[Unit]
+Description=Job that runs the {{package}} daemon
+
+[Service]
+Type=simple
+ExecStart=/opt/venvs/{{package}}/bin/{{PackageService}}
