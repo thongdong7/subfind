@@ -1,5 +1,9 @@
 # Change log
 
+## 4.5.4
+
+1. Fix error when uninstall Ubuntu package
+
 ## 4.5.3
 
 1. Fix bugs
