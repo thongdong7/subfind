@@ -1,1 +1,1 @@
-service {{package}} stop
+service {{package}} stop || true

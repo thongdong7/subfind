@@ -1,0 +1,4 @@
+# Dependencies
+dependencies:
+  # Template to create deb file
+  - deb

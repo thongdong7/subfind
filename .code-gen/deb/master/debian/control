@@ -1,0 +1,13 @@
+Source: {{package}}
+Section: python
+Priority: extra
+Maintainer: {{author}} <{{email}}>
+Build-Depends: debhelper (>= 9), python, dh-virtualenv (>= 0.8)
+Standards-Version: 3.9.5
+
+Package: subfind
+Architecture: any
+Pre-Depends: dpkg (>= 1.16.1), python2.7 | python2.6, ${misc:Pre-Depends}
+Depends: ${python:Depends}, ${misc:Depends}
+Description: really neat package!
+ second line can contain extra information about it.
