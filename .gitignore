@@ -72,3 +72,5 @@ assets.json
 /debian/subfind*
 /debian/debhelper-build-stamp
 /debian/files
+
+/.code-gen
