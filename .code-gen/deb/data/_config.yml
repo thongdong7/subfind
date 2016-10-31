@@ -1,4 +1,0 @@
-override:
-  - debian
-  - override
-  - deb_build.sh
