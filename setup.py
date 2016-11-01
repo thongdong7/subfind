@@ -22,28 +22,10 @@ setup(
         'six==1.10.0',
     ],
     extras_require={
-        'cli': [
-            'click==6.6',
-            'pyyaml==3.11',
-            # opensubtitles
-            'requests==2.9.1',
-            'babelfish==0.5.5',
-            # subscene
-            'beautifulsoup4==4.4.1',
-        ],
-        'opensubtitles': [
-            'requests==2.9.1',
-            'babelfish==0.5.5',
-        ],
-        'subscene': [
-            'requests==2.9.1',
-            'beautifulsoup4==4.4.1',
-        ],
-        'web': [
-            'flask==0.10.1',
-            'tornado==4.3',
-            'click==6.6',
-        ]
+        'web': ['flask==0.10.1', 'tornado==4.3', 'click==6.6'],
+        'subscene': ['requests==2.9.1', 'beautifulsoup4==4.4.1'],
+        'cli': ['click==6.6', 'pyyaml==3.11', 'requests==2.9.1', 'babelfish==0.5.5', 'beautifulsoup4==4.4.1'],
+        'opensubtitles': ['requests==2.9.1', 'babelfish==0.5.5'],
     },
     entry_points={
         'console_scripts': [

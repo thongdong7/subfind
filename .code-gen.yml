@@ -1,3 +1,5 @@
 dependencies:
   # Template to create deb file
   - https://github.com/thongdong7/code-gen-template-deb.git
+  - https://github.com/thongdong7/code-gen-template-git.git
+  - https://github.com/thongdong7/code-gen-template-pip.git
