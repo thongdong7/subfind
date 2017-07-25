@@ -1,58 +1,56 @@
-import React, {PropTypes} from 'react';
-import ReactDOM from 'react-dom';
+import React, { PropTypes } from "react";
+import ReactDOM from "react-dom";
 //import App from './App';
-import './index.css';
+import "./index.css";
 
-import { Router, Route, IndexRoute, hashHistory } from 'react-router'
+import { Router, Route, IndexRoute, hashHistory } from "react-router";
 
-import AdminLTE from './components/AdminLTE'
+import AdminLTE from "./components/AdminLTE";
 
-import SFConfigIndex from './components/SFConfig/Index'
-import SFReleaseList from './components/SFRelease/List'
+import SFConfigIndex from "./components/SFConfig/Index";
+import SFReleaseList from "./components/SFRelease/List";
 
-import toastr from 'toastr'
-import $ from 'jquery'
+import toastr from "toastr";
+import $ from "jquery";
+import setup from "./setup";
+
+// Import CSS
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap-theme.css";
+import "toastr/build/toastr.css";
+import "./index.css";
+import "tb-react/index.css";
+import { createStore, Provider, middlewareAPI } from "tb-react";
+
+import actions from "./actions";
 
 toastr.options.closeButton = true;
-toastr.options.positionClass = "toast-top-left"
+toastr.options.positionClass = "toast-top-left";
 
 $(document).ajaxError(function(e, response) {
   if (response.status === 0) {
-    toastr.error('Could not connect to subfind server')
+    toastr.error("Could not connect to subfind server");
   }
 });
 
-import setup from './setup'
-
-// Import CSS
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import 'toastr/build/toastr.css';
-import './index.css';
-import 'tb-react/index.css';
-
 // Setup configuration
-setup()
+setup();
 
-import {createStore, Provider, middlewareAPI} from 'tb-react'
+const store = createStore(actions, middlewareAPI);
 
-import actions from './actions'
-const store = createStore(actions, middlewareAPI)
-
-const Root = ({store}) => (
+const Root = ({ store }) =>
   <Provider store={store}>
     <Router history={hashHistory}>
       <Route path="/" component={AdminLTE}>
         <IndexRoute component={SFReleaseList} />
-        <Route path="/release/config" component={SFConfigIndex}/>
-        <Route path="/release/list" component={SFReleaseList}/>
+        <Route path="/release/config" component={SFConfigIndex} />
+        <Route path="/release/list" component={SFReleaseList} />
       </Route>
     </Router>
-  </Provider>
-);
+  </Provider>;
 
 Root.propTypes = {
   store: PropTypes.object.isRequired,
 };
 
-ReactDOM.render(<Root store={store} />, document.getElementById('root'))
+ReactDOM.render(<Root store={store} />, document.getElementById("root"));

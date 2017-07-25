@@ -2,8 +2,10 @@
   "name": "ui",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:32500",
   "devDependencies": {
-    "react-scripts": "0.7.0"
+    "react-scripts": "1.0.10",
+    "flow": "0.2.3"
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
@@ -15,7 +17,9 @@
     "react-dom": "^15.3.2",
     "react-router": "^3.0.0",
     "react-typeahead": "^2.0.0-alpha.5",
-    "toastr": "^2.1.2"
+    "toastr": "^2.1.2",
+    "lodash": "4.17.4",
+    "antd": "2.12.2"
   },
   "scripts": {
     "start": "react-scripts start",
