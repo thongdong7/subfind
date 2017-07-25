@@ -1,4 +1,4 @@
 up:
   - ./env/bin/subfind-web --port 32500 --dev
 #  - cd ../tb-react && rm lib/* -rf && npm run prepublish -- --watch
-  - cd subfind_web/ui && npm start
+#  - cd subfind_web/ui && npm start

@@ -1,0 +1,35 @@
+imports:
+  - resource: services.yml
+
+parameters:
+  API_Config:
+    services:
+      Release:
+        methods:
+          list: {}
+          scan_all:
+            path: scan-all
+          download:
+            fields:
+              - name: src
+              - name: name
+
+      Config:
+        methods:
+          index: {}
+
+
+#    paths:
+#      "Release/list":
+#        tags: [Client]
+#        get:
+#          method: $ReleaseService.list
+#          summary: Get release list
+
+
+services:
+  ReleaseService:
+    class: subfind_web.service.ReleaseService.ReleaseService
+
+  ConfigService:
+    class: subfind_web.service.ConfigService.ConfigService

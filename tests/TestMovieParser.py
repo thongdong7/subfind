@@ -1,6 +1,7 @@
 # encoding=utf-8
 import logging
 import unittest
+from pprint import pprint
 
 from subfind.movie_parser import parse_release_name
 
@@ -13,6 +14,7 @@ class MovieParserTestCase(unittest.TestCase):
     def test_01(self):
         testcases = [
             ('Blade Runner (1982) Final Cut 1080p BluRay.x264 SUJAIDR', {'year': 1982}),
+            ('Mr.Robot.S02E01.720p.HDTV.x264-KILLERS', {}),
         ]
 
         for release_name, expected in testcases:

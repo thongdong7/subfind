@@ -5,5 +5,5 @@ babelfish==0.5.5
 beautifulsoup4==4.4.1
 flask==0.10.1
 tornado==4.3
-tb-api==0.0.6
-tb-ioc==0.1.7
+tb-api~=1.0.1
+tb-ioc~=0.2.6
