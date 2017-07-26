@@ -1,7 +1,8 @@
 import React from "react";
 import _ from "lodash";
 import * as tb from "tb-react";
-import Button from "antd/lib/button";
+// import Button from "antd/lib/button";
+import { Table, Icon, Button } from "antd";
 
 import LanguageStats from "./LanguageStats";
 import SFReleaseFilter from "./Filter";
@@ -58,7 +59,13 @@ class SFReleaseList extends React.Component {
   render() {
     // console.log('render', this.state.filteredData.length);
     // console.log('props', this.props);
-    const { reload, onScanComplete, onRemoveComplete } = this.props;
+    const {
+      reload,
+      onScanComplete,
+      onRemoveComplete,
+      columns,
+      dataSource,
+    } = this.props;
     return (
       <div className="box box-solid">
         <div className="box-header with-border">
@@ -87,6 +94,8 @@ class SFReleaseList extends React.Component {
         </div>
         <div className="box-body">
           <SFReleaseFilter />
+
+          <Table columns={columns} dataSource={dataSource} />
 
           {this.releases.map((item, k) => {
             let stateClass = "";
@@ -176,7 +185,47 @@ export default PropsTransform(async props => {
   const res = await fetch(`/api/Release/list`);
   const data = await res.json();
 
+  const dataSource = data.map(item => ({
+    ...item,
+    key: item.release_name,
+  }));
+  const columns = [
+    {
+      title: "Release",
+      dataIndex: "release_name",
+      key: "release_name",
+      render: (text, record) =>
+        <span>
+          {record.release_name}
+          <LanguageStats data={record.subtitles} />
+        </span>,
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) =>
+        <span>
+          <a href="#">
+            <Icon type="cloud-download" /> Download
+          </a>
+          <span className="ant-divider" />
+          <a href="#">
+            <Icon type="delete" /> Delete
+          </a>
+          <span className="ant-divider" />
+          <a
+            href={`https://subscene.com/subtitles/title?q=${record.title_query}&l=`}
+            target="subscence"
+          >
+            <i className="fa fa-bug" /> Subscene
+          </a>
+        </span>,
+    },
+  ];
+  console.log(data[0]);
   return {
     releases: data,
+    dataSource,
+    columns,
   };
 })(SFReleaseList);
