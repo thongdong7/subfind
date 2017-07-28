@@ -1,7 +1,7 @@
 import React from "react";
 import _ from "lodash";
 // import Button from "antd/lib/button";
-import { Table, Icon, Button } from "antd";
+import { Table, Layout } from "antd";
 import { connect } from "react-redux";
 import LanguageStats from "./LanguageStats";
 import SFReleaseFilter from "./Filter";
@@ -9,6 +9,7 @@ import RPCLink from "../RPCLink";
 import RPCButton from "../RPCButton";
 import { updateShowMissed, loadReleases } from "../../actions";
 import ReloadButton from "./ReloadButton";
+const { Header, Content, Footer } = Layout;
 
 class SFReleaseList extends React.Component {
   constructor(props, context) {
@@ -25,26 +26,23 @@ class SFReleaseList extends React.Component {
     const { reload, columns, dataSource } = this.props;
 
     return (
-      <div className="box box-solid">
-        <div className="box-header with-border">
-          <h3 className="box-title">Movies</h3>
+      <Layout>
+        <Header>
+          <ReloadButton />
+          <RPCButton
+            name="Scan All"
+            icon="scan"
+            query="/api/Release/scan_all"
+            onComplete={reload}
+          />
+        </Header>
 
-          <div className="box-tools">
-            <ReloadButton />
-            <RPCButton
-              name="Scan All"
-              icon="scan"
-              query="/api/Release/scan_all"
-              onComplete={reload}
-            />
-          </div>
-        </div>
-        <div className="box-body">
+        <Content style={{ padding: "0 50px" }}>
           <SFReleaseFilter />
 
           <Table columns={columns} dataSource={dataSource} />
-        </div>
-      </div>
+        </Content>
+      </Layout>
     );
   }
 }
@@ -102,7 +100,7 @@ const mapDispatchToProps = (dispatch: Function) => {
             />
             <span className="ant-divider" />
             <RPCLink
-              name="Delete"
+              name="Remove subtitles"
               icon="delete"
               query="/api/Release/remove_subtitle"
               params={{ src: record.src, name: record.name }}

@@ -1,9 +1,8 @@
 import React from "react";
 import update from "react-addons-update";
-import * as tb from "tb-react";
-import { Switch } from "antd";
-import { updateShowMissed, updateShowLang } from "../../actions";
 import { connect } from "react-redux";
+import { Row, Col, Switch, Card } from "antd";
+import { updateShowMissed, updateShowLang } from "../../actions";
 
 class SFReleaseFilter extends React.Component {
   constructor(props) {
@@ -43,31 +42,30 @@ class SFReleaseFilter extends React.Component {
     } = this.props;
     // console.log(onlyShowLang);
     return (
-      <div>
-        <div className="row">
-          <div className="col-md-6 col-xs-8">
-            Only show missed subtitle release
-          </div>
-          <div className="col-md-6 col-xs-4">
+      <Card>
+        <Row>
+          <Col span={12}>Only show missed subtitle release</Col>
+          <Col span={12}>
             <Switch defaultChecked={showMissed} onChange={setShowMissed} />
-          </div>
-        </div>
+          </Col>
+        </Row>
+
         {this.state.languages.map((lang, k) => {
           return (
-            <div className="row" key={k}>
-              <div className="col-md-6 col-xs-8">
+            <Row key={k}>
+              <Col span={12}>
                 Only show missed lang {lang}
-              </div>
-              <div className="col-md-6 col-xs-4">
+              </Col>
+              <Col span={12}>
                 <Switch
                   defaultChecked={onlyShowLang.indexOf(lang) >= 0}
                   onChange={() => setShowLang(lang)}
                 />
-              </div>
-            </div>
+              </Col>
+            </Row>
           );
         })}
-      </div>
+      </Card>
     );
   }
 }
