@@ -1,8 +1,9 @@
 import React from "react";
 import update from "react-addons-update";
 import * as tb from "tb-react";
-import { releaseFilterActions } from "../../actions/release";
 import { Switch } from "antd";
+import { updateShowMissed, updateShowLang } from "../../actions";
+import { connect } from "react-redux";
 
 class SFReleaseFilter extends React.Component {
   constructor(props) {
@@ -36,9 +37,9 @@ class SFReleaseFilter extends React.Component {
 
   render() {
     const {
-      releaseFilter: { onlyShowMissedSubtitle, onlyShowLang },
-      onToggleOnlyShowMissedSubtitle,
-      onToggleOnlyShowLang,
+      filter: { showMissed, onlyShowLang },
+      setShowMissed,
+      setShowLang,
     } = this.props;
     // console.log(onlyShowLang);
     return (
@@ -48,10 +49,7 @@ class SFReleaseFilter extends React.Component {
             Only show missed subtitle release
           </div>
           <div className="col-md-6 col-xs-4">
-            <Switch
-              defaultChecked={onlyShowMissedSubtitle}
-              onChange={onToggleOnlyShowMissedSubtitle}
-            />
+            <Switch defaultChecked={showMissed} onChange={setShowMissed} />
           </div>
         </div>
         {this.state.languages.map((lang, k) => {
@@ -63,7 +61,7 @@ class SFReleaseFilter extends React.Component {
               <div className="col-md-6 col-xs-4">
                 <Switch
                   defaultChecked={onlyShowLang.indexOf(lang) >= 0}
-                  onChange={() => onToggleOnlyShowLang(lang)}
+                  onChange={() => setShowLang(lang)}
                 />
               </div>
             </div>
@@ -74,12 +72,17 @@ class SFReleaseFilter extends React.Component {
   }
 }
 
-export default tb.connect2({
-  props: ({ releaseFilter }, ownProps, dispatch) => ({
-    releaseFilter,
-    onToggleOnlyShowMissedSubtitle: () =>
-      dispatch(releaseFilterActions.toggleOnlyShowMissedSubtitle),
-    onToggleOnlyShowLang: lang =>
-      dispatch(releaseFilterActions.toggleOnlyShowLang, lang),
-  }),
-})(SFReleaseFilter);
+const mapStateToProps = state => {
+  return {
+    filter: state.filter,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Function) => {
+  return {
+    setShowMissed: value => dispatch(updateShowMissed(value)),
+    setShowLang: lang => dispatch(updateShowLang(lang)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SFReleaseFilter);

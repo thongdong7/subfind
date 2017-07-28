@@ -20,30 +20,23 @@ import "bootstrap/dist/css/bootstrap-theme.css";
 import "toastr/build/toastr.css";
 import "./index.css";
 import "tb-react/index.css";
-import { createStore, Provider, middlewareAPI } from "tb-react";
+import { Provider } from "react-redux";
+import thunk from "redux-thunk";
 
-import actions from "./actions";
-
-toastr.options.closeButton = true;
-toastr.options.positionClass = "toast-top-left";
-
-$(document).ajaxError(function(e, response) {
-  if (response.status === 0) {
-    toastr.error("Could not connect to subfind server");
-  }
-});
+import { createStore, applyMiddleware } from "redux";
+import reducers from "./reducers";
 
 // Setup configuration
 setup();
 
-const store = createStore(actions, middlewareAPI);
+let store = createStore(reducers, applyMiddleware(thunk));
 
 const Root = ({ store }) =>
   <Provider store={store}>
     <Router history={hashHistory}>
       <Route path="/" component={AdminLTE}>
         <IndexRoute component={SFReleaseList} />
-        <Route path="/release/config" component={SFConfigIndex} />
+        {/* <Route path="/release/config" component={SFConfigIndex} /> */}
         <Route path="/release/list" component={SFReleaseList} />
       </Route>
     </Router>

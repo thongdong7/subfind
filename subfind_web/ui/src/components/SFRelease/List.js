@@ -3,62 +3,24 @@ import _ from "lodash";
 import * as tb from "tb-react";
 // import Button from "antd/lib/button";
 import { Table, Icon, Button } from "antd";
-
+import { connect } from "react-redux";
 import LanguageStats from "./LanguageStats";
 import SFReleaseFilter from "./Filter";
-import { releaseActions } from "../../actions/release";
-import PropsTransform from "../PropsTransform";
-let onBottom;
-
-window.onscroll = function(ev) {
-  if (window.innerHeight + window.scrollY + 100 >= document.body.offsetHeight) {
-    if (onBottom) {
-      onBottom();
-    }
-    // console.log('bottom', onBottom);
-  }
-};
+import RPCLink from "../RPCLink";
+import { updateShowMissed, loadReleases } from "../../actions";
 
 class SFReleaseList extends React.Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      page: 1,
+      showMissed: true,
+      onlyShowLang: [],
     };
-
-    this.limit = 20;
-    this.maxPage = props.releases.length / this.limit;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.maxPage = nextProps.releases.length / this.limit;
-  }
-
-  componentWillMount() {
-    onBottom = this.onBottom;
-  }
-
-  onBottom = () => {
-    // console.log('page', this.state.page, this.maxPage, this.props.releases.length);
-    if (this.state.page >= this.maxPage) {
-      return;
-    }
-
-    let nextPage = this.state.page + 1;
-    this.setState({
-      page: nextPage,
-    });
-    // console.log('b', nextPage);
-  };
-
-  get releases() {
-    return this.props.releases.slice(0, this.state.page * this.limit);
+    this.props.loadData();
   }
 
   render() {
-    // console.log('render', this.state.filteredData.length);
-    // console.log('props', this.props);
     const {
       reload,
       onScanComplete,
@@ -97,7 +59,7 @@ class SFReleaseList extends React.Component {
 
           <Table columns={columns} dataSource={dataSource} />
 
-          {this.releases.map((item, k) => {
+          {/* {this.releases.map((item, k) => {
             let stateClass = "";
             if (_.isEmpty(item.subtitles)) {
               stateClass = " bg-warning";
@@ -114,11 +76,7 @@ class SFReleaseList extends React.Component {
                   <LanguageStats data={item.subtitles} />
                 </div>
                 <div className="col-lg-1 col-xs-2">
-                  <Button icon="cloud-download">Download</Button>
-                  <Button type="danger" icon="delete">
-                    Remove Subtitle
-                  </Button>
-                  {/* <tb.RemoteButton
+                  <tb.RemoteButton
                     url="Release/download"
                     params={{ src: item.src, name: item.name }}
                     icon="download"
@@ -133,7 +91,7 @@ class SFReleaseList extends React.Component {
                     onComplete={onRemoveComplete}
                     name="Remove Subtitles"
                     type="danger"
-                  /> */}
+                  />
                   <a
                     href={`https://subscene.com/subtitles/title?q=${item.title_query}&l=`}
                     target="subscence"
@@ -143,7 +101,7 @@ class SFReleaseList extends React.Component {
                 </div>
               </div>
             );
-          })}
+          })} */}
         </div>
       </div>
     );
@@ -154,11 +112,10 @@ SFReleaseList.contextTypes = {
   router: React.PropTypes.object,
 };
 
-function doFilter(releases, { onlyShowMissedSubtitle, onlyShowLang }) {
+function doFilter(releases, { showMissed, onlyShowLang }) {
+  console.log("showMissed", showMissed);
   return releases
-    .filter(
-      i => !onlyShowMissedSubtitle || Object.keys(i.subtitles).length === 0
-    )
+    .filter(i => !showMissed || Object.keys(i.subtitles).length === 0)
     .filter(
       i =>
         Object.keys(i.subtitles).filter(l => onlyShowLang.indexOf(l) >= 0)
@@ -166,28 +123,10 @@ function doFilter(releases, { onlyShowMissedSubtitle, onlyShowLang }) {
     );
 }
 
-// export default tb.connect2({
-//   start: dispatch => dispatch(releaseActions.load),
-//   props: ({ releases, releaseFilter }, ownProps, dispatch) => ({
-//     releases: doFilter(releases, releaseFilter),
-//     reload: () => dispatch(releaseActions.load),
-//     onRemoveComplete: (res, { name }) => {
-//       dispatch(releaseActions.load);
-//       tb.success(`Removed subtitles of ${name}`);
-//     },
-//     onScanComplete: () => {
-//       dispatch(releaseActions.load);
-//       tb.success("Scan completed");
-//     },
-//   }),
-// })(SFReleaseList);
-export default PropsTransform(async props => {
-  const res = await fetch(`/api/Release/list`);
-  const data = await res.json();
-
-  const dataSource = data.map(item => ({
+const mapStateToProps = state => {
+  const dataSource = doFilter(state.releases, state.filter).map((item, i) => ({
     ...item,
-    key: item.release_name,
+    key: i,
   }));
   const columns = [
     {
@@ -205,9 +144,12 @@ export default PropsTransform(async props => {
       key: "action",
       render: (text, record) =>
         <span>
-          <a href="#">
-            <Icon type="cloud-download" /> Download
-          </a>
+          <RPCLink
+            name="Download"
+            icon="cloud-download"
+            query="/api/Release/download"
+            params={{ src: record.src, name: record.name }}
+          />
           <span className="ant-divider" />
           <a href="#">
             <Icon type="delete" /> Delete
@@ -222,10 +164,20 @@ export default PropsTransform(async props => {
         </span>,
     },
   ];
-  console.log(data[0]);
+
   return {
-    releases: data,
     dataSource,
     columns,
+    releases: state.releases,
+    filter: state.filter,
   };
-})(SFReleaseList);
+};
+
+const mapDispatchToProps = (dispatch: Function) => {
+  return {
+    loadData: () => dispatch(loadReleases()),
+    setShowMissed: value => dispatch(updateShowMissed(value)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SFReleaseList);
