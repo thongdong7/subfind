@@ -1,6 +1,6 @@
 import { SET_SHOW_MISSED, SET_SHOW_LANG } from "../actions";
 const initState = {
-  showMissed: true,
+  showMissed: false,
   onlyShowLang: [],
 };
 

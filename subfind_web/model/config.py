@@ -1,5 +1,5 @@
 import os
-from os.path import expanduser, join, exists
+from os.path import expanduser, join, exists, getmtime
 
 import yaml
 from subfind.movie_parser import parse_release_name
@@ -68,16 +68,17 @@ class DataProvider(object):
         movie_requests = self.sub_finder.build_download_requests_for_movie_dirs(self.config['src'], force=True)
 
         data = []
-        for release_name, movie_dir, langs in movie_requests:
+        for sub_request in movie_requests:
             item = {
-                'name': release_name,
-                'src': movie_dir,
-                'languages': list(langs),
-                'subtitles': self.sub_finder.stat_subtitle(release_name, movie_dir)
+                'name': sub_request.release_name,
+                'src': sub_request.save_dir,
+                'languages': list(sub_request.languages),
+                'subtitles': self.sub_finder.stat_subtitle(sub_request.release_name, sub_request.save_dir),
+                'modification_time': getmtime(sub_request.movie_path)
             }
 
             item.update(parse_release_name(item['name']))
 
             data.append(item)
 
-        self.data = sorted(data, key=lambda x: x['name'])
+        self.data = sorted(data, key=lambda x: -x['modification_time'])

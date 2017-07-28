@@ -1,4 +1,5 @@
 import logging
+from collections import namedtuple
 from genericpath import getsize
 
 import importlib
@@ -17,6 +18,8 @@ EVENT_RELEASE_COMPLETED = 'RELEASE_COMPLETED'
 EVENT_RELEASE_MOVIE_NOT_FOUND = 'RELEASE_MOVIE_NOT_FOUND'
 EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
 
+
+SubRequest = namedtuple('SubRequest', 'release_name save_dir languages movie_path')
 
 class SubFind(object):
     def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None,
@@ -140,14 +143,20 @@ class SubFind(object):
 
                         movie_release_name = m.group(1)
 
+                        movie_path = join(root_dir, file_name)
+
                         # Detect if the sub exists
                         if not force:
                             missed_langs = self._find_missed_langs(movie_release_name, file_names)
 
                             if missed_langs:
-                                reqs.append((movie_release_name, save_dir, missed_langs))
+                                req = SubRequest(release_name=movie_release_name, save_dir=save_dir,
+                                                 languages=missed_langs, movie_path=movie_path)
+                                reqs.append(req)
                         else:
-                            reqs.append((movie_release_name, save_dir, self.languages))
+                            req = SubRequest(release_name=movie_release_name, save_dir=save_dir,
+                                             languages=self.languages, movie_path=movie_path)
+                            reqs.append(req)
 
         return reqs
 
@@ -159,7 +168,10 @@ class SubFind(object):
         return reqs
 
     def process_download_requests(self, reqs):
-        for release_name, save_dir, search_langs in reqs:
+        for sub_request in reqs:
+            release_name = sub_request.release_name
+            save_dir = sub_request.save_dir
+            search_langs = sub_request.languages
             try:
                 subtitle_paths = []
                 self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name, search_langs))

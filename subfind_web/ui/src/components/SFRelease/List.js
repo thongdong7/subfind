@@ -51,7 +51,6 @@ class SFReleaseList extends React.Component {
 }
 
 function doFilter(releases, { showMissed, onlyShowLang }) {
-  console.log("showMissed", showMissed);
   return releases
     .filter(i => !showMissed || Object.keys(i.subtitles).length === 0)
     .filter(

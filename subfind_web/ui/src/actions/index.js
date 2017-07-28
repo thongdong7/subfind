@@ -5,7 +5,6 @@ export const RELEASE_LOADING = "RELEASE_LOADING";
 
 export function loadReleases() {
   return async dispatch => {
-    console.log("load releases");
     dispatch({
       type: RELEASE_LOADING,
     });
