@@ -1,6 +1,5 @@
 import React from "react";
 import _ from "lodash";
-import * as tb from "tb-react";
 // import Button from "antd/lib/button";
 import { Table, Icon, Button } from "antd";
 import { connect } from "react-redux";

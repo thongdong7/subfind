@@ -7,19 +7,10 @@ import { Router, Route, IndexRoute, hashHistory } from "react-router";
 
 import AdminLTE from "./components/AdminLTE";
 
-import SFConfigIndex from "./components/SFConfig/Index";
 import SFReleaseList from "./components/SFRelease/List";
 
-import toastr from "toastr";
-import $ from "jquery";
-import setup from "./setup";
-
 // Import CSS
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap/dist/css/bootstrap-theme.css";
-import "toastr/build/toastr.css";
 import "./index.css";
-import "tb-react/index.css";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 
@@ -27,7 +18,6 @@ import { createStore, applyMiddleware } from "redux";
 import reducers from "./reducers";
 
 // Setup configuration
-setup();
 
 let store = createStore(reducers, applyMiddleware(thunk));
 

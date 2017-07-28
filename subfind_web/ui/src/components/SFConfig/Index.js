@@ -1,6 +1,5 @@
 // import React, { Component, PropTypes } from "react";
 // import MovieFolder from "./MovieFolder";
-// import * as tb from "tb-react";
 
 // let mb = 1024 * 1024;
 
