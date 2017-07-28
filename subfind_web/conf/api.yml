@@ -7,9 +7,12 @@ parameters:
       Release:
         methods:
           list: {}
-          scan_all:
-            path: scan-all
+          scan_all: {}
           download:
+            fields:
+              - name: src
+              - name: name
+          remove_subtitle:
             fields:
               - name: src
               - name: name
