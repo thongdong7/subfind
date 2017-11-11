@@ -1,11 +1,6 @@
 import React from "react";
-//import { Link } from 'react-router'
-import { Badge } from "antd";
-export default class LanguageStats extends React.Component {
-  //  constructor(props) {
-  //    super(props)
-  //  }
 
+export default class LanguageStats extends React.Component {
   render() {
     let data = [];
     for (let lang of Object.keys(this.props.data)) {

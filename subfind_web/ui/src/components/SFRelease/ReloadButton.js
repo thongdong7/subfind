@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { connect } from "react-redux";
 import { loadReleases } from "../../actions";
 
@@ -15,6 +15,9 @@ const mapStateToProps = state => ({
   loading: state.releases.loading,
 });
 const mapDispatchToProps = dispatch => ({
-  reload: () => dispatch(loadReleases()),
+  reload: async () => {
+    await dispatch(loadReleases());
+    message.info("Reload complete!");
+  },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ReloadButton);

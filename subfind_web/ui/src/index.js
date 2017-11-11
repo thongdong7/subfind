@@ -1,4 +1,4 @@
-import React, { PropTypes } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 //import App from './App';
 import "./index.css";
@@ -31,9 +31,5 @@ const Root = ({ store }) =>
       </Route>
     </Router>
   </Provider>;
-
-Root.propTypes = {
-  store: PropTypes.object.isRequired,
-};
 
 ReactDOM.render(<Root store={store} />, document.getElementById("root"));

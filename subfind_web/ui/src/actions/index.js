@@ -13,7 +13,7 @@ export function loadReleases() {
     const data = await res.json();
     // console.log("a", data);
 
-    dispatch(updateReleases(data));
+    return dispatch(updateReleases(data));
   };
 }
 

@@ -1,7 +1,5 @@
 import React from "react";
-import _ from "lodash";
-// import Button from "antd/lib/button";
-import { Table, Layout } from "antd";
+import { Table, Layout, message } from "antd";
 import { connect } from "react-redux";
 import LanguageStats from "./LanguageStats";
 import SFReleaseFilter from "./Filter";
@@ -9,7 +7,7 @@ import RPCLink from "../RPCLink";
 import RPCButton from "../RPCButton";
 import { updateShowMissed, loadReleases } from "../../actions";
 import ReloadButton from "./ReloadButton";
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 class SFReleaseList extends React.Component {
   constructor(props, context) {
@@ -23,7 +21,7 @@ class SFReleaseList extends React.Component {
   }
 
   render() {
-    const { reload, columns, dataSource } = this.props;
+    const { columns, dataSource } = this.props;
 
     return (
       <Layout>
@@ -33,18 +31,24 @@ class SFReleaseList extends React.Component {
             name="Scan All"
             icon="scan"
             query="/api/Release/scan_all"
-            onComplete={reload}
+            onComplete={this.onScanAllComplete}
           />
         </Header>
 
-        <Content style={{ padding: "0 50px" }}>
+        <Content style={{ padding: "0 50px", backgroundColor: "white" }}>
           <SFReleaseFilter />
 
-          <Table columns={columns} dataSource={dataSource} />
+          <Table columns={columns} dataSource={dataSource} size="small" />
         </Content>
       </Layout>
     );
   }
+
+  onScanAllComplete = () => {
+    this.props.loadData();
+
+    message.info("Scan all complete!");
+  };
 }
 
 function doFilter(releases, { showMissed, onlyShowLang }) {
@@ -80,16 +84,17 @@ const mapDispatchToProps = (dispatch: Function) => {
         title: "Release",
         dataIndex: "release_name",
         key: "release_name",
-        render: (text, record) =>
+        render: (text, record) => (
           <span>
             {record.release_name}
             <LanguageStats data={record.subtitles} />
-          </span>,
+          </span>
+        ),
       },
       {
         title: "Action",
         key: "action",
-        render: (text, record) =>
+        render: (text, record) => (
           <span>
             <RPCLink
               name="Download"
@@ -113,7 +118,8 @@ const mapDispatchToProps = (dispatch: Function) => {
             >
               <i className="fa fa-bug" /> Subscene
             </a>
-          </span>,
+          </span>
+        ),
       },
     ],
   };
