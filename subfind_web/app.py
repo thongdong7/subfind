@@ -1,6 +1,7 @@
 # encoding=utf-8
 import gevent
 from gevent import monkey
+from os.path import dirname, abspath, join
 
 monkey.patch_all()
 
@@ -9,7 +10,7 @@ from functools import wraps
 from math import sqrt
 from threading import Thread
 from time import sleep, time
-from flask import Flask, Response
+from flask import Flask, Response, request
 from gevent.pywsgi import WSGIServer
 
 from subfind.event import EventManager
@@ -45,35 +46,44 @@ class ServerSentEvent(object):
         return "%s\n\n" % "\n".join(lines)
 
 
-app = Flask(__name__)
+current_dir = abspath(dirname(__file__))
+
+app = Flask(__name__, static_folder=join(current_dir, 'ui/build'), static_url_path='')
+# app = Flask(__name__)
+
 subscriptions = []
 
 
-# Client code consumes like this.
 @app.route("/")
 def index():
-    debug_template = """
-     <html>
-       <head>
-       </head>
-       <body>
-         <h1>Server sent events</h1>
-         <div id="event"></div>
-         <script type="text/javascript">
+    return open(join(current_dir, 'ui/build/index.html')).read()
 
-         var eventOutputContainer = document.getElementById("event");
-         var evtSrc = new EventSource("/subscribe");
 
-         evtSrc.onmessage = function(e) {
-             console.log(e.data);
-             eventOutputContainer.innerHTML = e.data;
-         };
-
-         </script>
-       </body>
-     </html>
-    """
-    return (debug_template)
+# Client code consumes like this.
+# @app.route("/")
+# def index():
+#     debug_template = """
+#      <html>
+#        <head>
+#        </head>
+#        <body>
+#          <h1>Server sent events</h1>
+#          <div id="event"></div>
+#          <script type="text/javascript">
+#
+#          var eventOutputContainer = document.getElementById("event");
+#          var evtSrc = new EventSource("/subscribe");
+#
+#          evtSrc.onmessage = function(e) {
+#              console.log(e.data);
+#              eventOutputContainer.innerHTML = e.data;
+#          };
+#
+#          </script>
+#        </body>
+#      </html>
+#     """
+#     return (debug_template)
 
 
 @app.route("/debug")
@@ -135,6 +145,16 @@ def release_list():
     return release_service.list()
 
 
+@app.route('/api/Release/download')
+@api_response
+def release_download():
+    ret = release_service.download(src=request.args.get('src'), name=request.args.get('name'))
+
+    _on_scan_release_complete()
+
+    return ret
+
+
 jobs = Queue()
 
 
@@ -152,7 +172,7 @@ def _push_client_action(name, payload={}):
 def _on_scan_release(event):
     print('Downloading release {index}/{total} {name}...'.format(
         name=event['release_name'],
-        index=event['index']+1,
+        index=event['index'] + 1,
         total=event['total']
     ))
     _push_client_action(name='SCAN_RELEASE', payload=dict(
@@ -195,8 +215,8 @@ def scan_all():
     # return release_service.scan_all()
 
 
-if __name__ == '__main__':
-    app.debug = True
+def start_web(debug=False, port=32500):
+    app.debug = debug
 
     print('start job handler')
     # t = Thread(target=_handle_jobs)
@@ -204,5 +224,9 @@ if __name__ == '__main__':
     gevent.spawn(_handle_jobs)
 
     print('start server')
-    server = WSGIServer(("", 32500), app)
+    server = WSGIServer(("", port), app)
     server.serve_forever()
+
+
+if __name__ == '__main__':
+    start_web(debug=True, port=32500)

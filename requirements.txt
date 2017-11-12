@@ -7,3 +7,4 @@ flask==0.10.1
 tornado==4.3
 tb-api~=1.0.1
 tb-ioc~=0.2.6
+gevent==1.2.2
