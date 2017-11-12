@@ -74,3 +74,4 @@ assets.json
 /deb_build.sh
 
 /.code-gen
+/setup.py
