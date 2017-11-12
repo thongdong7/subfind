@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
 
-./env/bin/subfind-web --port 32500 --dev
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd $DIR
+export PYTHONPATH=$DIR
+
+./env/bin/python subfind_web/app.py

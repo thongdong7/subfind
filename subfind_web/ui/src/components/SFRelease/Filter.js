@@ -1,5 +1,4 @@
 import React from "react";
-import update from "react-addons-update";
 import { connect } from "react-redux";
 import { Row, Col, Switch, Card } from "antd";
 import { updateShowMissed, updateShowLang } from "../../actions";
@@ -20,13 +19,12 @@ class SFReleaseFilter extends React.Component {
 
   async toggleFilter(fieldName) {
     await this.setState(
-      update(this.state, {
+      {
         filter: {
-          [fieldName]: {
-            $set: !this.state.filter[fieldName],
-          },
+          ...this.state.filter,
+          [fieldName]: !this.state.filter[fieldName],
         },
-      })
+      }
     );
 
     if (this.props.onChange) {
