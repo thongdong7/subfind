@@ -1,5 +1,6 @@
+// @flow
 import React from "react";
-import { Table, Layout, message } from "antd";
+import { Table, Layout, Progress } from "antd";
 import { connect } from "react-redux";
 import LanguageStats from "./LanguageStats";
 import SFReleaseFilter from "./Filter";
@@ -21,7 +22,11 @@ class SFReleaseList extends React.Component {
   }
 
   render() {
-    const { columns, dataSource } = this.props;
+    const {
+      columns,
+      dataSource,
+      scanningRelease: { releaseName, index, total },
+    } = this.props;
 
     return (
       <Layout>
@@ -35,6 +40,17 @@ class SFReleaseList extends React.Component {
           />
         </Header>
 
+        {releaseName && (
+          <span>
+            <Progress
+              status="active"
+              strokeWidth={5}
+              percent={Math.floor((index + 1) * 100 / total)}
+            />
+            Downloading release [<strong>{index + 1}</strong> /{" "}
+            <strong>{total}</strong>] {releaseName} ...
+          </span>
+        )}
         <Content style={{ padding: "0 50px", backgroundColor: "white" }}>
           <SFReleaseFilter />
 
@@ -46,8 +62,6 @@ class SFReleaseList extends React.Component {
 
   onScanAllComplete = () => {
     this.props.loadData();
-
-    message.info("Scan all complete!");
   };
 }
 
@@ -62,7 +76,7 @@ function doFilter(releases, { showMissed, onlyShowLang }) {
 }
 
 const mapStateToProps = state => {
-  const { items } = state.releases;
+  const { items, scanningRelease } = state.releases;
   const dataSource = doFilter(items, state.filter).map((item, i) => ({
     ...item,
     key: i,
@@ -72,6 +86,7 @@ const mapStateToProps = state => {
     dataSource,
     // releases: state.releases,
     filter: state.filter,
+    scanningRelease,
   };
 };
 

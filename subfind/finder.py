@@ -18,11 +18,18 @@ EVENT_RELEASE_COMPLETED = 'RELEASE_COMPLETED'
 EVENT_RELEASE_MOVIE_NOT_FOUND = 'RELEASE_MOVIE_NOT_FOUND'
 EVENT_RELEASE_SUBTITLE_NOT_FOUND = 'RELEASE_SUBTITLE_NOT_FOUND'
 
+SubRequest = namedtuple('SubRequest',
+                        'release_name save_dir languages movie_path')
 
-SubRequest = namedtuple('SubRequest', 'release_name save_dir languages movie_path')
 
 class SubFind(object):
-    def __init__(self, event_manager, languages, provider_names, force=False, remove=False, min_movie_size=None,
+    def __init__(self,
+                 event_manager,
+                 languages,
+                 provider_names,
+                 force=False,
+                 remove=False,
+                 min_movie_size=None,
                  max_sub=1):
         """
 
@@ -81,10 +88,14 @@ class SubFind(object):
 
     @staticmethod
     def from_config(event_manager, config):
-        return SubFind(event_manager, languages=config['lang'],
-                       provider_names=config['providers'], force=config['force'],
-                       remove=config['remove'],
-                       min_movie_size=config['min-movie-size'], max_sub=config['max-sub'])
+        return SubFind(
+            event_manager,
+            languages=config['lang'],
+            provider_names=config['providers'],
+            force=config['force'],
+            remove=config['remove'],
+            min_movie_size=config['min-movie-size'],
+            max_sub=config['max-sub'])
 
     def stat_subtitle(self, release_name, movie_dir):
         """
@@ -122,7 +133,10 @@ class SubFind(object):
 
         return ret
 
-    def build_download_requests(self, movie_dir, release_name=None, force=False):
+    def build_download_requests(self,
+                                movie_dir,
+                                release_name=None,
+                                force=False):
         reqs = []
         for root_dir, child_folders, file_names in os.walk(movie_dir):
             for file_name in file_names:
@@ -132,7 +146,9 @@ class SubFind(object):
 
                 for ext in self.movie_extensions:
                     if file_name.endswith('.%s' % ext):
-                        if self.min_movie_size and getsize(join(root_dir, file_name)) < self.min_movie_size:
+                        if self.min_movie_size and getsize(
+                                join(root_dir,
+                                     file_name)) < self.min_movie_size:
                             # Ignore small movie file
                             continue
 
@@ -147,15 +163,22 @@ class SubFind(object):
 
                         # Detect if the sub exists
                         if not force:
-                            missed_langs = self._find_missed_langs(movie_release_name, file_names)
+                            missed_langs = self._find_missed_langs(
+                                movie_release_name, file_names)
 
                             if missed_langs:
-                                req = SubRequest(release_name=movie_release_name, save_dir=save_dir,
-                                                 languages=missed_langs, movie_path=movie_path)
+                                req = SubRequest(
+                                    release_name=movie_release_name,
+                                    save_dir=save_dir,
+                                    languages=missed_langs,
+                                    movie_path=movie_path)
                                 reqs.append(req)
                         else:
-                            req = SubRequest(release_name=movie_release_name, save_dir=save_dir,
-                                             languages=self.languages, movie_path=movie_path)
+                            req = SubRequest(
+                                release_name=movie_release_name,
+                                save_dir=save_dir,
+                                languages=self.languages,
+                                movie_path=movie_path)
                             reqs.append(req)
 
         return reqs
@@ -168,16 +191,24 @@ class SubFind(object):
         return reqs
 
     def process_download_requests(self, reqs):
-        for sub_request in reqs:
+        total = len(reqs)
+
+        for i, sub_request in enumerate(reqs):
             release_name = sub_request.release_name
             save_dir = sub_request.save_dir
             search_langs = sub_request.languages
             try:
                 subtitle_paths = []
-                self.event_manager.notify(EVENT_SCAN_RELEASE, (release_name, search_langs))
+                self.event_manager.notify(EVENT_SCAN_RELEASE,
+                                          dict(
+                                              total=total,
+                                              index=i,
+                                              release_name=release_name,
+                                              search_langs=search_langs))
 
                 # print(self.scenario, self.max_sub)
-                found_subs_by_lang = self.scenario.execute(release_name, search_langs, max_sub=self.max_sub)
+                found_subs_by_lang = self.scenario.execute(
+                    release_name, search_langs, max_sub=self.max_sub)
                 params = {
                     'release_name': release_name,
                     'save_dir': save_dir,
@@ -186,7 +217,10 @@ class SubFind(object):
                 }
 
                 if self.remove:
-                    self.remove_subtitle(save_dir, release_name=release_name, langs=found_subs_by_lang.keys())
+                    self.remove_subtitle(
+                        save_dir,
+                        release_name=release_name,
+                        langs=found_subs_by_lang.keys())
 
                 for lang in found_subs_by_lang:
                     params['lang'] = lang
@@ -194,7 +228,8 @@ class SubFind(object):
                     self.subtitle_processor.process(**params)
 
                     if params['subtitles']:
-                        self.event_manager.notify(EVENT_RELEASE_FOUND_LANG, (release_name, lang))
+                        self.event_manager.notify(EVENT_RELEASE_FOUND_LANG,
+                                                  (release_name, lang))
 
                 self.event_manager.notify(EVENT_RELEASE_COMPLETED, {
                     'release_name': release_name,
@@ -227,12 +262,14 @@ class SubFind(object):
                     os.unlink(join(root_dir, file_name))
 
     def scan_movie_dir(self, movie_dir, release_name=None):
-        reqs = self.build_download_requests(movie_dir, release_name=release_name)
+        reqs = self.build_download_requests(
+            movie_dir, release_name=release_name)
 
         self.process_download_requests(reqs)
 
     def scan(self, movie_dirs):
-        reqs = self.build_download_requests_for_movie_dirs(movie_dirs, force=self.force)
+        reqs = self.build_download_requests_for_movie_dirs(
+            movie_dirs, force=self.force)
 
         self.process_download_requests(reqs)
 

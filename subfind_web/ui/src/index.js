@@ -18,10 +18,21 @@ import { createStore, applyMiddleware } from "redux";
 import reducers from "./reducers";
 
 // Setup configuration
-
 let store = createStore(reducers, applyMiddleware(thunk));
 
-const Root = ({ store }) =>
+// Subscribe
+var source = new EventSource("http://localhost:32500/subscribe");
+source.onmessage = function(event) {
+  try {
+    const action = JSON.parse(event.data);
+
+    store.dispatch(action);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const Root = ({ store }) => (
   <Provider store={store}>
     <Router history={hashHistory}>
       <Route path="/" component={AdminLTE}>
@@ -30,6 +41,7 @@ const Root = ({ store }) =>
         <Route path="/release/list" component={SFReleaseList} />
       </Route>
     </Router>
-  </Provider>;
+  </Provider>
+);
 
 ReactDOM.render(<Root store={store} />, document.getElementById("root"));
