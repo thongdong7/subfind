@@ -14,7 +14,11 @@ Supported providers:
 
 ## Install
 
-For Ubuntu 15.04 or later, you could download the .deb file at https://github.com/thongdong7/subfind/releases. After install, SubFind will be started at a service automatically.
+For Ubuntu 15.04 or later, you could download the .deb file at https://github.com/thongdong7/subfind/releases. After install, start SubFind service:
+
+```bash
+service subfind start
+```
 
 For other system, your could install using pip. Ensure you have pip installed.
 

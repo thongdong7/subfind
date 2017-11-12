@@ -17,6 +17,9 @@ echo Create tag...
 git tag $VERSION
 git push --tags
 
+CODE_BLOCK="\`\`\`"
+
+
 echo Create release...
 res=`curl --user "$GH_USER:$GH_PATH" -X POST https://api.github.com/repos/${GH_USER}/${GH_REPO}/releases \
 -d "
@@ -26,7 +29,7 @@ res=`curl --user "$GH_USER:$GH_PATH" -X POST https://api.github.com/repos/${GH_U
   \"tag_name\": \"$VERSION\",
   \"target_commitish\": \"$GH_TARGET\",
   \"name\": \"$VERSION\",
-  \"body\": \"New version $VERSION\",
+  \"body\": \"Install:\n\n${CODE_BLOCK}bash\n$ sudo dpkg -i subfind_$VERSION-1_all.deb\n$ sudo service subfind restart\n${CODE_BLOCK}\",
   \"draft\": false,
   \"prerelease\": false
 }"`
