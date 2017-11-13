@@ -1,4 +1,4 @@
-import { Button, Form, Input, Switch as UISwitch } from "antd";
+import { Button, Col, Form, Input, Row, Switch as UISwitch } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import compose from "recompose/compose";
@@ -64,33 +64,18 @@ class SFConfigIndex extends Component {
           </h3>
         </div>
         <div className="box-body">
-          <div>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label="E-mail" hasFeedback>
-                {getFieldDecorator("email", {
-                  rules: [
-                    {
-                      type: "email",
-                      message: "The input is not valid E-mail!",
-                    },
-                    {
-                      required: true,
-                      message: "Please input your E-mail!",
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-            </Form>
-
-            <FormRow>
-              <strong>Movie Folders</strong>
-              <div>
+          <div style={{ margin: 10 }}>
+            <Row>
+              <Col span={12}>
+                <strong>Movie Folders</strong>
+              </Col>
+              <Col span={12}>
                 {folders.map((folder, k) => {
                   return (
                     <MovieFolder src={folder} key={k}>
                       <RPCButton
                         name="Remove"
-                        icon="trash"
+                        icon="delete"
                         hideName
                         type="danger"
                         action={[
@@ -111,17 +96,19 @@ class SFConfigIndex extends Component {
                     true,
                   ]}
                 />
-              </div>
-            </FormRow>
-            <FormRow>
-              <strong>Languages</strong>
-              <div>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <strong>Languages</strong>
+              </Col>
+              <Col span={12}>
                 {languages.map((lang, k) => {
                   return (
                     <MovieFolder src={lang} key={k}>
                       <RPCButton
                         name="Remove"
-                        icon="trash"
+                        icon="delete"
                         hideName
                         type="danger"
                         action={[
@@ -143,11 +130,13 @@ class SFConfigIndex extends Component {
                     true,
                   ]}
                 />
-              </div>
-            </FormRow>
-            <FormRow>
-              <strong>Providers</strong>
-              <div>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <strong>Providers</strong>
+              </Col>
+              <Col span={12}>
                 {builtinProviders.map(
                   ({ name: providerName, displayName }, k) => {
                     let checked = providers.indexOf(providerName) >= 0;
@@ -168,28 +157,36 @@ class SFConfigIndex extends Component {
                     );
                   }
                 )}
-              </div>
-            </FormRow>
-            <FormRow>
-              <strong>Force download subtitle</strong>
-              <UISwitch
-                checked={force}
-                action={[configActions.updateField, "force"]}
-              />
-            </FormRow>
-            <FormRow>
-              <strong>Remove old subtitles if not found new subtitle</strong>
-              <UISwitch
-                checked={remove}
-                action={[configActions.updateField, "remove"]}
-              />
-            </FormRow>
-            <FormRow>
-              <div>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <strong>Force download subtitle</strong>
+              </Col>
+              <Col span={12}>
+                <UISwitch
+                  checked={force}
+                  action={[configActions.updateField, "force"]}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <strong>Remove old subtitles if not found new subtitle</strong>
+              </Col>
+              <Col span={12}>
+                <UISwitch
+                  checked={remove}
+                  action={[configActions.updateField, "remove"]}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
                 <strong>Min movie size (MB)</strong>
                 <div>(to ignore sample videos)</div>
-              </div>
-              <div>
+              </Col>
+              <Col span={12}>
                 <Input
                   value={config["min-movie-size"] / mb}
                   actionFunc={value => [
@@ -198,15 +195,19 @@ class SFConfigIndex extends Component {
                     Number(value) * mb,
                   ]}
                 />
-              </div>
-            </FormRow>
-            <FormRow>
-              <strong>Number subtitles</strong>
-              <Input
-                value={config["max-sub"]}
-                action={[configActions.updateField, "max-sub"]}
-              />
-            </FormRow>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <strong>Number subtitles</strong>
+              </Col>
+              <Col span={12}>
+                <Input
+                  value={config["max-sub"]}
+                  action={[configActions.updateField, "max-sub"]}
+                />
+              </Col>
+            </Row>
           </div>
         </div>
       </div>

@@ -1,16 +1,15 @@
-import React from 'react'
+import { Col, Row } from "antd";
+import React from "react";
 
 class MovieFolder extends React.Component {
   render() {
     return (
-      <div>
-        <div className="col-sm-11 col-xs-10">{this.props.src}</div>
-        <div className="col-sm-1 col-xs-2">
-          {this.props.children}
-        </div>
-      </div>
-    )
+      <Row>
+        <Col span={12}>{this.props.src}</Col>
+        <Col span={12}>{this.props.children}</Col>
+      </Row>
+    );
   }
 }
 
-export default MovieFolder
+export default MovieFolder;
