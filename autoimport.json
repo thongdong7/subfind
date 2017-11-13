@@ -1,0 +1,55 @@
+{
+  "packages": {
+    "path": {
+      "main": "path"
+    },
+    "react-dom": {
+      "main": "ReactDOM"
+    },
+    "react": {
+      "main": "React",
+      "others": [
+        "Component",
+        "PureComponent"
+      ]
+    },
+    "react-router-dom": {
+      "others": [
+        "withRouter",
+        "Switch",
+        "Route",
+        "Redirect"
+      ]
+    },
+    "antd": {
+      "others": [
+        "Row",
+        "Col",
+        "Menu",
+        "Icon",
+        "Card",
+        "Button",
+        "Modal",
+        "Dropdown",
+        "Radio",
+        "Popover",
+        "Tabs",
+        "Alert",
+        "Spin",
+        "Table",
+        "Input",
+        "Form",
+        "Switch as UISwitch"
+      ]
+    },
+    "react-redux": {
+      "others": [
+        "connect"
+      ]
+    }
+  },
+  "memberFolders": [
+    "recompose"
+  ],
+  "rootPath": "subfind_web/ui/src"
+}

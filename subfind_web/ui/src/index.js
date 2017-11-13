@@ -2,9 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-import { HashRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
 import SFReleaseList from "./components/SFRelease/List";
+import SFConfigIndex from "./components/SFConfig/Index";
 
 // Import CSS
 import "./index.css";
@@ -32,8 +33,11 @@ source.onmessage = function(event) {
 const Root = ({ store }) => (
   <Provider store={store}>
     <Router>
-      <Route path="/" component={SFReleaseList} />
-      {/* <Route path="/release/config" component={SFConfigIndex} /> */}
+      <Switch>
+        <Route exact path="/config" component={SFConfigIndex} />
+        <Route exact path="/" component={SFReleaseList} />
+        {/* <Route path="/release/config" component={SFConfigIndex} /> */}
+      </Switch>
     </Router>
   </Provider>
 );

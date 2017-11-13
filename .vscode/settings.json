@@ -1,3 +1,17 @@
 {
-  "python.pythonPath": "${workspaceRoot}/env/bin/python"
+  "python.pythonPath": "${workspaceRoot}/env/bin/python",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/node_modules": true,
+    "**/build": true,
+    "**/debian": true,
+    "**/dist": true,
+    "**/env": true,
+    "**/*.pyc": true,
+    "**/__pycache__": true,
+    "**/.DS_Store": true
+  }
 }
