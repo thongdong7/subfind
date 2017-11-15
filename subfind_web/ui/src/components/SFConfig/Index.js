@@ -1,7 +1,8 @@
-import { Button, Col, Form, Input, Row, Switch as UISwitch } from "antd";
+import { Alert, Button, Col, Form, Input, Row, Switch as UISwitch } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import compose from "recompose/compose";
+import { loadConfig, updateConfigListField } from "../../actions";
 import RPCButton from "../RPCButton";
 import MovieFolder from "./MovieFolder";
 const FormItem = Form.Item;
@@ -46,14 +47,26 @@ const tailFormItemLayout = {
   },
 };
 
+class InlineInput extends Component {
+  render() {
+    return (
+      <Input {...this.props} onPressEnter={e => console.log(e.target.value)} />
+    );
+  }
+}
+
 class SFConfigIndex extends Component {
+  componentDidMount() {
+    this.props.loadConfig();
+  }
+
   render() {
     const {
       config: { src: folders, lang: languages, providers, force, remove },
+      updateListField,
+      errorMessage,
     } = this.props;
-    const { getFieldDecorator } = this.props.form;
 
-    // console.log('config', this.props.config);
     const config = this.props.config;
 
     return (
@@ -65,6 +78,7 @@ class SFConfigIndex extends Component {
         </div>
         <div className="box-body">
           <div style={{ margin: 10 }}>
+            {errorMessage && <Alert type="error" message={errorMessage} />}
             <Row>
               <Col span={12}>
                 <strong>Movie Folders</strong>
@@ -73,28 +87,30 @@ class SFConfigIndex extends Component {
                 {folders.map((folder, k) => {
                   return (
                     <MovieFolder src={folder} key={k}>
-                      <RPCButton
+                      <Button
                         name="Remove"
                         icon="delete"
                         hideName
                         type="danger"
-                        action={[
-                          configActions.updateListField,
-                          "src",
-                          folder,
-                          false,
-                        ]}
-                      />
+                        onClick={() =>
+                          updateListField({
+                            field: "src",
+                            value: folder,
+                            action: "remove",
+                          })}
+                      >
+                        Remove
+                      </Button>
                     </MovieFolder>
                   );
                 })}
                 <Input
-                  actionFunc={value => [
-                    configActions.updateListField,
-                    "src",
-                    value,
-                    true,
-                  ]}
+                  onPressEnter={e =>
+                    updateListField({
+                      field: "src",
+                      value: e.target.value,
+                      action: "add",
+                    })}
                 />
               </Col>
             </Row>
@@ -106,29 +122,31 @@ class SFConfigIndex extends Component {
                 {languages.map((lang, k) => {
                   return (
                     <MovieFolder src={lang} key={k}>
-                      <RPCButton
+                      <Button
                         name="Remove"
                         icon="delete"
                         hideName
                         type="danger"
-                        action={[
-                          configActions.updateListField,
-                          "lang",
-                          lang,
-                          false,
-                        ]}
-                      />
+                        onClick={() =>
+                          updateListField({
+                            field: "lang",
+                            value: lang,
+                            action: "remove",
+                          })}
+                      >
+                        Remove
+                      </Button>
                     </MovieFolder>
                   );
                 })}
 
                 <Input
-                  actionFunc={value => [
-                    configActions.updateListField,
-                    "lang",
-                    value,
-                    true,
-                  ]}
+                  onPressEnter={e =>
+                    updateListField({
+                      field: "lang",
+                      value: e.target.value,
+                      action: "add",
+                    })}
                 />
               </Col>
             </Row>
@@ -139,18 +157,21 @@ class SFConfigIndex extends Component {
               <Col span={12}>
                 {builtinProviders.map(
                   ({ name: providerName, displayName }, k) => {
-                    let checked = providers.indexOf(providerName) >= 0;
+                    const checked = providers.indexOf(providerName) >= 0;
+
                     return (
                       <div key={k}>
                         <div className="col-sm-3">{displayName}</div>
                         <div className="col-sm-9">
                           <UISwitch
                             checked={checked}
-                            action={[
-                              configActions.updateListField,
-                              "providers",
-                              providerName,
-                            ]}
+                            onChange={isChecked => {
+                              updateListField({
+                                field: "providers",
+                                value: providerName,
+                                action: isChecked ? "add" : "remove",
+                              });
+                            }}
                           />
                         </div>
                       </div>
@@ -234,10 +255,26 @@ const mapStateToProps = state => {
       src: ["/data"],
       lang: ["vi", "en"],
       providers: ["opensubtitles", "subscene"],
+      ...state.config.config,
+    },
+    ...state.config,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Function) => {
+  return {
+    loadConfig: () => {
+      dispatch(loadConfig());
+    },
+    updateListField: ({ field, value, action }) => {
+      dispatch(updateConfigListField({ field, value, action }));
     },
   };
 };
 
-const enhance = compose(Form.create(), connect(mapStateToProps));
+const enhance = compose(
+  Form.create(),
+  connect(mapStateToProps, mapDispatchToProps)
+);
 
 export default enhance(SFConfigIndex);

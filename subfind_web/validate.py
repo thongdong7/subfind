@@ -7,6 +7,7 @@ from subfind_web.exception.api import APIError
 
 
 def folder_validator(value):
+    print('v', value)
     tmp_value = abspath(value)
     if not exists(tmp_value):
         raise APIError('Invalid folder %s' % value)

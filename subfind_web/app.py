@@ -3,6 +3,9 @@ import gevent
 from gevent import monkey
 from os.path import dirname, abspath, join
 
+from subfind_web.exception.api import APIError
+from subfind_web.service.ConfigService import ConfigService
+
 monkey.patch_all()
 
 import json
@@ -128,13 +131,20 @@ def subscribe():
 
 
 release_service = container.get('ReleaseService')  # type: ReleaseService
+config_service = container.get('ConfigService')  # type: ConfigService
 
 
 def api_response(func):
     @wraps(func)
     def wrapper():
-        res = func()
-        return Response(json.dumps(res, indent=2), mimetype='application/json')
+        status_code = 200
+        try:
+            res = func()
+        except APIError as e:
+            res = e.to_json()
+            status_code = 404
+
+        return Response(json.dumps(res, indent=2), mimetype='application/json', status=status_code)
 
     return wrapper
 
@@ -213,6 +223,21 @@ def scan_all():
 
     return dict(message="posted job")
     # return release_service.scan_all()
+
+
+@app.route('/api/Config/update')
+@api_response
+def config_update():
+    params = {}
+    for field in request.args:
+        params[field] = request.args[field]
+    return config_service.update(**params)
+
+
+@app.route('/api/Config/load')
+@api_response
+def config_load():
+    return config_service.index()
 
 
 def start_web(debug=False, port=32500):

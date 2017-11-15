@@ -14,9 +14,11 @@ class ConfigService(object):
         update = {}
         config = container.get('Config')
 
+        print(kwargs)
         for field_name in ['src', 'lang', 'providers']:
             push_value = kwargs.get('%s-$push' % field_name)
             if push_value:
+                print('pv', push_value)
                 push_value = self.validator_manager.validate_field(field_name, push_value)
 
                 tmp = set(config[field_name])
