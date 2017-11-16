@@ -52,6 +52,8 @@ export function loadConfig() {
     const res = await fetch("/api/Config/load");
     const config = await res.json();
 
+    console.log("c", config);
+
     dispatch(updateConfig(config));
   };
 }
@@ -92,6 +94,29 @@ export function updateConfigListField({ field, value, action }) {
           },
         });
       }
+    } else {
+      dispatch(updateConfig(config));
+    }
+  };
+}
+
+export function updateConfigField({ field, value }) {
+  return async dispatch => {
+    dispatch({
+      type: "UPDATE_CONFIG_FIELD",
+      payload: {
+        field,
+        value,
+      },
+    });
+
+    // console.log("p", params);
+    const res = await fetch(`/api/Config/update?${field}=${value}`, {});
+    const config = await res.json();
+    // console.log("config", config);
+
+    if (config.ok === false) {
+      dispatch(updateConfigError(config.message));
     } else {
       dispatch(updateConfig(config));
     }

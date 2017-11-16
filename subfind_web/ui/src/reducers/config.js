@@ -1,6 +1,8 @@
 import { uniq, remove } from "lodash";
 import { UPDATE_CONFIG, UPDATE_CONFIG_ERROR } from "../actions";
+
 const initState = {
+  loaded: false,
   errorMessage: null,
   config: {
     src: [],
@@ -15,11 +17,13 @@ export default function reducer(state = initState, action) {
       return {
         ...state,
         errorMessage: null,
+        loaded: true,
         config: action.payload,
       };
     case UPDATE_CONFIG_ERROR:
       return {
         ...state,
+        loaded: true,
         errorMessage: action.payload,
       };
     case "ADD_CONFIG_LIST_FIELD": {

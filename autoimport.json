@@ -39,7 +39,8 @@
         "Table",
         "Input",
         "Form",
-        "Switch as UISwitch"
+        "Switch as UISwitch",
+        "message"
       ]
     },
     "react-redux": {

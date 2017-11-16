@@ -1,22 +1,25 @@
-import { Alert, Button, Col, Form, Input, Row, Switch as UISwitch } from "antd";
+// @flow
+import {
+  Alert,
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Row,
+  Switch as UISwitch,
+} from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import compose from "recompose/compose";
-import { loadConfig, updateConfigListField } from "../../actions";
-import RPCButton from "../RPCButton";
+import {
+  loadConfig,
+  updateConfigField,
+  updateConfigListField,
+} from "../../actions";
 import MovieFolder from "./MovieFolder";
-const FormItem = Form.Item;
 
-let mb = 1024 * 1024;
-
-const FormRow = ({ children }) => {
-  return (
-    <div className="row">
-      <div className="col-sm-3">{children[0]}</div>
-      <div className="col-sm-9">{children[1]}</div>
-    </div>
-  );
-};
+const mb = 1024 * 1024;
 
 const builtinProviders = [
   { name: "opensubtitles", displayName: "Opensubtitles" },
@@ -24,36 +27,6 @@ const builtinProviders = [
 ];
 
 const configActions = {};
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14 },
-  },
-};
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 14,
-      offset: 6,
-    },
-  },
-};
-
-class InlineInput extends Component {
-  render() {
-    return (
-      <Input {...this.props} onPressEnter={e => console.log(e.target.value)} />
-    );
-  }
-}
 
 class SFConfigIndex extends Component {
   componentDidMount() {
@@ -64,8 +37,14 @@ class SFConfigIndex extends Component {
     const {
       config: { src: folders, lang: languages, providers, force, remove },
       updateListField,
+      updateField,
       errorMessage,
+      loaded,
     } = this.props;
+
+    if (!loaded) {
+      return <div>loading...M</div>;
+    }
 
     const config = this.props.config;
 
@@ -187,7 +166,12 @@ class SFConfigIndex extends Component {
               <Col span={12}>
                 <UISwitch
                   checked={force}
-                  action={[configActions.updateField, "force"]}
+                  onChange={isChecked => {
+                    updateField({
+                      field: "force",
+                      value: isChecked,
+                    });
+                  }}
                 />
               </Col>
             </Row>
@@ -198,7 +182,12 @@ class SFConfigIndex extends Component {
               <Col span={12}>
                 <UISwitch
                   checked={remove}
-                  action={[configActions.updateField, "remove"]}
+                  onChange={isChecked => {
+                    updateField({
+                      field: "remove",
+                      value: isChecked,
+                    });
+                  }}
                 />
               </Col>
             </Row>
@@ -209,12 +198,13 @@ class SFConfigIndex extends Component {
               </Col>
               <Col span={12}>
                 <Input
-                  value={config["min-movie-size"] / mb}
-                  actionFunc={value => [
-                    configActions.updateField,
-                    "min-movie-size",
-                    Number(value) * mb,
-                  ]}
+                  type="number"
+                  defaultValue={config["min-movie-size"] / mb}
+                  onPressEnter={e =>
+                    updateField({
+                      field: "min-movie-size",
+                      value: Number(e.target.value) * mb,
+                    })}
                 />
               </Col>
             </Row>
@@ -224,7 +214,13 @@ class SFConfigIndex extends Component {
               </Col>
               <Col span={12}>
                 <Input
-                  value={config["max-sub"]}
+                  type="number"
+                  defaultValue={config["max-sub"]}
+                  onPressEnter={e =>
+                    updateField({
+                      field: "max-sub",
+                      value: Number(e.target.value),
+                    })}
                   action={[configActions.updateField, "max-sub"]}
                 />
               </Col>
@@ -266,8 +262,14 @@ const mapDispatchToProps = (dispatch: Function) => {
     loadConfig: () => {
       dispatch(loadConfig());
     },
-    updateListField: ({ field, value, action }) => {
-      dispatch(updateConfigListField({ field, value, action }));
+    updateListField: async ({ field, value, action }) => {
+      await dispatch(updateConfigListField({ field, value, action }));
+      message.info("Updated!");
+    },
+    updateField: async ({ field, value }) => {
+      await dispatch(updateConfigField({ field, value }));
+
+      message.info("Updated!");
     },
   };
 };
