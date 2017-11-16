@@ -1,6 +1,6 @@
 package: subfind
 packageService: subfind-web
-version: 4.6.2
+version: 4.7.0
 author: Thong Dong
 email: thongdong7@gmail.com
 description: Subtitle crawler written in Python

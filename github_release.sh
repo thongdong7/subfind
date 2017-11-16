@@ -11,7 +11,7 @@ ASSETS_PATH=`pwd`/..
 VERSION=`./get_version.py`
 
 echo Build...
-./build.sh
+./_build.sh
 
 echo Create tag...
 git tag $VERSION
