@@ -1,4 +1,4 @@
-import { uniq, remove } from "lodash";
+import { uniq } from "lodash";
 import { UPDATE_CONFIG, UPDATE_CONFIG_ERROR } from "../actions";
 
 const initState = {

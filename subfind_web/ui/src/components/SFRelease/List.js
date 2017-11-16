@@ -1,12 +1,13 @@
 // @flow
+import { Button, Layout, Progress, Table } from "antd";
 import React from "react";
-import { Table, Layout, Progress } from "antd";
 import { connect } from "react-redux";
-import LanguageStats from "./LanguageStats";
-import SFReleaseFilter from "./Filter";
-import RPCLink from "../RPCLink";
-import RPCButton from "../RPCButton";
+import { Link } from "react-router-dom";
 import { updateShowMissed, loadReleases } from "../../actions";
+import RPCButton from "../RPCButton";
+import RPCLink from "../RPCLink";
+import SFReleaseFilter from "./Filter";
+import LanguageStats from "./LanguageStats";
 import ReloadButton from "./ReloadButton";
 const { Header, Content } = Layout;
 
@@ -38,6 +39,9 @@ class SFReleaseList extends React.Component {
             query="/api/Release/scan_all"
             onComplete={this.onScanAllComplete}
           />
+          <Link to="/config">
+            <Button>Config</Button>
+          </Link>
         </Header>
 
         {releaseName && (

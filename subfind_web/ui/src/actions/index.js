@@ -52,7 +52,7 @@ export function loadConfig() {
     const res = await fetch("/api/Config/load");
     const config = await res.json();
 
-    console.log("c", config);
+    // console.log("c", config);
 
     dispatch(updateConfig(config));
   };

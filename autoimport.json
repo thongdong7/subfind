@@ -18,7 +18,8 @@
         "withRouter",
         "Switch",
         "Route",
-        "Redirect"
+        "Redirect",
+        "Link"
       ]
     },
     "antd": {

@@ -11,6 +11,7 @@ import {
 } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import compose from "recompose/compose";
 import {
   loadConfig,
@@ -52,7 +53,9 @@ class SFConfigIndex extends Component {
       <div className="box box-solid">
         <div className="box-header with-border">
           <h3 className="box-title">
-            <Button>Back</Button>
+            <Link to="/">
+              <Button>Back</Button>
+            </Link>
           </h3>
         </div>
         <div className="box-body">
@@ -69,7 +72,6 @@ class SFConfigIndex extends Component {
                       <Button
                         name="Remove"
                         icon="delete"
-                        hideName
                         type="danger"
                         onClick={() =>
                           updateListField({
@@ -104,7 +106,6 @@ class SFConfigIndex extends Component {
                       <Button
                         name="Remove"
                         icon="delete"
-                        hideName
                         type="danger"
                         onClick={() =>
                           updateListField({
