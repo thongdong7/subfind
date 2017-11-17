@@ -1,9 +1,4 @@
-from os.path import abspath, join
-from os.path import dirname
-
 import click
-from tb_api.loader.ioc import LoaderIOC
-from tb_api.model.config import Config
 
 from subfind_web.app import start_web
 
