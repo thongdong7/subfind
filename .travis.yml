@@ -1,8 +1,8 @@
 language: python
 python:
-#  - "2.7"
+  - "2.7"
 #  - "3.5"
-  - "3.6"
+#  - "3.6"
 # command to install dependencies
 before_install:
   - pip install zander==0.0.14
@@ -16,6 +16,6 @@ before_install:
 # command to run tests
 script:
   - subfind-web &
-  - sleep 3
+  - sleep 5
   - curl http://localhost:32500
 #  - nosetests
