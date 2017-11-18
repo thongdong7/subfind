@@ -36,3 +36,4 @@ extras_require:
     - tornado==4.3
     - click==6.6
     - gevent==1.2.2
+    - tb-ioc
