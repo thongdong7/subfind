@@ -14,6 +14,7 @@ packages:
   - subfind_web
 console_scripts:
   subfind-web: subfind_web.script:run
+  subfind: subfind_cli.cli:cli
 install_requires:
   - six==1.10.0
 extras_require:
