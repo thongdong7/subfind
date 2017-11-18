@@ -49,7 +49,9 @@ class ReleaseOutput(object):
         event_manager.register(EVENT_RELEASE_SUBTITLE_NOT_FOUND, self.show_release_subtitle_not_found)
 
     def show_scan_release(self, event):
-        self.release_name, self.search_langs = event
+        self.release_name = event['release_name']
+        self.search_langs = event['search_langs']
+        # self.release_name, self.search_langs = event
         self.found_langs = []
         self.completed = False
 
