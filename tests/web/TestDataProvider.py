@@ -16,6 +16,7 @@ import unittest
 logging.basicConfig(level=logging.DEBUG)
 
 
+@unittest.skip
 class CliScanConfigTestCase(unittest.TestCase):
     def setUp(self):
         self.data_dir = abspath(join(dirname(__file__), '../data'))
@@ -35,10 +36,9 @@ class CliScanConfigTestCase(unittest.TestCase):
         })
 
         data_provider = ioc.get('DataProvider')
-        ret = data_provider.build_data()
-        pprint(ret)
+        data_provider.build_data()
 
-        # pprint(data_provider.data)
+        pprint(data_provider.data)
         found = False
         for item in data_provider.data:
             if item['name'] == 'Mr.Robot.S02E01.720p.HDTV.x264-KILLERS':
