@@ -126,6 +126,9 @@ build_script:
 test_script:
   # Run the project tests
   - "%CMD_IN_ENV% nosetests"
+  # Ensure cli works
+  - "%CMD_IN_ENV% subfind --help"
+  - "%CMD_IN_ENV% subfind-web --help"
   # Run subfind-web in background
 #  - "%CMD_IN_ENV% start /B subfind-web"
 #  # Wait 10 seconds
