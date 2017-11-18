@@ -10,6 +10,9 @@ python:
 #  - "pypy"
 # command to install dependencies
 before_install:
+  - pip install zander==0.0.14
+  - zander install
+  - zander
   - pip install -e .[web,cli,opensubtitles,subscene]
   - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install importlib; fi
   - subfind --help
