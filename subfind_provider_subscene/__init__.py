@@ -80,7 +80,7 @@ class SubsceneProvider(BaseProvider):
 
         wait_time = 1
 
-        for i in range(10):
+        for i in range(20):
             r = requests.get(url, headers=HEADERS)
             if r.status_code == 409:
                 print('got 409 code, sleep %s second before try again (%s/10)' % (wait_time, i+1))
