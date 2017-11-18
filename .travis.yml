@@ -15,8 +15,8 @@ before_install:
   - zander
   - pip install -e .[web,cli,opensubtitles,subscene]
   - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install importlib; fi
-  - subfind --help
   - subfind-web --help
+  - subfind --help
 
 # command to run tests
 script:
