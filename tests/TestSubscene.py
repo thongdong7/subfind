@@ -88,6 +88,7 @@ class SubsceneTestCase(unittest.TestCase):
         ]
 
         for release_name, langs in testcases:
+            print(release_name)
             releases = self.provider.get_releases(release_name, langs)
 
             # pprint(releases)

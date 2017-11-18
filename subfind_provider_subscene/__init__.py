@@ -1,5 +1,6 @@
 import logging
 import zipfile
+from time import sleep
 
 from six.moves.urllib.parse import urlencode, urljoin
 
@@ -23,6 +24,8 @@ from subfind.utils.process import which
 from subfind.utils.subtitle import get_subtitle_ext
 from subfind_provider_subscene.language import get_full_lang, get_short_lang
 from tempfile import mkdtemp
+
+from random import randint
 
 SUBSCENE_SEARCH_URL = "https://subscene.com/subtitles/title?%s"
 SUBSCENE_RELEASE_SEARCH_URL = "https://subscene.com/subtitles/release?%s"
@@ -53,7 +56,7 @@ class SubsceneProvider(BaseProvider):
             self.has_unrar = False
         else:
             self.has_unrar = True
-        # print(tmp)
+            # print(tmp)
 
     def search_movie(self, release_name, langs):
         release_matching_checker = ReleaseMatchingChecker(release_name)
@@ -61,11 +64,33 @@ class SubsceneProvider(BaseProvider):
         movies = self.get_all_movies(release_name=release_name, release_matching_checker=release_matching_checker)
 
         if not movies:
-            return movies
+            # return movies
+            print('no movie for release %s' % release_name)
+            ret = {}
+            for lang in langs:
+                ret[lang] = []
+
+            return ret
 
         movie = movies[0]
 
         return self._get_movie_release(release_matching_checker, movie, langs)
+
+    def _get_url(self, url):
+        HEADERS = {
+            'User-agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"}
+
+        wait_time = 1
+
+        for i in range(10):
+            r = requests.get(url, headers=HEADERS)
+            if r.status_code == 409:
+                print('got 409 code, sleep %s second before try again (%s/10)' % (wait_time, i+1))
+                sleep(wait_time)
+                continue
+            break
+
+        return r
 
     def get_all_movies(self, release_name, release_matching_checker=None):
         """
@@ -83,7 +108,7 @@ class SubsceneProvider(BaseProvider):
         query = release_matching_checker.info['title_query']
         base_url = (SUBSCENE_SEARCH_URL % urlencode({'q': query}))
 
-        r = self.session.get(base_url)
+        r = self._get_url(base_url)
 
         if not r.ok:
             # print('not ok')
@@ -171,7 +196,15 @@ class SubsceneProvider(BaseProvider):
 
     def _get_movie_release(self, release_matching_checker, movie, langs):
         base_url = movie['url']
-        r = self.session.get(base_url)
+        HEADERS = {
+            'User-agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"}
+
+        for i in range(10):
+            r = requests.get(base_url, headers=HEADERS)
+            if r.status_code == 409:
+                print('got 409, sleep 1 second before try again')
+                sleep(5)
+                continue
 
         if not r.ok:
             raise HTTPConnectionError(base_url, r.status_code, r.content)
@@ -243,7 +276,7 @@ class SubsceneProvider(BaseProvider):
     def get_movie_subs(self, movie, params, lang):
         movie_url = movie['url']
         # print movie_url
-        r = self.session.get(movie_url)
+        r = self._get_url(movie_url)
         # print r.content
 
         m = re.compile('/subtitles/([^/]+)$').search(movie_url)
@@ -273,10 +306,11 @@ class SubsceneProvider(BaseProvider):
 
     def get_sub(self, release):
         sub_page_url = release['url']
-        r = self.session.get(sub_page_url)
+        r = self._get_url(sub_page_url)
         if not r.ok:
             # print r.content
-            raise SubtitleFileBroken(url=sub_page_url, message='Could not download url. Status code: %s' % r.status_code)
+            raise SubtitleFileBroken(url=sub_page_url,
+                                     message='Could not download url. Status code: %s' % r.status_code)
 
         m = re.search('href=\"(/subtitle/download[^\'"]+)"', r.text)
         if not m:
@@ -291,7 +325,8 @@ class SubsceneProvider(BaseProvider):
             if not response.ok:
                 # Something went wrong
                 # print 'could not download sub file'
-                raise SubtitleFileBroken(url=sub_page_url, message='Could not download subtitle content. Status code: %s' % response.status_code)
+                raise SubtitleFileBroken(url=sub_page_url,
+                                         message='Could not download subtitle content. Status code: %s' % response.status_code)
 
             file_format = 'zip'
             if 'rar' in response.headers['Content-Type']:
@@ -318,7 +353,8 @@ class SubsceneProvider(BaseProvider):
                                     return Subtitle(content=open(sub_file, 'rb').read(), extension=sub_extension)
 
                         if num_items == 0:
-                            raise SubtitleFileBroken(url=sub_page_url, message='Could not find any file in subtitle file')
+                            raise SubtitleFileBroken(url=sub_page_url,
+                                                     message='Could not find any file in subtitle file')
                 except zipfile.BadZipFile:
                     raise SubtitleFileBroken(url=sub_page_url, message='Subtitle file broken')
             elif file_format == 'rar':
