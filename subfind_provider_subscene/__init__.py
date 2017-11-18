@@ -1,31 +1,29 @@
 import logging
-import zipfile
-from time import sleep
-
-from six.moves.urllib.parse import urlencode, urljoin
-
 import os
 import re
-import requests
-from bs4 import BeautifulSoup
+import zipfile
 from os import listdir
 from os.path import join, abspath
 from shutil import rmtree
+from tempfile import mkdtemp
+from time import sleep
+
+import requests
+from bs4 import BeautifulSoup
+from six.moves.urllib.parse import urlencode, urljoin
+from subfind.release import ReleaseMatchingChecker
+from subfind.release.alice import ReleaseScoringAlice
+
 from subfind.cmd import run_cmd
 from subfind.exception import SubtitleFileBroken, HTTPConnectionError, ReleaseNotMatchError, MovieNotFound
 from subfind.model import Subtitle
 from subfind.movie.alice import MovieScoringAlice
 from subfind.movie_parser import parse_release_name
 from subfind.provider import BaseProvider
-from subfind.release import ReleaseMatchingChecker
-from subfind.release.alice import ReleaseScoringAlice
 from subfind.scenario import BaseScenarioFactory, Scenario1
 from subfind.utils.process import which
 from subfind.utils.subtitle import get_subtitle_ext
 from subfind_provider_subscene.language import get_full_lang, get_short_lang
-from tempfile import mkdtemp
-
-from random import randint
 
 SUBSCENE_SEARCH_URL = "https://subscene.com/subtitles/title?%s"
 SUBSCENE_RELEASE_SEARCH_URL = "https://subscene.com/subtitles/release?%s"
