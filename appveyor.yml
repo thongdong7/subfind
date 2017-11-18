@@ -127,7 +127,7 @@ test_script:
   # Run the project tests
   #- "%CMD_IN_ENV% nosetests"
   # Run subfind-web in background
-  - "%CMD_IN_ENV% subfind-web &"
+  - "%CMD_IN_ENV% start /B subfind-web"
   # Wait 10 seconds
   - sleep 10
   # curl to home page
