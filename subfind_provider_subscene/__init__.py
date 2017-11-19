@@ -194,15 +194,8 @@ class SubsceneProvider(BaseProvider):
 
     def _get_movie_release(self, release_matching_checker, movie, langs):
         base_url = movie['url']
-        HEADERS = {
-            'User-agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"}
 
-        for i in range(10):
-            r = requests.get(base_url, headers=HEADERS)
-            if r.status_code == 409:
-                print('got 409, sleep 1 second before try again')
-                sleep(5)
-                continue
+        r = self._get_url(base_url)
 
         if not r.ok:
             raise HTTPConnectionError(base_url, r.status_code, r.content)
