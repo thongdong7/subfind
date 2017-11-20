@@ -1,5 +1,5 @@
 // @flow
-import { Button, Layout, Progress, Table } from "antd";
+import { Button, Layout, Progress, Spin, Table } from "antd";
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -84,6 +84,7 @@ const mapStateToProps = state => {
   const dataSource = doFilter(items, state.filter).map((item, i) => ({
     ...item,
     key: i,
+    loading: item.release_name === scanningRelease.releaseName,
   }));
 
   return {
@@ -94,7 +95,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => {
+const mapDispatchToProps = dispatch => {
   return {
     loadData: () => dispatch(loadReleases()),
     setShowMissed: value => dispatch(updateShowMissed(value)),
@@ -103,12 +104,20 @@ const mapDispatchToProps = (dispatch: Function) => {
         title: "Release",
         dataIndex: "release_name",
         key: "release_name",
-        render: (text, record) => (
-          <span>
-            {record.release_name}
-            <LanguageStats data={record.subtitles} />
-          </span>
-        ),
+        render: (text, record) => {
+          const content = (
+            <span>
+              {record.release_name}
+              <LanguageStats data={record.subtitles} />
+            </span>
+          );
+
+          if (record.loading) {
+            return <Spin tip="Downloading...">{content}</Spin>;
+          }
+
+          return content;
+        },
       },
       {
         title: "Action",
