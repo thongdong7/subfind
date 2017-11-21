@@ -5,6 +5,7 @@ environment:
     # See: http://stackoverflow.com/a/13751649/163740
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
 
+  nodejs_version: "8"
   matrix:
 
     # Python 2.7.10 is the latest version and is not pre-installed.
@@ -73,7 +74,6 @@ environment:
     - PYTHON: "C:\\Python36-x64"
       PYTHON_VERSION: "3.6.0"
       PYTHON_ARCH: "64"
-      nodejs_version: "8"
 
     # Major and minor releases (i.e x.0.0 and x.y.0) prior to 3.3.0 use
     # a different naming scheme.
@@ -87,6 +87,9 @@ environment:
 #      PYTHON_ARCH: "64"
 
 install:
+  - node --version
+  # Get the latest stable version of Node 0.STABLE.latest
+  - ps: Install-Product node $env:nodejs_version
   - node --version
   # If there is a newer build queued for the same PR, cancel this one.
   # The AppVeyor 'rollout builds' option is supposed to serve the same
