@@ -4,7 +4,7 @@ environment:
     # /E:ON and /V:ON options are not enabled in the batch script intepreter
     # See: http://stackoverflow.com/a/13751649/163740
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
-  nodejs_version: "8"
+
   matrix:
 
     # Python 2.7.10 is the latest version and is not pre-installed.
@@ -73,6 +73,7 @@ environment:
     - PYTHON: "C:\\Python36-x64"
       PYTHON_VERSION: "3.6.0"
       PYTHON_ARCH: "64"
+      nodejs_version: "8"
 
     # Major and minor releases (i.e x.0.0 and x.y.0) prior to 3.3.0 use
     # a different naming scheme.
