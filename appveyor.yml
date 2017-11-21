@@ -130,12 +130,15 @@ install:
 #  - "%CMD_IN_ENV% zander"
 #  - "%CMD_IN_ENV% pip install -e .[cli,web,opensubtitles,subscene]"
 
-#build_script:
+build_script:
+  - ECHO "avbc"
+  - node --version
 #  # Build the compiled extension
 #  - "%CMD_IN_ENV% python setup.py build"
 
 test_script:
   - ECHO "Hello"
+  - node --version
   # Run the project tests
 #  - "%CMD_IN_ENV% nosetests"
 #  # Ensure cli works
