@@ -15,6 +15,9 @@ before_install:
 
 # command to run tests
 script:
+  - cd subfind_web/ui
+  - yarn
+  - yarn build
   - subfind-web &
   - sleep 10
   - curl http://localhost:32500
