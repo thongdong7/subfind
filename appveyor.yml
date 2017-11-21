@@ -4,7 +4,7 @@ environment:
     # /E:ON and /V:ON options are not enabled in the batch script intepreter
     # See: http://stackoverflow.com/a/13751649/163740
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
-
+  nodejs_version: "8"
   matrix:
 
     # Python 2.7.10 is the latest version and is not pre-installed.
@@ -86,6 +86,7 @@ environment:
 #      PYTHON_ARCH: "64"
 
 install:
+  - node --version
   # If there is a newer build queued for the same PR, cancel this one.
   # The AppVeyor 'rollout builds' option is supposed to serve the same
   # purpose but it is problematic because it tends to cancel builds pushed
