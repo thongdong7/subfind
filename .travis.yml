@@ -23,4 +23,5 @@ script:
   - curl http://localhost:32500
   - response=$(curl -s -w '%{http_code}' -o /dev/null http://localhost:32500)
   - if [ $response != "200" ]; then echo "HTTP code $response"; exit 1; fi
+  - cd ../..
   - nosetests
