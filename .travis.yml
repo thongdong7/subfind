@@ -19,7 +19,8 @@ script:
   - yarn
   - yarn build
   - subfind-web &
-  - sleep 10
+  - sleep 1
+  - curl http://localhost:32500
   - response=$(curl -s -w '%{http_code}' -o /dev/null http://localhost:32500)
-  - if [ $response != "200" ]; then curl http://localhost:32500; echo "HTTP code $response"; exit 1; fi
-#  - nosetests
+  - if [ $response != "200" ]; then echo "HTTP code $response"; exit 1; fi
+  - nosetests
