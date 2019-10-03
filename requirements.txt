@@ -1,5 +1,5 @@
 click==6.6
-pyyaml==3.11
+pyyaml==5.1
 requests==2.9.1
 babelfish==0.5.5
 beautifulsoup4==4.4.1
